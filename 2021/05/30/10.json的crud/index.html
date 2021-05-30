@@ -23,17 +23,22 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":6},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="看清生活的真相之后，依然热爱生活">
-<meta property="og:type" content="website">
-<meta property="og:title" content="DanmoSAMAの博客">
-<meta property="og:url" content="http://example.com/tags/css/index.html">
+  <meta name="description" content="说是crud，只有写和查而已">
+<meta property="og:type" content="article">
+<meta property="og:title" content="json的crud">
+<meta property="og:url" content="http://example.com/2021/05/30/10.json%E7%9A%84crud/index.html">
 <meta property="og:site_name" content="DanmoSAMAの博客">
-<meta property="og:description" content="看清生活的真相之后，依然热爱生活">
+<meta property="og:description" content="说是crud，只有写和查而已">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-05-30T12:53:59.256Z">
+<meta property="article:modified_time" content="2021-05-30T13:02:56.432Z">
 <meta property="article:author" content="DanmoSAMA">
+<meta property="article:tag" content="js">
+<meta property="article:tag" content="前后端交互">
+<meta property="article:tag" content="json">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://example.com/tags/css/">
+<link rel="canonical" href="http://example.com/2021/05/30/10.json%E7%9A%84crud/">
 
 
 <script id="page-configurations">
@@ -41,12 +46,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>标签: css | DanmoSAMAの博客</title>
+  <title>json的crud | DanmoSAMAの博客</title>
   
 
 
@@ -189,71 +194,115 @@
         <div class="content-wrap">
           
 
-          <div class="content tag">
+          <div class="content post posts-expand">
             
 
+    
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <h2 class="collection-header">css
-          <small>标签</small>
-        </h2>
-      </div>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/30/10.json%E7%9A%84crud/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/myavatar.jpg">
+      <meta itemprop="name" content="DanmoSAMA">
+      <meta itemprop="description" content="看清生活的真相之后，依然热爱生活">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DanmoSAMAの博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          json的crud
+        </h1>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-05-30 20:53:59" itemprop="dateCreated datePublished" datetime="2021-05-30T20:53:59+08:00">2021-05-30</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AE%9E%E8%B7%B5/" itemprop="url" rel="index"><span itemprop="name">实践</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <span class="collection-header">2021</span>
-    </div>
+        <p>说是crud，只有写和查而已</p>
+<span id="more"></span>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+<p>写：data是index.json中的所有数据，由于data一开始是二进制buffer，先用toString方法转化为字符串，再用JSON.parse转化为对象，把新的数据加入数组（allUser转为对象后是一个数组），把数组转化为字符串，再写入index.json文件</p>
+<p>查：用ES6的find方法就好</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">writeJson</span>(<span class="params">params</span>) </span>&#123;</span><br><span class="line">  fs.readFile(<span class="string">&#x27;./public/json/index.json&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">err, data</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (err) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">console</span>.error(err);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> allUser = data.toString();</span><br><span class="line">    allUser = <span class="built_in">JSON</span>.parse(allUser);  <span class="comment">// 对空字符串不能使用该方法，所以初始情况下json文件不能为空</span></span><br><span class="line">    allUser.push(params);</span><br><span class="line">    <span class="keyword">let</span> str = <span class="built_in">JSON</span>.stringify(allUser);</span><br><span class="line">    fs.writeFile(<span class="string">&#x27;./public/json/index.json&#x27;</span>, str, <span class="function"><span class="keyword">function</span> (<span class="params">err</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (err) &#123;</span><br><span class="line">        <span class="built_in">console</span>.error(err);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">&#x27;index.json：新增用户数据成功&#x27;</span>);</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">findJson</span>(<span class="params">str</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolved, rejected</span>) =&gt;</span> &#123;</span><br><span class="line">    fs.readFile(<span class="string">&#x27;./public/json/index.json&#x27;</span>,</span><br><span class="line">      <span class="function"><span class="keyword">function</span> (<span class="params">err, data</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (err) &#123;</span><br><span class="line">          rejected(err)</span><br><span class="line">          <span class="keyword">return</span> <span class="built_in">console</span>.error(err);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> allUser = data.toString();</span><br><span class="line">        allUser = <span class="built_in">JSON</span>.parse(allUser);</span><br><span class="line">        user = allUser.find(<span class="function"><span class="keyword">function</span> (<span class="params">user</span>) </span>&#123;</span><br><span class="line">          <span class="keyword">return</span> user.id === str;</span><br><span class="line">        &#125;)</span><br><span class="line">        resolved(user);</span><br><span class="line">      &#125;)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-05-28T13:34:12+08:00"
-              content="2021-05-28">
-          05-28
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/05/28/06.%E7%A7%BB%E5%8A%A8%E7%AB%AF%E7%9A%84rem%E5%B8%83%E5%B1%80/" itemprop="url">
-            <span itemprop="name">移动端的rem布局</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-05-28T13:32:59+08:00"
-              content="2021-05-28">
-          05-28
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/05/28/05.%E8%B6%85%E5%87%BA%E5%90%8E%E7%9C%81%E7%95%A5%E5%89%A9%E4%BD%99%E9%83%A8%E5%88%86/" itemprop="url">
-            <span itemprop="name">超出后省略剩余部分</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
 
     </div>
-  </div>
-  
-  
-  
 
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>DanmoSAMA
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2021/05/30/10.json%E7%9A%84crud/" title="json的crud">http://example.com/2021/05/30/10.json的crud/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/js/" rel="tag"><i class="fa fa-tag"></i> js</a>
+              <a href="/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E4%BA%A4%E4%BA%92/" rel="tag"><i class="fa fa-tag"></i> 前后端交互</a>
+              <a href="/tags/json/" rel="tag"><i class="fa fa-tag"></i> json</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/05/30/09.%E5%89%8D%E5%90%8E%E7%AB%AF%E4%BA%A4%E4%BA%92%E5%88%9D%E5%B0%9D%E8%AF%95/" rel="prev" title="前后端交互初尝试">
+      <i class="fa fa-chevron-left"></i> 前后端交互初尝试
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
   
 
 
@@ -511,7 +560,7 @@ window.addEventListener('pjax:success', () => {
       quicklink({
         timeout : 3000,
         priority: true,
-        ignores : [uri => uri.includes('#'),uri => uri === 'http://example.com/tags/css/',]
+        ignores : [uri => uri.includes('#'),uri => uri === 'http://example.com/2021/05/30/10.json%E7%9A%84crud/',]
       });
       });
   </script>

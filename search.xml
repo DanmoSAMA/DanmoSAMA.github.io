@@ -113,10 +113,107 @@
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">	</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h1 id="中卷"><a href="#中卷" class="headerlink" title="中卷"></a>中卷</h1><h1 id="下卷"><a href="#下卷" class="headerlink" title="下卷"></a>下卷</h1>]]></content>
       <categories>
-        <category>JS</category>
+        <category>js</category>
       </categories>
       <tags>
-        <tag>JS</tag>
+        <tag>js</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>json的crud</title>
+    <url>/2021/05/30/10.json%E7%9A%84crud/</url>
+    <content><![CDATA[<p>说是crud，只有写和查而已</p>
+<span id="more"></span>
+
+<p>写：data是index.json中的所有数据，由于data一开始是二进制buffer，先用toString方法转化为字符串，再用JSON.parse转化为对象，把新的数据加入数组（allUser转为对象后是一个数组），把数组转化为字符串，再写入index.json文件</p>
+<p>查：用ES6的find方法就好</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">writeJson</span>(<span class="params">params</span>) </span>&#123;</span><br><span class="line">  fs.readFile(<span class="string">&#x27;./public/json/index.json&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">err, data</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (err) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">console</span>.error(err);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> allUser = data.toString();</span><br><span class="line">    allUser = <span class="built_in">JSON</span>.parse(allUser);  <span class="comment">// 对空字符串不能使用该方法，所以初始情况下json文件不能为空</span></span><br><span class="line">    allUser.push(params);</span><br><span class="line">    <span class="keyword">let</span> str = <span class="built_in">JSON</span>.stringify(allUser);</span><br><span class="line">    fs.writeFile(<span class="string">&#x27;./public/json/index.json&#x27;</span>, str, <span class="function"><span class="keyword">function</span> (<span class="params">err</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (err) &#123;</span><br><span class="line">        <span class="built_in">console</span>.error(err);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">&#x27;index.json：新增用户数据成功&#x27;</span>);</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">findJson</span>(<span class="params">str</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolved, rejected</span>) =&gt;</span> &#123;</span><br><span class="line">    fs.readFile(<span class="string">&#x27;./public/json/index.json&#x27;</span>,</span><br><span class="line">      <span class="function"><span class="keyword">function</span> (<span class="params">err, data</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (err) &#123;</span><br><span class="line">          rejected(err)</span><br><span class="line">          <span class="keyword">return</span> <span class="built_in">console</span>.error(err);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> allUser = data.toString();</span><br><span class="line">        allUser = <span class="built_in">JSON</span>.parse(allUser);</span><br><span class="line">        user = allUser.find(<span class="function"><span class="keyword">function</span> (<span class="params">user</span>) </span>&#123;</span><br><span class="line">          <span class="keyword">return</span> user.id === str;</span><br><span class="line">        &#125;)</span><br><span class="line">        resolved(user);</span><br><span class="line">      &#125;)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>实践</category>
+      </categories>
+      <tags>
+        <tag>js</tag>
+        <tag>前后端交互</tag>
+        <tag>json</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>前后端交互初尝试</title>
+    <url>/2021/05/30/09.%E5%89%8D%E5%90%8E%E7%AB%AF%E4%BA%A4%E4%BA%92%E5%88%9D%E5%B0%9D%E8%AF%95/</url>
+    <content><![CDATA[<p>之前对前后端交互的理解一直不够透彻，虽然也搞过模板引擎，但都是照着老师的做，自己懂的确实很有限。这两天搜搞前后端交互让我心力交瘁，但最后还是搞懂了一些</p>
+<span id="more"></span>
+
+<p>一图归纳我到目前的理解程度：</p>
+<p><img src="/2021/05/30/09.%E5%89%8D%E5%90%8E%E7%AB%AF%E4%BA%A4%E4%BA%92%E5%88%9D%E5%B0%9D%E8%AF%95/程序小白进阶之路\hexo-blog\source_posts\09.前后端交互初尝试\1.jpg"></p>
+<p>前端：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">regBtn.onclick = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">  xhr.open(<span class="string">&#x27;post&#x27;</span>, <span class="string">&#x27;/login&#x27;</span>);</span><br><span class="line">  xhr.setRequestHeader(<span class="string">&quot;Content-Type&quot;</span>, <span class="string">&quot;application/x-www-form-urlencoded&quot;</span>);</span><br><span class="line">  xhr.send(<span class="string">`id=<span class="subst">$&#123;input3.value&#125;</span>&amp;password=<span class="subst">$&#123;input4.value&#125;</span>`</span>);</span><br><span class="line">  xhr.onreadystatechange = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (xhr.readyState === <span class="number">4</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (xhr.status &gt;= <span class="number">200</span> &amp;&amp; xhr.status &lt; <span class="number">300</span>) &#123;</span><br><span class="line">        <span class="keyword">let</span> data = <span class="built_in">JSON</span>.parse(xhr.response);</span><br><span class="line">        <span class="keyword">if</span> (data.status == <span class="number">200</span>) &#123;</span><br><span class="line">          <span class="built_in">window</span>.location.href = <span class="string">&quot;/&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (data.status == <span class="number">499</span>) &#123;</span><br><span class="line">          alert(<span class="string">&#x27;该用户已注册！&#x27;</span>);</span><br><span class="line">          location.reload();</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>后端：get请求页面资源，post处理ajax</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">app.get(<span class="string">&#x27;/login&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">  fs.readFile(<span class="string">&#x27;./pc-views/login.html&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">err, data</span>) </span>&#123;</span><br><span class="line">    res.end(data);</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">app.post(<span class="string">&#x27;/login&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">  findJson(req.body.id).then(<span class="function"><span class="params">user</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(user);</span><br><span class="line">    <span class="keyword">if</span> (user === <span class="literal">undefined</span>) &#123;</span><br><span class="line">      writeJson(req.body);</span><br><span class="line">      res.send(&#123;</span><br><span class="line">        <span class="string">&quot;status&quot;</span>: <span class="number">200</span></span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">      res.send(&#123;</span><br><span class="line">        <span class="string">&quot;status&quot;</span>: <span class="number">499</span>,</span><br><span class="line">        <span class="string">&quot;msg&quot;</span>: <span class="string">&quot;user already registered&quot;</span></span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>实践</category>
+      </categories>
+      <tags>
+        <tag>前后端交互</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>原生ajax的req.body为空</title>
+    <url>/2021/05/30/08.%E5%8E%9F%E7%94%9Fajax%E7%9A%84req.body%E4%B8%BA%E7%A9%BA/</url>
+    <content><![CDATA[<p>原生ajax，很多人都不推荐在实战中使用，因为我别的都不会，只能先凑合着用原生，结果就遇到了发送post请求过去，结果req.body为空对象的情况</p>
+<span id="more"></span>
+
+<p>一开始的代码：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">regBtn.onclick = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> userjson = &#123;</span><br><span class="line">     <span class="comment">// 这里的数据格式不对</span></span><br><span class="line">    <span class="string">&quot;id&quot;</span>: input3.value,</span><br><span class="line">    <span class="string">&quot;password&quot;</span>: input4.value</span><br><span class="line">  &#125;;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">const</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">  xhr.open(<span class="string">&#x27;post&#x27;</span>, <span class="string">&#x27;/login&#x27;</span>);</span><br><span class="line">  xhr.setRequestHeader(<span class="string">&quot;Content-Type&quot;</span>, <span class="string">&quot;application/x-www-form-urlencoded&quot;</span>)</span><br><span class="line">  xhr.send(userjson);</span><br><span class="line"></span><br><span class="line">  xhr.onreadystatechange = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (xhr.readyState === <span class="number">4</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (xhr.status &gt;= <span class="number">200</span> &amp;&amp; xhr.status &lt; <span class="number">300</span>) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(xhr.response);</span><br><span class="line">        <span class="comment">//之后要根据不同的response进行不同的操作</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>主要修改两个地方：</p>
+<ul>
+<li>请求头</li>
+<li>数据格式</li>
+</ul>
+<p>修改后：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">regBtn.onclick = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">    </span><br><span class="line">  xhr.open(<span class="string">&#x27;post&#x27;</span>, <span class="string">&#x27;/login&#x27;</span>);</span><br><span class="line">    </span><br><span class="line">  xhr.setRequestHeader(<span class="string">&quot;Content-Type&quot;</span>, <span class="string">&quot;application/x-www-form-urlencoded&quot;</span>);</span><br><span class="line">  <span class="comment">// 修改请求头（没有深入理解）</span></span><br><span class="line">    </span><br><span class="line">  xhr.send(<span class="string">`id=<span class="subst">$&#123;input3.value&#125;</span>&amp;password=<span class="subst">$&#123;input4.value&#125;</span>`</span>);	</span><br><span class="line">  <span class="comment">// 在不配置的情况下，原生ajax发送post请求必须用这个数据格式：&#x27;a=xxx&amp;b=xxx&amp;c=xxx&#x27;</span></span><br><span class="line">    </span><br><span class="line">  xhr.onreadystatechange = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (xhr.readyState === <span class="number">4</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (xhr.status &gt;= <span class="number">200</span> &amp;&amp; xhr.status &lt; <span class="number">300</span>) &#123;</span><br><span class="line">        <span class="keyword">let</span> data = <span class="built_in">JSON</span>.parse(xhr.response);</span><br><span class="line">        <span class="keyword">if</span> (data.status == <span class="number">200</span>) &#123;</span><br><span class="line">          <span class="comment">// do something</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (data.status == <span class="number">499</span>) &#123;</span><br><span class="line">		  <span class="comment">// do something</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>js</category>
+      </categories>
+      <tags>
+        <tag>ajax</tag>
+        <tag>踩坑</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>返回回调函数中的变量</title>
+    <url>/2021/05/30/07.%E8%BF%94%E5%9B%9E%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0%E4%B8%AD%E7%9A%84%E5%8F%98%E9%87%8F/</url>
+    <content><![CDATA[<p>初次在实践中用到promise，下次学await</p>
+<span id="more"></span>
+
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">findJson</span>(<span class="params">str</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// str参数表示用户的账号（手机号）</span></span><br><span class="line">  fs.readFile(<span class="string">&#x27;./public/json/index.json&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">err, data</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (err) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">console</span>.error(err);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> allUser = data.toString();</span><br><span class="line">    allUser = <span class="built_in">JSON</span>.parse(allUser);</span><br><span class="line">    user = allUser.find(<span class="function"><span class="keyword">function</span> (<span class="params">user</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> user.id === str;</span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="comment">// 我希望findJson函数可以把user给return出来</span></span><br><span class="line">    <span class="comment">// 直接在这里return是没用的</span></span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>promise改进版：</p>
+<p>findJson函数写法：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">findJson</span>(<span class="params">str</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolved, rejected</span>) =&gt;</span> &#123;</span><br><span class="line">    fs.readFile(<span class="string">&#x27;./public/json/index.json&#x27;</span>,</span><br><span class="line">      <span class="function"><span class="keyword">function</span> (<span class="params">err, data</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (err) &#123;</span><br><span class="line">          rejected(err)</span><br><span class="line">          <span class="keyword">return</span> <span class="built_in">console</span>.error(err);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> allUser = data.toString();</span><br><span class="line">        allUser = <span class="built_in">JSON</span>.parse(allUser);</span><br><span class="line">        user = allUser.find(<span class="function"><span class="keyword">function</span> (<span class="params">user</span>) </span>&#123;</span><br><span class="line">          <span class="keyword">return</span> user.id === str;</span><br><span class="line">        &#125;)</span><br><span class="line">        resolved(user);</span><br><span class="line">      &#125;)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>调的时候可以这样：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">findJson(<span class="string">&#x27;11111111111&#x27;</span>).then(<span class="function"><span class="params">user</span> =&gt;</span> &#123;</span><br><span class="line">   <span class="built_in">console</span>.log(user)</span><br><span class="line"> &#125;).catch(<span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">   <span class="built_in">console</span>.error(err)</span><br><span class="line"> &#125;)</span><br></pre></td></tr></table></figure>
+
+<p>传入参数’11111111111’后，函数已经在index.json中找到了user（或者是undefined），执行resolved(user)，可以把user传入接下来的函数，可以得到user，这样就相当于return出来了。</p>
+<p>在我的函数中是这样写的：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">app.post(<span class="string">&#x27;/login&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">  findJson(req.body.id).then(<span class="function"><span class="params">user</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (user === <span class="literal">undefined</span>) &#123;</span><br><span class="line">	  <span class="comment">// do something</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">	  <span class="comment">// do something</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>js</category>
+      </categories>
+      <tags>
+        <tag>js</tag>
+        <tag>promise</tag>
       </tags>
   </entry>
   <entry>
