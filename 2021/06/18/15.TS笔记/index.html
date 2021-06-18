@@ -23,20 +23,20 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":6},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="AV25783076：高画质的背后——视频的封装与编码 AV20450727：超级转场的核心——变速 ⭐️ AV18747023：Pr和Ae的无缝衔接大法 AV7301488：小技巧：Pr被低估的10个快捷键 AV7855737：小技巧：LUTS ⭐️ AV7045442：Premiere小技巧：秘传技 AV6936344：无缝转场与轨道蒙版 ⭐️ AV6746166：小技巧：超级转场的制作 ⭐️">
+  <meta name="description" content="开始学习TypeScript！ 改变记笔记的习惯，基础的内容请查阅文档，此处只强调一些重点&#x2F;易错点。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="视频制作教程笔记(影视飓风)">
-<meta property="og:url" content="http://example.com/2021/06/05/13.%20%E8%A7%86%E9%A2%91%E5%88%B6%E4%BD%9C%E6%95%99%E7%A8%8B%E7%AC%94%E8%AE%B0(%E5%BD%B1%E8%A7%86%E9%A3%93%E9%A3%8E)/index.html">
+<meta property="og:title" content="TypeScript笔记">
+<meta property="og:url" content="http://example.com/2021/06/18/15.TS%E7%AC%94%E8%AE%B0/index.html">
 <meta property="og:site_name" content="DanmoSAMAの博客">
-<meta property="og:description" content="AV25783076：高画质的背后——视频的封装与编码 AV20450727：超级转场的核心——变速 ⭐️ AV18747023：Pr和Ae的无缝衔接大法 AV7301488：小技巧：Pr被低估的10个快捷键 AV7855737：小技巧：LUTS ⭐️ AV7045442：Premiere小技巧：秘传技 AV6936344：无缝转场与轨道蒙版 ⭐️ AV6746166：小技巧：超级转场的制作 ⭐️">
+<meta property="og:description" content="开始学习TypeScript！ 改变记笔记的习惯，基础的内容请查阅文档，此处只强调一些重点&#x2F;易错点。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-06-05T11:33:53.367Z">
-<meta property="article:modified_time" content="2021-06-06T01:12:34.891Z">
+<meta property="article:published_time" content="2021-06-18T04:36:32.861Z">
+<meta property="article:modified_time" content="2021-06-18T09:32:57.065Z">
 <meta property="article:author" content="DanmoSAMA">
-<meta property="article:tag" content="视频制作">
+<meta property="article:tag" content="ts">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://example.com/2021/06/05/13.%20%E8%A7%86%E9%A2%91%E5%88%B6%E4%BD%9C%E6%95%99%E7%A8%8B%E7%AC%94%E8%AE%B0(%E5%BD%B1%E8%A7%86%E9%A3%93%E9%A3%8E)/">
+<link rel="canonical" href="http://example.com/2021/06/18/15.TS%E7%AC%94%E8%AE%B0/">
 
 
 <script id="page-configurations">
@@ -49,7 +49,7 @@
   };
 </script>
 
-  <title>视频制作教程笔记(影视飓风) | DanmoSAMAの博客</title>
+  <title>TypeScript笔记 | DanmoSAMAの博客</title>
   
 
 
@@ -125,17 +125,17 @@
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a>
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">7</span></a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">12</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">13</span></a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">13</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">15</span></a>
 
   </li>
         <li class="menu-item menu-item-about">
@@ -199,7 +199,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/05/13.%20%E8%A7%86%E9%A2%91%E5%88%B6%E4%BD%9C%E6%95%99%E7%A8%8B%E7%AC%94%E8%AE%B0(%E5%BD%B1%E8%A7%86%E9%A3%93%E9%A3%8E)/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/18/15.TS%E7%AC%94%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/myavatar.jpg">
@@ -212,7 +212,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          视频制作教程笔记(影视飓风)
+          TypeScript笔记
         </h1>
 
         <div class="post-meta">
@@ -223,7 +223,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2021-06-05 19:33:53" itemprop="dateCreated datePublished" datetime="2021-06-05T19:33:53+08:00">2021-06-05</time>
+              <time title="创建时间：2021-06-18 12:36:32" itemprop="dateCreated datePublished" datetime="2021-06-18T12:36:32+08:00">2021-06-18</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -231,7 +231,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%A7%86%E9%A2%91%E5%88%B6%E4%BD%9C/" itemprop="url" rel="index"><span itemprop="name">视频制作</span></a>
+                  <a href="/categories/ts/" itemprop="url" rel="index"><span itemprop="name">ts</span></a>
                 </span>
             </span>
 
@@ -246,72 +246,26 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>AV25783076：高画质的背后——视频的封装与编码</p>
-<p>AV20450727：超级转场的核心——变速 ⭐️</p>
-<p>AV18747023：Pr和Ae的无缝衔接大法</p>
-<p>AV7301488：小技巧：Pr被低估的10个快捷键</p>
-<p>AV7855737：小技巧：LUTS ⭐️</p>
-<p>AV7045442：Premiere小技巧：秘传技</p>
-<p>AV6936344：无缝转场与轨道蒙版 ⭐️</p>
-<p>AV6746166：小技巧：超级转场的制作 ⭐️</p>
+        <p>开始学习TypeScript！</p>
+<p>改变记笔记的习惯，基础的内容请查阅文档，此处只强调一些重点/易错点。</p>
 <span id="more"></span>
 
+<h1 id="类型"><a href="#类型" class="headerlink" title="类型"></a>类型</h1><p>如果在声明变量时赋值，TS可以自动对变量进行<code>类型检测</code>。</p>
+<h2 id="函数写法"><a href="#函数写法" class="headerlink" title="函数写法"></a>函数写法</h2><p>TS函数的写法：（大括号前的:number是返回值类型，也可以不写，由TS自动判断）</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sum</span>(<span class="params">a: <span class="built_in">number</span>, b: <span class="built_in">number</span></span>): <span class="title">number</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+<h2 id="字面量"><a href="#字面量" class="headerlink" title="字面量"></a>字面量</h2><p>对于字面量，如果直接用<code>let a: 1</code>这样的形式，则相当于常量。</p>
+<p>使用联合类型：</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 可以使用 | 来连接多个类型（联合类型）</span></span><br><span class="line"><span class="keyword">let</span> b: <span class="string">&quot;male&quot;</span> | <span class="string">&quot;female&quot;</span>;</span><br><span class="line">b = <span class="string">&quot;male&quot;</span>;</span><br><span class="line">b = <span class="string">&quot;female&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> c: <span class="built_in">boolean</span> | <span class="built_in">string</span>;</span><br><span class="line">c = <span class="literal">true</span>;</span><br><span class="line">c = <span class="string">&#x27;hello&#x27;</span>;</span><br></pre></td></tr></table></figure>
 
-<h1 id="视频的封装与编码"><a href="#视频的封装与编码" class="headerlink" title="视频的封装与编码"></a>视频的封装与编码</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><ul>
-<li><p>编码分为：剪辑编码、输出编码、拍摄编码</p>
-</li>
-<li><p>mov、mp4是封装格式（format），不是编码</p>
-</li>
-<li><p>常见编码有H.264（帧间编码）和Prores（帧内编码）</p>
-</li>
-</ul>
-<h2 id="帧内-帧间编码的对比"><a href="#帧内-帧间编码的对比" class="headerlink" title="帧内/帧间编码的对比"></a>帧内/帧间编码的对比</h2><h3 id="帧内编码"><a href="#帧内编码" class="headerlink" title="帧内编码"></a>帧内编码</h3><p>特点：针对每一帧的画面，进行单独的分析，就好比压缩一张照片。</p>
-<p>优点：</p>
+<h2 id="any和unknown"><a href="#any和unknown" class="headerlink" title="any和unknown"></a>any和unknown</h2><p>都表示不确定的类型，但unknown比any更安全：</p>
 <ul>
-<li>电脑在回放的时候比较轻松。</li>
+<li>any类型的变量可以直接赋给其他值，被赋的变量也会关闭类型检测</li>
+<li>unknown类型的变量不能直接被赋给其他变量</li>
 </ul>
-<p>缺点：</p>
-<ul>
-<li>能压缩的大小有限，体积会受到限制（比如说背景没有变化的时候，每一针都会被记录一次，产生了数据上的冗余）。</li>
-</ul>
-<h3 id="帧间编码"><a href="#帧间编码" class="headerlink" title="帧间编码"></a>帧间编码</h3><p>特点：记录两张完整的画面，只记录中间像素产生的变化，在后期解码时再重新运算出中间的帧，恢复出当时画面。</p>
-<p>优点：</p>
-<ul>
-<li>有效压缩了素材体积。</li>
-</ul>
-<p>缺点：</p>
-<ul>
-<li>大了电脑的处理压力。</li>
-</ul>
-<h2 id="代理和输出编码"><a href="#代理和输出编码" class="headerlink" title="代理和输出编码"></a>代理和输出编码</h2><p>假如相机记录了4k的画面，又正好是帧间编码， 电脑又不够强大，应该选择使用<code>代理</code>，从而可以重新编码出一个分辨率更低，帧内编码的视频文件，使得在剪辑时更加流畅，剪辑完之后可以把它替换成原素材做进一步的处理（以后讲）。</p>
-<p>剪辑完成之后，需要输出编码，这直接影响了上传到网上的视频质量，<strong>最佳的网络传播的编码，应该是h264编码，MP4封装。</strong></p>
-<h2 id="码率"><a href="#码率" class="headerlink" title="码率"></a>码率</h2><p>码率也会影响画面和文件大小，编码决定了这个大小之下保留着最好的图像。</p>
-<p>码率分为<code>恒定码率</code>和<code>可变码率</code>，通常可变码率会更实用一些，因为编码器会分析画面，之后对复杂的画面提供更多的码率，对于更容易压缩的地方，总会减少码率，这样即便文件大小不变，整体画质也会获得提升。</p>
-<p>网络视频通常会在上传视频文件后进行二次压缩，可能造成码率降低，更低的码率很容易导致画面翻车，在面对具有大量随机移动的像素的时候，比如下雪或者灰尘，画面质量会迅速下降，因为编码器难以预测像素的运动，而码率不足以支撑画面。</p>
-<p><strong>可以通过将视频压到B站限定的码率之下，来规避二次压缩，这样可以针对自己的视频进行编码上的优化，来获得更好的画质</strong>。</p>
-<h1 id="变速"><a href="#变速" class="headerlink" title="变速"></a>变速</h1><h2 id="升格"><a href="#升格" class="headerlink" title="升格"></a>升格</h2><p><code>升格</code>是对慢动作比较专业的叫法，很多人直接把素材拖到时间线上，然后Ctrl+R，这个快捷键可以呼出速度控制窗口，然后可以输入25%或者50%，这样就可以实现升格，但是假如变速不是整除，就会遇到<code>跳帧</code>，所以应该使用<code>解释素材</code>来进行慢放，而不是纯粹的速度控制。</p>
-<blockquote>
-<p>升格：电影摄影中的一种技术手段，电影摄影拍摄标准是每秒24帧，也就是每秒拍摄24张，这样在放映时才能是正常速度的连续性画面，但为了实现一些简单的技巧，比如慢镜头效果，就要改变正常的拍摄速度，比如高于60帧/秒，这就是升格，放映效果就是慢动作。如果降低拍摄速度（低于24帧/秒），就是降格，放映效果就是快动作。</p>
-</blockquote>
-<blockquote>
-<p>跳帧（frameskip），假如显示器设定的刷新率是80Hz，显卡以100FPS循环显示0-9数字，那么，在开始的0.1秒内，显卡显示了10个数字而显示器只刷新了8次，最终你看到的图像很可能是这样的：由于显示器刷新率跟不上游戏的FPS，只能舍弃一部分画面，这种现象表现在游戏里就是跳帧。</p>
-</blockquote>
-<h2 id="解释素材"><a href="#解释素材" class="headerlink" title="解释素材"></a>解释素材</h2><p>使用解释素材就是，在素材箱右键你的素材→Modify →Interpret footage，然后只需要把帧率修改成想要回放的帧率（比如25），这样就可以一次性处理所有的素材，实现慢放。</p>
-<p>不存在整除的问题，因为可以理解成一卷胶片换了一个速度播放，就像以前升格一样，只是把每一帧映射到和之前不同的位置上。</p>
-<h2 id="渐变"><a href="#渐变" class="headerlink" title="渐变"></a>渐变</h2><p>当有了升格后，通常需要使用变速来强化效果，很多人喜欢直接切一刀画面，然后按一下R键，激活变速工具进行变速，没有渐变，所以看起来会很突兀。</p>
-<p>正确做法是右键素材的fx标记，然后选择time remapping（<code>时间重映射</code>），然后按住Ctrl+ALT键，这个键可以帮助快速添加关键帧（任何需要添加关键帧的地方都可以使用这个快捷键），打上关键帧之后可以上下拖动这根线来实现变速，随后可以分开这两个小的关键帧，这样就会有一个具有渐变的变速。也可以拖动拉杆来进一步改变速度曲线，来实现最好的效果。</p>
-<p>但是也有一个弊端，PR的速度上限是十倍，假如要突破这个限制，通常会在速度最大值处切一刀，然后单独按R键加速中间这一段，再把三段衔接起来。</p>
-<p>如果想要流畅的过渡镜头与镜头之间的连接，就很需要这种变速，通常就是快对快、慢对慢，如果前一个素材的尾部被加速了，那么后一个素材的起始部分也应该要被加速，这样的话，动势就能够被匹配，画面就会比较连贯。</p>
-<p><strong>此处需要练习</strong></p>
-<h2 id="帧采样、帧混合、光流"><a href="#帧采样、帧混合、光流" class="headerlink" title="帧采样、帧混合、光流"></a>帧采样、帧混合、光流</h2><p>如果画面不连贯，或者想要实现比相机拍摄帧率更高的慢动作，就需要使用不同的时间控制，在Pr的速度窗口里，最下方有三个选项，帧采样、帧混合、光流。</p>
-<ul>
-<li>帧采样，只是把同一帧展现两次或者更多次。</li>
-<li>帧混合也是重复出现同样的画面，但是添加了一点渐变和叠加，在视觉上稍微顺畅一点。</li>
-<li>光流是真正意义上添加了新的帧，它通过预测两帧之间的像素运动轨迹，重新运算出了中间的针帧，画面总的帧数增加，比较流畅，但是必须要对比非常大的画面，才能够实现最佳的光流效果，否则会出现畸变。</li>
-</ul>
-<p>通常在加速之后，突然实现短暂的光流升格，可以实现非常酷炫的画面；帧混合一般用于快放，可以实现类似于动态模糊的感觉。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>使用带有渐变的变速，选择合适的时间控制模式，能够大大提升整体剪辑的节奏感，也能实现更好的转场，同时也要注意音频。</p>
+<p>如果要把它赋值给其他变量，使用断言：</p>
+<h2 id="never"><a href="#never" class="headerlink" title="never"></a>never</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// never 表示永远不会返回结果</span><br><span class="line">function fn(): never&#123;</span><br><span class="line">    throw new Error(&#x27;报错了！&#x27;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 
     </div>
 
@@ -327,7 +281,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://example.com/2021/06/05/13.%20%E8%A7%86%E9%A2%91%E5%88%B6%E4%BD%9C%E6%95%99%E7%A8%8B%E7%AC%94%E8%AE%B0(%E5%BD%B1%E8%A7%86%E9%A3%93%E9%A3%8E)/" title="视频制作教程笔记(影视飓风)">http://example.com/2021/06/05/13. 视频制作教程笔记(影视飓风)/</a>
+    <a href="http://example.com/2021/06/18/15.TS%E7%AC%94%E8%AE%B0/" title="TypeScript笔记">http://example.com/2021/06/18/15.TS笔记/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -339,7 +293,7 @@
       <footer class="post-footer">
           
           <div class="post-tags">
-              <a href="/tags/%E8%A7%86%E9%A2%91%E5%88%B6%E4%BD%9C/" rel="tag"><i class="fa fa-tag"></i> 视频制作</a>
+              <a href="/tags/ts/" rel="tag"><i class="fa fa-tag"></i> ts</a>
           </div>
 
         
@@ -348,8 +302,8 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/06/04/12.%E6%9C%AA%E6%9D%A5%E3%81%AE%E6%80%9D%E8%80%83/" rel="prev" title="未来の思考">
-      <i class="fa fa-chevron-left"></i> 未来の思考
+    <a href="/2021/06/15/14.Some%20ideas/" rel="prev" title="Some ideas">
+      <i class="fa fa-chevron-left"></i> Some ideas
     </a></div>
       <div class="post-nav-item"></div>
     </div>
@@ -410,7 +364,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%86%E9%A2%91%E7%9A%84%E5%B0%81%E8%A3%85%E4%B8%8E%E7%BC%96%E7%A0%81"><span class="nav-number">1.</span> <span class="nav-text">视频的封装与编码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%A7%E5%86%85-%E5%B8%A7%E9%97%B4%E7%BC%96%E7%A0%81%E7%9A%84%E5%AF%B9%E6%AF%94"><span class="nav-number">1.2.</span> <span class="nav-text">帧内&#x2F;帧间编码的对比</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%A7%E5%86%85%E7%BC%96%E7%A0%81"><span class="nav-number">1.2.1.</span> <span class="nav-text">帧内编码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%A7%E9%97%B4%E7%BC%96%E7%A0%81"><span class="nav-number">1.2.2.</span> <span class="nav-text">帧间编码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%90%86%E5%92%8C%E8%BE%93%E5%87%BA%E7%BC%96%E7%A0%81"><span class="nav-number">1.3.</span> <span class="nav-text">代理和输出编码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A0%81%E7%8E%87"><span class="nav-number">1.4.</span> <span class="nav-text">码率</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%98%E9%80%9F"><span class="nav-number">2.</span> <span class="nav-text">变速</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%87%E6%A0%BC"><span class="nav-number">2.1.</span> <span class="nav-text">升格</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E9%87%8A%E7%B4%A0%E6%9D%90"><span class="nav-number">2.2.</span> <span class="nav-text">解释素材</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B8%90%E5%8F%98"><span class="nav-number">2.3.</span> <span class="nav-text">渐变</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%A7%E9%87%87%E6%A0%B7%E3%80%81%E5%B8%A7%E6%B7%B7%E5%90%88%E3%80%81%E5%85%89%E6%B5%81"><span class="nav-number">2.4.</span> <span class="nav-text">帧采样、帧混合、光流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">2.5.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E5%86%99%E6%B3%95"><span class="nav-number">1.1.</span> <span class="nav-text">函数写法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E9%9D%A2%E9%87%8F"><span class="nav-number">1.2.</span> <span class="nav-text">字面量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#any%E5%92%8Cunknown"><span class="nav-number">1.3.</span> <span class="nav-text">any和unknown</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#never"><span class="nav-number">1.4.</span> <span class="nav-text">never</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -428,20 +382,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-count">15</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-count">13</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -616,7 +570,7 @@ window.addEventListener('pjax:success', () => {
       quicklink({
         timeout : 3000,
         priority: true,
-        ignores : [uri => uri.includes('#'),uri => uri === 'http://example.com/2021/06/05/13.%20%E8%A7%86%E9%A2%91%E5%88%B6%E4%BD%9C%E6%95%99%E7%A8%8B%E7%AC%94%E8%AE%B0(%E5%BD%B1%E8%A7%86%E9%A3%93%E9%A3%8E)/',]
+        ignores : [uri => uri.includes('#'),uri => uri === 'http://example.com/2021/06/18/15.TS%E7%AC%94%E8%AE%B0/',]
       });
       });
   </script>
