@@ -1,6 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>《学习JS数据结构与算法》读书笔记</title>
+    <url>/2021/06/18/16.%E3%80%8A%E5%AD%A6%E4%B9%A0JS%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<p>开始阅读《学习JS数据结构与算法》！</p>
+<span id="more"></span>
+
+
+
+]]></content>
+      <categories>
+        <category>js</category>
+      </categories>
+      <tags>
+        <tag>js</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>TypeScript笔记</title>
+    <url>/2021/06/18/15.TS%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<p>开始学习TypeScript！</p>
+<span id="more"></span>
+
+<h1 id="类型"><a href="#类型" class="headerlink" title="类型"></a>类型</h1><p>如果在声明变量时赋值，TS可以自动对变量进行<code>类型检测</code>。</p>
+<h2 id="any和unknown"><a href="#any和unknown" class="headerlink" title="any和unknown"></a>any和unknown</h2><p>都表示不确定的类型，但unknown比any更安全：</p>
+<ul>
+<li>any类型的变量可以直接赋给其他值，被赋的变量也会关闭类型检测</li>
+<li>unknown类型的变量不能直接被赋给其他变量</li>
+</ul>
+<p>如果要把它赋值给其他变量，使用断言：</p>
+<h2 id="never"><a href="#never" class="headerlink" title="never"></a>never</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// never 表示永远不会返回结果</span><br><span class="line">function fn(): never&#123;</span><br><span class="line">    throw new Error(&#x27;报错了！&#x27;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="字面量"><a href="#字面量" class="headerlink" title="字面量"></a>字面量</h2><p>对于字面量，如果直接用<code>let a: 1</code>这样的形式，则相当于常量。</p>
+<p>使用联合类型：</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 可以使用 | 来连接多个类型（联合类型）</span></span><br><span class="line"><span class="keyword">let</span> b: <span class="string">&quot;male&quot;</span> | <span class="string">&quot;female&quot;</span>;</span><br><span class="line">b = <span class="string">&quot;male&quot;</span>;</span><br><span class="line">b = <span class="string">&quot;female&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> c: <span class="built_in">boolean</span> | <span class="built_in">string</span>;</span><br><span class="line">c = <span class="literal">true</span>;</span><br><span class="line">c = <span class="string">&#x27;hello&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="对象"><a href="#对象" class="headerlink" title="对象"></a>对象</h3><figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="comment">// &#123;&#125; 用来指定对象中可以包含哪些属性</span></span><br><span class="line"><span class="comment">// 语法：&#123;属性名:属性值,属性名:属性值&#125;</span></span><br><span class="line"><span class="comment">// 在属性名后边加上?，表示属性是可选的</span></span><br><span class="line"><span class="keyword">let</span> b: &#123;<span class="attr">name</span>: <span class="built_in">string</span>, age?: <span class="built_in">number</span>&#125;;</span><br><span class="line">b = &#123;<span class="attr">name</span>: <span class="string">&#x27;孙悟空&#x27;</span>, <span class="attr">age</span>: <span class="number">18</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// [propName: string]: any 表示任意类型的属性</span></span><br><span class="line"><span class="comment">// propName可以改成其他字符串</span></span><br><span class="line"><span class="keyword">let</span> c: &#123;<span class="attr">name</span>: <span class="built_in">string</span>, [propName: <span class="built_in">string</span>]: <span class="built_in">any</span>&#125;;</span><br><span class="line">c = &#123;<span class="attr">name</span>: <span class="string">&#x27;猪八戒&#x27;</span>, <span class="attr">age</span>: <span class="number">18</span>, <span class="attr">gender</span>: <span class="string">&#x27;男&#x27;</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// &amp;表示同时</span></span><br><span class="line"><span class="keyword">let</span> j: &#123; <span class="attr">name</span>: <span class="built_in">string</span> &#125; &amp; &#123; <span class="attr">age</span>: <span class="built_in">number</span> &#125;;</span><br><span class="line"><span class="comment">// j = &#123;name: &#x27;孙悟空&#x27;, age: 18&#125;;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h3><p>数组的类型声明：</p>
+<ul>
+<li><pre><code>  类型[]
+</code></pre>
+</li>
+<li><pre><code>  Array&lt;类型&gt;
+</code></pre>
+</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="comment">// string[] 表示字符串数组</span></span><br><span class="line"><span class="keyword">let</span> e: <span class="built_in">string</span>[];</span><br><span class="line">e = [<span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;b&#x27;</span>, <span class="string">&#x27;c&#x27;</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// number[] 表示数值数组</span></span><br><span class="line"><span class="keyword">let</span> f: <span class="built_in">number</span>[];</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> g: <span class="built_in">Array</span>&lt;<span class="built_in">number</span>&gt;;</span><br><span class="line">g = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br></pre></td></tr></table></figure>
+
+<h3 id="元组"><a href="#元组" class="headerlink" title="元组"></a>元组</h3><p>元组，元组就是固定长度的数组</p>
+<ul>
+<li><pre><code>  语法：[类型, 类型, 类型]
+</code></pre>
+</li>
+</ul>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> h: [<span class="built_in">string</span>, <span class="built_in">number</span>];</span><br><span class="line">h = [<span class="string">&#x27;hello&#x27;</span>, <span class="number">123</span>];</span><br></pre></td></tr></table></figure>
+
+<h3 id="枚举"><a href="#枚举" class="headerlink" title="枚举"></a>枚举</h3><figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="built_in">enum</span> Gender&#123;</span><br><span class="line">    Male,</span><br><span class="line">    Female</span><br><span class="line">&#125; <span class="comment">// 实际上Male值为0，Female值为1；也可以自己赋不同值</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> i: &#123;<span class="attr">name</span>: <span class="built_in">string</span>, <span class="attr">gender</span>: Gender&#125;;</span><br><span class="line">i = &#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&#x27;孙悟空&#x27;</span>,</span><br><span class="line">    <span class="attr">gender</span>: Gender.Male <span class="comment">// &#x27;male&#x27;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="type"><a href="#type" class="headerlink" title="type"></a>type</h3><figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 类型的别名</span></span><br><span class="line"><span class="keyword">type</span> myType = <span class="number">1</span> | <span class="number">2</span> | <span class="number">3</span> | <span class="number">4</span> | <span class="number">5</span>;</span><br><span class="line"><span class="keyword">let</span> k: myType;</span><br><span class="line"><span class="keyword">let</span> l: myType;</span><br><span class="line"><span class="keyword">let</span> m: myType;</span><br><span class="line"></span><br><span class="line">k = <span class="number">2</span>;</span><br></pre></td></tr></table></figure>
+
+<h1 id="编译选项"><a href="#编译选项" class="headerlink" title="编译选项"></a>编译选项</h1><h2 id="include、exclude"><a href="#include、exclude" class="headerlink" title="include、exclude"></a>include、exclude</h2><figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">  tsconfig.json是ts编译器的配置文件，ts编译器可以根据它的信息来对代码进行编译</span></span><br><span class="line"><span class="comment">    &quot;include&quot; 用来指定哪些ts文件需要被编译</span></span><br><span class="line"><span class="comment">      路径：** 表示任意目录</span></span><br><span class="line"><span class="comment">            * 表示任意文件</span></span><br><span class="line"><span class="comment">    &quot;exclude&quot; 不需要被编译的文件目录</span></span><br><span class="line"><span class="comment">        默认值：[&quot;node_modules&quot;, &quot;bower_components&quot;, &quot;jspm_packages&quot;]</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line">  <span class="string">&quot;include&quot;</span>: [</span><br><span class="line">    <span class="string">&quot;./src/**/*&quot;</span> </span><br><span class="line">    <span class="comment">//可以加逗号，继续写</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="string">&quot;exclude&quot;</span>: [</span><br><span class="line">    <span class="string">&quot;./src/hello/**/*&quot;</span> </span><br><span class="line">    <span class="comment">//一般不用写exclude</span></span><br><span class="line">  ]</span><br></pre></td></tr></table></figure>
+
+<h2 id="compilerOptions"><a href="#compilerOptions" class="headerlink" title="compilerOptions"></a>compilerOptions</h2><figure class="highlight json"><table><tr><td class="code"><pre><span class="line">  <span class="string">&quot;compilerOptions&quot;</span>: &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// target 用来指定ts被编译为的ES的版本</span></span><br><span class="line">    <span class="comment">// &#x27;es3&#x27;, &#x27;es5&#x27;, &#x27;es6&#x27;, &#x27;es2015&#x27;, &#x27;es2016&#x27;, &#x27;es2017&#x27;, &#x27;es2018&#x27;, &#x27;es2019&#x27;, &#x27;es2020&#x27;, &#x27;esnext&#x27;</span></span><br><span class="line">    <span class="attr">&quot;target&quot;</span>: <span class="string">&quot;es2015&quot;</span>,</span><br><span class="line">      </span><br><span class="line">    <span class="comment">// module 指定要使用的模块化的规范</span></span><br><span class="line">    <span class="comment">// &#x27;none&#x27;, &#x27;commonjs&#x27;, &#x27;amd&#x27;, &#x27;system&#x27;, &#x27;umd&#x27;, &#x27;es6&#x27;, &#x27;es2015&#x27;, &#x27;es2020&#x27;, &#x27;esnext&#x27;</span></span><br><span class="line">    <span class="attr">&quot;module&quot;</span>: <span class="string">&quot;es2015&quot;</span>,</span><br><span class="line">      </span><br><span class="line">    <span class="comment">// lib用来指定项目中要使用的库</span></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    &#x27;es5&#x27;, &#x27;es6&#x27;, &#x27;es2015&#x27;, &#x27;es7&#x27;, &#x27;es2016&#x27;, &#x27;es2017&#x27;, &#x27;es2018&#x27;, &#x27;es2019&#x27;, &#x27;es2020&#x27;, &#x27;esnext&#x27;, &#x27;dom&#x27;, &#x27;dom.iterable&#x27;,&#x27;webworker&#x27;,&#x27;webworker.importscripts&#x27;,&#x27;webworker.iterable&#x27;,&#x27;scripthost&#x27;,&#x27;es2015.core&#x27;,&#x27;es2015.collection&#x27;,&#x27;es2015.generator&#x27;,&#x27;es2015.iterable&#x27;, &#x27;es2015.promise&#x27;,&#x27;es2015.proxy&#x27;,&#x27;es2015.reflect&#x27;, &#x27;es2015.symbol&#x27;, &#x27;es2015.symbol.wellknown&#x27;,&#x27;es2016.array.include&#x27;,&#x27;es2017.object&#x27;,&#x27;es2017.sharedmemory&#x27;, &#x27;es2017.string&#x27;, &#x27;es2017.intl&#x27;, &#x27;es2017.typedarrays&#x27;, &#x27;es2018.asyncgenerator&#x27;, &#x27;es2018.asynciterable&#x27;, &#x27;es2018.intl&#x27;, &#x27;es2018.promise&#x27;, &#x27;es2018.regexp&#x27;, &#x27;es2019.array&#x27;, &#x27;es2019.object&#x27;, &#x27;es2019.string&#x27;, &#x27;es2019.symbol&#x27;, &#x27;es2020.bigint&#x27;, &#x27;es2020.promise&#x27;, &#x27;es2020.sharedmemory&#x27;, &#x27;es2020.string&#x27;, &#x27;es2020.symbol.wellknown&#x27;, &#x27;es2020.intl&#x27;, &#x27;esnext.array&#x27;, &#x27;esnext.symbol&#x27;, &#x27;esnext.asynciterable&#x27;, &#x27;esnext.intl&#x27;, &#x27;esnext.bigint&#x27;, &#x27;esnext.string&#x27;, &#x27;esnext.promise&#x27;, &#x27;esnext.weakref&#x27;</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">	<span class="attr">&quot;lib&quot;</span>: [<span class="string">&quot;es6&quot;</span>, <span class="string">&quot;dom&quot;</span>] <span class="comment">//浏览器运行环境下，一般不作指定</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// outDir 用来指定编译后文件所在的目录</span></span><br><span class="line">    <span class="string">&quot;outDir&quot;</span>: <span class="string">&quot;./dist&quot;</span>,</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将代码合并为一个文件</span></span><br><span class="line">    <span class="comment">// 设置outFile后，所有的全局作用域中的代码会合并到同一个文件中</span></span><br><span class="line">    <span class="attr">&quot;outFile&quot;</span>: <span class="string">&quot;./dist/app.js&quot;</span></span><br><span class="line">      </span><br><span class="line">    <span class="comment">// 是否对js文件进行编译，默认是false</span></span><br><span class="line">    <span class="string">&quot;allowJs&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">      </span><br><span class="line">    <span class="comment">// 是否检查js代码是否符合语法规范，默认是false</span></span><br><span class="line">    <span class="attr">&quot;checkJs&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">      </span><br><span class="line">    <span class="comment">// 是否移除注释</span></span><br><span class="line">    <span class="attr">&quot;removeComments&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">      </span><br><span class="line">    <span class="comment">// 不生成编译后的文件</span></span><br><span class="line">    <span class="attr">&quot;noEmit&quot;</span>: <span class="literal">false</span>,</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 当有错误时不生成编译后的文件</span></span><br><span class="line">    <span class="attr">&quot;noEmitOnError&quot;</span>: <span class="literal">true</span>,</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 所有严格检查的总开关（设为true时，以下四项都会设为true）</span></span><br><span class="line">    <span class="attr">&quot;strict&quot;</span>: <span class="literal">true</span>,</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 用来设置编译后的文件是否使用严格模式，默认false</span></span><br><span class="line">    <span class="attr">&quot;alwaysStrict&quot;</span>: <span class="literal">true</span>,</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 不允许隐式的any类型</span></span><br><span class="line">    <span class="attr">&quot;noImplicitAny&quot;</span>: <span class="literal">true</span>,</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 不允许不明确类型的this</span></span><br><span class="line">    <span class="attr">&quot;noImplicitThis&quot;</span>: <span class="literal">true</span>,</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 严格的检查空值</span></span><br><span class="line">    <span class="attr">&quot;strictNullChecks&quot;</span>: <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>ts</category>
+      </categories>
+      <tags>
+        <tag>ts</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>《你不知道的JS》读书笔记</title>
     <url>/2021/05/24/01.%E3%80%8A%E4%BD%A0%E4%B8%8D%E7%9F%A5%E9%81%93%E7%9A%84JS%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[<p>学习方式：一边看书，一边学习他人的博客，把一些关键的部分记录在此，其他的贴出他人博客的链接。此外，本文并非仅是《你不知道的JS》笔记，还额外补充一些内容。</p>
@@ -120,6 +192,345 @@
       </tags>
   </entry>
   <entry>
+    <title>Some ideas</title>
+    <url>/2021/06/15/14.Some%20ideas/</url>
+    <content><![CDATA[<p>记录一些我想做的东西：</p>
+<span id="more"></span>
+
+<h1 id="长远计划"><a href="#长远计划" class="headerlink" title="长远计划"></a>长远计划</h1><ul>
+<li>网页游戏/微信小程序游戏开发</li>
+<li>APP开发</li>
+</ul>
+<h1 id="近期计划"><a href="#近期计划" class="headerlink" title="近期计划"></a>近期计划</h1><h2 id="补充技术"><a href="#补充技术" class="headerlink" title="补充技术"></a>补充技术</h2><ul>
+<li>TypeScript</li>
+<li>ES6没学完的部分</li>
+<li>webpack</li>
+<li>Vue</li>
+<li>flutter</li>
+<li>Nginx</li>
+<li>Axios</li>
+<li>打通Git</li>
+<li>系统学习Github的使用</li>
+<li>熟悉node（npm）</li>
+<li>Linux（未来学习）</li>
+</ul>
+<h2 id="项目"><a href="#项目" class="headerlink" title="项目"></a>项目</h2><ul>
+<li>完善Lofter，登录/搜索/细节完善/部署上线</li>
+<li>完善cMind，修改UI/更多功能</li>
+<li>尝试把cMind变成套壳APP，而非只是网页</li>
+</ul>
+<h2 id="书籍"><a href="#书籍" class="headerlink" title="书籍"></a>书籍</h2><ul>
+<li>阅读《你不知道的JS》</li>
+<li>阅读《学习JS数据结构和算法》</li>
+<li>阅读《JS设计模式和开发实践》</li>
+</ul>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><ul>
+<li>完成洛谷题目，数据结构进阶</li>
+</ul>
+]]></content>
+      <categories>
+        <category>随笔</category>
+      </categories>
+      <tags>
+        <tag>随笔</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>视频制作教程笔记(影视飓风)</title>
+    <url>/2021/06/05/13.%E8%A7%86%E9%A2%91%E5%88%B6%E4%BD%9C%E6%95%99%E7%A8%8B%E7%AC%94%E8%AE%B0(%E5%BD%B1%E8%A7%86%E9%A3%93%E9%A3%8E)/</url>
+    <content><![CDATA[<p>AV25783076：高画质的背后——视频的封装与编码</p>
+<p>AV20450727：超级转场的核心——变速 ⭐️</p>
+<p>AV18747023：Pr和Ae的无缝衔接大法</p>
+<p>AV7301488：小技巧：Pr被低估的10个快捷键</p>
+<p>AV7855737：小技巧：LUTS ⭐️</p>
+<p>AV7045442：Premiere小技巧：秘传技</p>
+<p>AV6936344：无缝转场与轨道蒙版 ⭐️</p>
+<p>AV6746166：小技巧：超级转场的制作 ⭐️</p>
+<span id="more"></span>
+
+
+
+<h1 id="视频的封装与编码"><a href="#视频的封装与编码" class="headerlink" title="视频的封装与编码"></a>视频的封装与编码</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><ul>
+<li><p>编码分为：剪辑编码、输出编码、拍摄编码</p>
+</li>
+<li><p>mov、mp4是封装格式（format），不是编码</p>
+</li>
+<li><p>常见编码有H.264（帧间编码）和Prores（帧内编码）</p>
+</li>
+</ul>
+<h2 id="帧内-帧间编码的对比"><a href="#帧内-帧间编码的对比" class="headerlink" title="帧内/帧间编码的对比"></a>帧内/帧间编码的对比</h2><h3 id="帧内编码"><a href="#帧内编码" class="headerlink" title="帧内编码"></a>帧内编码</h3><p>特点：针对每一帧的画面，进行单独的分析，就好比压缩一张照片。</p>
+<p>优点：</p>
+<ul>
+<li>电脑在回放的时候比较轻松。</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>能压缩的大小有限，体积会受到限制（比如说背景没有变化的时候，每一针都会被记录一次，产生了数据上的冗余）。</li>
+</ul>
+<h3 id="帧间编码"><a href="#帧间编码" class="headerlink" title="帧间编码"></a>帧间编码</h3><p>特点：记录两张完整的画面，只记录中间像素产生的变化，在后期解码时再重新运算出中间的帧，恢复出当时画面。</p>
+<p>优点：</p>
+<ul>
+<li>有效压缩了素材体积。</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>大了电脑的处理压力。</li>
+</ul>
+<h2 id="代理和输出编码"><a href="#代理和输出编码" class="headerlink" title="代理和输出编码"></a>代理和输出编码</h2><p>假如相机记录了4k的画面，又正好是帧间编码， 电脑又不够强大，应该选择使用<code>代理</code>，从而可以重新编码出一个分辨率更低，帧内编码的视频文件，使得在剪辑时更加流畅，剪辑完之后可以把它替换成原素材做进一步的处理（以后讲）。</p>
+<p>剪辑完成之后，需要输出编码，这直接影响了上传到网上的视频质量，<strong>最佳的网络传播的编码，应该是h264编码，MP4封装。</strong></p>
+<h2 id="码率"><a href="#码率" class="headerlink" title="码率"></a>码率</h2><p>码率也会影响画面和文件大小，编码决定了这个大小之下保留着最好的图像。</p>
+<p>码率分为<code>恒定码率</code>和<code>可变码率</code>，通常可变码率会更实用一些，因为编码器会分析画面，之后对复杂的画面提供更多的码率，对于更容易压缩的地方，总会减少码率，这样即便文件大小不变，整体画质也会获得提升。</p>
+<p>网络视频通常会在上传视频文件后进行二次压缩，可能造成码率降低，更低的码率很容易导致画面翻车，在面对具有大量随机移动的像素的时候，比如下雪或者灰尘，画面质量会迅速下降，因为编码器难以预测像素的运动，而码率不足以支撑画面。</p>
+<p><strong>可以通过将视频压到B站限定的码率之下，来规避二次压缩，这样可以针对自己的视频进行编码上的优化，来获得更好的画质</strong>。</p>
+<h1 id="变速"><a href="#变速" class="headerlink" title="变速"></a>变速</h1><h2 id="升格"><a href="#升格" class="headerlink" title="升格"></a>升格</h2><p><code>升格</code>是对慢动作比较专业的叫法，很多人直接把素材拖到时间线上，然后Ctrl+R，这个快捷键可以呼出速度控制窗口，然后可以输入25%或者50%，这样就可以实现升格，但是假如变速不是整除，就会遇到<code>跳帧</code>，所以应该使用<code>解释素材</code>来进行慢放，而不是纯粹的速度控制。</p>
+<blockquote>
+<p>升格：电影摄影中的一种技术手段，电影摄影拍摄标准是每秒24帧，也就是每秒拍摄24张，这样在放映时才能是正常速度的连续性画面，但为了实现一些简单的技巧，比如慢镜头效果，就要改变正常的拍摄速度，比如高于60帧/秒，这就是升格，放映效果就是慢动作。如果降低拍摄速度（低于24帧/秒），就是降格，放映效果就是快动作。</p>
+</blockquote>
+<blockquote>
+<p>跳帧（frameskip），假如显示器设定的刷新率是80Hz，显卡以100FPS循环显示0-9数字，那么，在开始的0.1秒内，显卡显示了10个数字而显示器只刷新了8次，最终你看到的图像很可能是这样的：由于显示器刷新率跟不上游戏的FPS，只能舍弃一部分画面，这种现象表现在游戏里就是跳帧。</p>
+</blockquote>
+<h2 id="解释素材"><a href="#解释素材" class="headerlink" title="解释素材"></a>解释素材</h2><p>使用解释素材就是，在素材箱右键你的素材→Modify →Interpret footage，然后只需要把帧率修改成想要回放的帧率（比如25），这样就可以一次性处理所有的素材，实现慢放。</p>
+<p>不存在整除的问题，因为可以理解成一卷胶片换了一个速度播放，就像以前升格一样，只是把每一帧映射到和之前不同的位置上。</p>
+<h2 id="渐变"><a href="#渐变" class="headerlink" title="渐变"></a>渐变</h2><p>当有了升格后，通常需要使用变速来强化效果，很多人喜欢直接切一刀画面，然后按一下R键，激活变速工具进行变速，没有渐变，所以看起来会很突兀。</p>
+<p>正确做法是右键素材的fx标记，然后选择time remapping（<code>时间重映射</code>），然后按住Ctrl+ALT键，这个键可以帮助快速添加关键帧（任何需要添加关键帧的地方都可以使用这个快捷键），打上关键帧之后可以上下拖动这根线来实现变速，随后可以分开这两个小的关键帧，这样就会有一个具有渐变的变速。也可以拖动拉杆来进一步改变速度曲线，来实现最好的效果。</p>
+<p>但是也有一个弊端，PR的速度上限是十倍，假如要突破这个限制，通常会在速度最大值处切一刀，然后单独按R键加速中间这一段，再把三段衔接起来。</p>
+<p>如果想要流畅的过渡镜头与镜头之间的连接，就很需要这种变速，通常就是快对快、慢对慢，如果前一个素材的尾部被加速了，那么后一个素材的起始部分也应该要被加速，这样的话，动势就能够被匹配，画面就会比较连贯。</p>
+<p><strong>此处需要练习</strong></p>
+<h2 id="帧采样、帧混合、光流"><a href="#帧采样、帧混合、光流" class="headerlink" title="帧采样、帧混合、光流"></a>帧采样、帧混合、光流</h2><p>如果画面不连贯，或者想要实现比相机拍摄帧率更高的慢动作，就需要使用不同的时间控制，在Pr的速度窗口里，最下方有三个选项，帧采样、帧混合、光流。</p>
+<ul>
+<li>帧采样，只是把同一帧展现两次或者更多次。</li>
+<li>帧混合也是重复出现同样的画面，但是添加了一点渐变和叠加，在视觉上稍微顺畅一点。</li>
+<li>光流是真正意义上添加了新的帧，它通过预测两帧之间的像素运动轨迹，重新运算出了中间的针帧，画面总的帧数增加，比较流畅，但是必须要对比非常大的画面，才能够实现最佳的光流效果，否则会出现畸变。</li>
+</ul>
+<p>通常在加速之后，突然实现短暂的光流升格，可以实现非常酷炫的画面；帧混合一般用于快放，可以实现类似于动态模糊的感觉。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>使用带有渐变的变速，选择合适的时间控制模式，能够大大提升整体剪辑的节奏感，也能实现更好的转场，同时也要注意音频。</p>
+]]></content>
+      <categories>
+        <category>视频制作</category>
+      </categories>
+      <tags>
+        <tag>视频制作</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>未来の思考</title>
+    <url>/2021/06/04/12.%E6%9C%AA%E6%9D%A5%E3%81%AE%E6%80%9D%E8%80%83/</url>
+    <content><![CDATA[<p>一些关于未来的思考：</p>
+<span id="more"></span>
+<p>考研与工作的抉择：<br><img src="/2021/06/04/12.%E6%9C%AA%E6%9D%A5%E3%81%AE%E6%80%9D%E8%80%83/1.jpg"></p>
+<p>未来的打算：<br><img src="/2021/06/04/12.%E6%9C%AA%E6%9D%A5%E3%81%AE%E6%80%9D%E8%80%83/2.jpg"></p>
+]]></content>
+      <categories>
+        <category>随笔</category>
+      </categories>
+      <tags>
+        <tag>随笔</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>2020 and Half of 2021</title>
+    <url>/2021/05/30/11.2020+2021%E4%B8%8A%E5%8D%8A%E5%B9%B4%E6%80%BB%E7%BB%93/</url>
+    <content><![CDATA[<p>刚刚无意间看到了某位前辈的博客，我想，既然有了自己的博客，总结还是不要写在qq空间为好。</p>
+<p>2020年至今，发生了不少事情，还是记录一下，作为以后的人生经验吧，不知道自己会以什么样的笔调写下这些话。</p>
+<span id="more"></span>
+
+<h1 id="挣扎与彷徨"><a href="#挣扎与彷徨" class="headerlink" title="挣扎与彷徨"></a>挣扎与彷徨</h1><h2 id="高三之前"><a href="#高三之前" class="headerlink" title="高三之前"></a>高三之前</h2><p>高中的往事已回忆数次，无非就是这样的开局：不自信/想要变强→怀抱着不切实际要当科学家的妄想→逼迫自己，强迫症/形体化→后悔，无力改变现状。那个时候，基本是个人我都会感到羡慕，我沉沦于无止境的痛苦之中，每天都感觉过得浑浑噩噩，觉得自己的青春和人生就这么被强迫症给废掉了。不论我怎么努力，都感觉自己被限制住了，就是发挥不出来自己的能力，考试也极少进年级前50，比起我初中玩着考入班级前十，现在的我稳在班级前50%都困难。</p>
+<p>现在觉得一切不过都是借口，强迫症也并没有那么可怕，虽然它让我的生活变得不太舒服，形体化的后患仍然存在，但并不影响我掌控自己的人生。当时成绩上不去，是我做了太多琐碎的事，摘抄或总结了很多笔记却很少复习且断断续续，自发刷题只坚持了英语，总之没有高效率地学习。顺带一提，这里提到的有些毛病我现在都还没有改掉。</p>
+<p>在高二的时候其实我已经认识到（现在我都不知道这种认识是否正确），自己或许不能专精于任何一个方向，因为努力学习后也考不到年级顶尖水平。比起某方面的专精，我可能更适合成为全能型庸才（但其实这样我也做不到），所以当时就买了心理学、计算机、美学、音乐的书来看，还读了《混血豺王》和《比尔盖茨传》等。但是这一切在高三到来的时候就又被我抛掷脑后。</p>
+<h2 id="疲于奔命"><a href="#疲于奔命" class="headerlink" title="疲于奔命"></a>疲于奔命</h2><p>高二暑假是我此生最短的暑假，短到只有两天。暑假前半段被迫参加每天200块的“名校通”，暑假后半段又要回去补课，回去前的一周我又自愿交钱补习化竞，顺带一提，后期到开学的这段时间我看完《钢之炼金术师》全套漫画。</p>
+<p>那个时候，我看到了北大2020的招生简章，简章十分精美，花花绿绿，我们班上放了几本，于是我便热衷于阅读它。那个时候我被北大所深深吸引，开始幻想能不能考上，并且由于自己心态的困境，我特别想去心理学系。其实去不去心理学也无所谓，那时候我觉得读个考古都可以，反正是北大嘛。这样靠着专项计划，我还是得考到680分才可以，而我只有650分的水平，平时的模考只能考580~620区间。</p>
+<p>我开始思考着自己如何达到这种“飞跃”，大概是一定要去找自己的节奏，有针对性地提分。前边还是比较顺利，在11月的一次模考中，我同时取得了语文（128，之后再也没达到过）和化学的双班级第一，年级31名，之后一次考试我坐在第一考场，考理综时心态突然崩溃，结果理综考了190，好状态完全止步于这次考试。于是我开始不听讲，不按着学校的复习进度来，自己整些笔记、刷题、网课，这些全都上了。但是随着时间的不断推移，我没觉得自己有什么进步，后边越来越过分。先是伪造病历去办了走读证，在学校旁边租了个小房间便于每天走读回去多学会，也方便刷网课。因为买的网课太多觉得刷不完，然后又跟班主任协商，翘掉四节晚自习。我开始觉得学校老师讲的啥用没有，平时的作业很多都在抄，觉得极其浪费时间，待在学校我都觉得痛苦，我把自己没有进步的错误都归咎于是学校限制了我。一轮复习结束，二轮复习开始，我觉得自己还是老样子。结果这段时间成绩不断下降，位次连着四五次都在一百名开外，老师也在找我谈话。</p>
+<p>最后我还是下定决心回家复习去了，结果没走几天撞上疫情，大家都只能在家学习。在家期间我的神经十分紧绷，每天的平均时长在14个小时以上，基本每天就是6点多起床一直学到晚上11点多，除了过年有两三天偷了个懒，三个月没怎么变过。也算是刷完了学校的二轮资料和几本网课资料。但是我仍然觉得自己的学习没有太大起色，从三月起学校开始让学生印模考卷做，我仍然只能考620左右，此时心态十分炸裂，后悔却又无可奈何，那个时候平均两天就会改一次qq签名，正能量的鸡汤背后是深深的负能量。我反思前面做的这一切，终于承认了自己就是普通人的事实，为何要追求680这一虚无缥缈的目标，就这样舒舒服服地苟着不就好了吗？</p>
+<h2 id="回归正常"><a href="#回归正常" class="headerlink" title="回归正常"></a>回归正常</h2><p>4月回到学校后我就开始佛系了，不再想着自己去做些什么，而是按部就班地跟着学校。回来的第一次模考，我在数学113血崩的情况下考了年级36，惊艳了一些同学。接下来的一次考试又到了100多名，然后又考了43名，之后就回到以前的段位，考60名左右的水平。事实证明，回家学习的这段时间我大概就物理有了进步，最头疼的数学还是老样子。进步最明显的是心态，我开始没那么在意高考，而且开始对现状持接纳态度，珍惜毕业前的日子。我会趁着晚上走读便利，和同学去吃华莱士、克莱堡、烧烤，甚至有一天住到他家里。考前两周我为全班同学吹奏《追梦赤子心》，高考完我回去给一位尊敬的老师吹奏《离歌》，弥补了高二的一次遗憾。</p>
+<p>那段时间，我也常思考未来，不再去追求一时脑热的化学和心理学专业，觉得作为一个普通人就学个计算机专业，到时候出来工作挣钱就行了。看知乎推荐觉得北邮是一所不错的学校，因为就业率非常高，华科也可以，有“北北邮，南华科”之称。我给自己的计算机专业学校排名是：浙大→北航→华科→北邮→西电/西工。虽然佛系，高考我仍旧全力以赴，最后655收场，语文数学略炸，英语正常，理综略超常，总分是正常水平。周围不少平时一般的同学考到了670+，确实还是有点点不甘心吧。</p>
+<p>报志愿的时候，这个分数在我省提前批次确实可以冲一冲华科，往年最高分数是656。但是华科CS给的名额很少，又是热门专业，所以心里没底。就这样，提前批我填了华科（只写了三个专业，还不服从调剂，事后后悔了，因为这不是稳进CS的方案），本一批填了北邮。其实这个分数挺合适的，分低一些我会进入华科非CS专业（光电/能动），分高一点（&gt;660）我说不定会冲进浙大的差专业。最后，事实证明我的担心多余，顺利来到华科CS。从结果上看，我的高考是比较顺利的。</p>
+<h2 id="一晃而过的暑假"><a href="#一晃而过的暑假" class="headerlink" title="一晃而过的暑假"></a>一晃而过的暑假</h2><p>暑假开始做一些自己想做的事了，比如说学完标日上下册，还背了一些日语单词；口琴继续练；本来说要做视频，还是没有去学，懂了Pr基本操作，在9月初才剪了一个自己勉强满意的视频；骑车上国道，玩了一天多。</p>
+<p>知道自己被华科CS录取后，我又开始“蠢蠢欲动”了，因为本质上我不是一个甘于平庸的人。早在高考之前，我就听说过华科的“三大团队”了，也十分希望自己能够进入。我加入了秋招群，在自己并不清楚想要选什么方向的情况下，开始准备冲击联创Lab组，至于为什么是Lab，因为Lab的学习指南里有C，在看到招新信息的时候我已经学了一周的C，不想浪费基础（现在看起来有点可笑）。于是暑假的后半段我每天抽很多时间去看C、Linux，但是都是刷视频且浮光掠影；试着啃了一下黑皮《计算机科学导论》，每天刷个十几二十页，也感觉很难吸收其中的知识，看后就忘。</p>
+<p>从这里我开始产生一个矛盾：自己有明确想要学的东西（日语、口琴、视频），但是因为我有别的东西要追求，所以没时间做自己喜欢的事。要做的事多和有限的精力之间产生了不可调和的矛盾。现在思考一下我想加入团队的原因，无非：①因为高中怎么学都考不进年级前列，对卷加权这件事没有信心，想建立自己在其他方向的优势；②不想继续卷，觉得团队能带来有意义和丰富的生活。其他原因都能归咎于这两点上——想变强/想过不同的生活。</p>
+<p>但是要加入团队，又不得不经历一个卷的过程，要努力卷进团队，就没有时间去做自己想做的事了。</p>
+<h1 id="步入大学"><a href="#步入大学" class="headerlink" title="步入大学"></a>步入大学</h1><h2 id="确定方向"><a href="#确定方向" class="headerlink" title="确定方向"></a>确定方向</h2><p>来华科以后，新鲜感很快就过去，由于疫情，军训只持续了不到两星期，最后一天坐在潮湿的地面导致我感冒了。这段时间最重要的事就是冲击团队。我同时报名了冰岩、联创和Dian，最开始招新的是冰岩，根据我学习的内容，我选择了程序组。</p>
+<p>那个时候我的基础，就是C语言能写printf和if、for循环的程度，连指针和数组都不会用。是的，美其名曰我暑假自学了C语言，其实就是刷视频，而且还没刷到指针，自己的代码能力几乎为0。Linux知道一些如ls、cd、pwd等的常用指令，自己配好了Vmware虚拟机。还稍微看了一点HTML和Python，但是几乎不会用。我还记得自己当时报名信息里吹得天花乱坠，把会的东西全部展开说，达到凑字数的目的，显得这个人很厉害。笔试时拿到题目，我几乎完全懵逼，但是还是硬生生的都编上去了，所有代码题和程序设计题都不会，就强行整个思路上去。最后笔试通过，国庆那天去了1006面试，为了试图作出“努力”的样子，我中午不到1点就到了，然后坐在那里为面试复习，拿起黑皮《计算机科学导论》，但是说实话什么都看不进去。那边有一两个学长学姐，我也不知道怎么跟他们寒暄。我当时思路清奇，走过去跟lyt学长说：“虽然笔试题我都不会，但我还是尽了最大努力去编答案”，似乎是想体现自己的顽强意志，结果得到了“不是给时间学了吗”的回复。然后面试开始，自我介绍，然后谈了自己会的东西，我刻意强调了自己会的都是很简单的皮毛。最后lyt学长问到如何用Python来把一个字符串逆序，我自然是承认自己不会。我最后还不忘补了一刀“我也存在一些同学在群里说的问题，就是像高中一样啃书学习，缺乏实践”。面试自然而然是被挂掉了。我认识到了自己的菜，所以后边的联创和Dian就鸽了。</p>
+<p>当时我觉得，程序组的题目这么难，我自学一学期后端应该也进不了组，而且我高中数学就不是很好，编程可能比不过一些大佬，还是选一个大家都是零基础的、好入门的方向吧。那时候就在知乎上搜，发现前端学习路线非常明确，好像比较简单，加之我之前有一点点HTML的基础，觉得努力学一学期应该可以冲一冲团队，于是我就立刻决定学前端。那时真的是特别想去团队，不去想自己到底热爱什么，想的是什么方向适合我冲击团队。</p>
+<p>其实大学四年的时间很长，完全可以什么方向都学一些，再看看自己到底喜欢什么方向；或许自己不适合搞开发，那么就应该去读研。但我的决定就是做得这么快。</p>
+<h2 id="生活与学习"><a href="#生活与学习" class="headerlink" title="生活与学习"></a>生活与学习</h2><p>我的大学，从一开始就放弃参加内卷游戏，选择冲击团队之路后，我还希望自己的生活过得丰富一些。于是加入了车协，去骑东湖、骑八分山、骑到武大。武大百团的时候，我还加入了樱之音口琴社（虽然加入后从没参加过活动）。</p>
+<p>不知怎么，现在的我已经没法沉下心来玩很长时间的游戏了，玩的时间一长就会导致做别的事情的时间变少，内心就会产生焦虑。其实我一点也不喜欢这样，初中那时一日十来个小时的游戏生活已经彻底远去。其他时间，就是看一看动漫，比起新番，我倾向于老的经典番剧，名作之壁。暑假看了凉宫、石头门、强风吹拂、排球、轻音、京吹，开学后继续看巨人、狼辛，后来又看了钢炼03、小圆、天元、Fate…</p>
+<p>然后谈谈学习吧，为了抽出来更多时间来学技术，学校排的课我都疯狂水过，还翘了不少课。平时简单自学一下，做作业都是面向答案，考前再突击一下，第一学期除了期中线代挂掉，其他的科目都还能看，总加权也算混进了前50%，自己还是比较满意的。</p>
+<p>但是技术学习，我还存在很多问题。首先我学习主要靠看视频（视频比较系统，看完了可以大概知道一个东西怎么做），而且对于100多集的视频，我一天也就看3~6集，所以学起来的速度非常慢，学完了还缺乏实践。于是就这样，我花了三个多月才完三剑客基础+Markdown，这种学习速度让我变得更加自卑，我不停地安慰自己：“不可心急，日积月累”。我想冲团队的愿望也影响了寝室的氛围，大家或多或少都在学习技术上的东西。</p>
+<p>还有一件不愿提及但是不得不提的事就是摔牙，那时候我也抑郁了一阵子，觉得自己不能啃东西了什么的，但是时间可以冲淡悲伤，现在的我也逐渐接纳了这件事。</p>
+<h2 id="忙碌的寒假"><a href="#忙碌的寒假" class="headerlink" title="忙碌的寒假"></a>忙碌的寒假</h2><p>我把寒假当作自己冲击冰岩的关键期，所以依然努力学习前端技术。我深入了一些JS，照着冰岩往年的笔试题来补充知识点，看了不少博客，最后觉得自己的实践能力不足，所以又复刻了一些页面。</p>
+<p>因为团队是鞭策我学习的重要因素，有时候我会上网搜索信息，读完以后我就会动力十足，继续学习。一次在Github上搜索冰岩，找到了以前夏令营开的仓库，以此我了解到了gc学姐，一次问她js问题的时候，她向我发了一篇博客，是xiong35学长的。当时我就觉得学长很强，这激励了我花了三天时间，去搞了一个WP博客。然后我也加了学长的好友，稍微聊了一些后他鼓励了我，说我春招很有希望进入冰岩。当时的我，确实也有了一些进入冰岩的自信。</p>
+<h2 id="冲冰岩失败"><a href="#冲冰岩失败" class="headerlink" title="冲冰岩失败"></a>冲冰岩失败</h2><p>开学以后，我一直期盼着冰岩的招新信息。这段时间我继续完成寒假的项目，以及看博客补充新的知识。很快招新就来了，因为心里激动，简历我是改了又改，最后我作了个大死，说自己搜冰岩的信息，想借此体现自己的热爱。殊不知，这是给自己挖了个天大的坑。我以为秋招面试被挂能带来一些教训，结果春招时我情商还是老样子。</p>
+<p>就这样我一路杀过简历、面试，实习选题时，我不敢给自己选太难的，就还是老老实实复刻网页。因为实习只能通过很少的人，而实习名单里好像有实力很强的大二学长，我就还是不自信。实习期我疯狂翘课抄作业，硬是把所有Level基本完成了，展示时我想让自己说得更有条理一些，于是准备了稿子（作死*2），展示完后我觉得自己稳了。</p>
+<p>然后就到了组面，在门外，我开始在脑海中构思着自我介绍。我一进门气氛就冷到冰点，然后就是我自顾自地说了很多（作死*3），接着被xiong35学长问到查资料的事，我也没有作出很好的解释。之后面试官问我还有没有什么问题，我反向让他们继续问我，结果被问到了答不上来的问题，场面继续尴尬。后面结局基本就注定了，组面没有通过。</p>
+<h2 id="继续迷茫"><a href="#继续迷茫" class="headerlink" title="继续迷茫"></a>继续迷茫</h2><p>组面结束后的那个下午，我就不带手机绕着主校区走了一圈，以排解心中的苦闷。后来我的舍友A通过了冰岩程序组的考核，舍友B通过了Dian的考核。当时最想进入团队的我就这样落败，而他们怀着试一试的心态参与，就这样顺利进入了，一点都不羡慕是不可能的。</p>
+<p>后来xiong35学长找我谈，说我技术很强，但是因为如上列举的原因没有让我通过，让我找到适合自己的组织。我开始迷茫了，竟然在技术过关的情况下，因为别的因素被团队挂掉，我不太能接受这个结局。而且说我技术很强，那个时候我还真的相信了，开始考虑换方向，甚至是读研——毕竟学习能力强嘛，又何必局限于“简单”的前端。但是我技术真的强吗，也不强。学了五六个月还是这么点水平。想想xiong35学长充沛的精力和很强的学习能力，从零开始40天就能写博客的前后端，我就觉得自己什么都算不上。最后我还是继续学前端，不想浪费基础，而且还可以继续冲击团队。</p>
+<p>可是说实话，我真的喜欢前端吗？不喜欢也不讨厌吧，遇到Bug会抓耳挠腮十分难受，可是解决问题时也会有巨大的成就感。写出赏心悦目的页面也可以给我带来正向反馈，但是也就仅仅是网页而已。现在我最需要的，大概就是要做出一个产品吧？一直孤立地自学，啃厚厚的书籍却什么也不做，又有何乐趣可言呢？总之，我目前还像是停留在“为了学习而学习，为了团队而学习”，而不是“为了需求而学习，一边实践一边学习”。</p>
+<p>这学期的课内学习要比上学期拉跨了，一来是课业明显变得繁重，二是难度开始加大。我的态度也比上学期要松懈了许多，作业中有很多没有搞懂的内容，考试前复习得也不充分，就这样，我的微积分期中考试直接挂科。以后必须要改善学习方法了，不想投入时间又不想挂科的话，必须要依赖网上的“速成课”，或者慕课。</p>
+<p>现在的我，还是想先坚持前端的路线，体验一下开发到底是什么感觉，后续作出的决定，很大程度上与我有没有进入团队有关。之前我想的是本科毕业就去投前端岗，去大厂996，但是最好还是读一下研究生，去外企955吧。</p>
+<p>希望HackDay和暑假的夏令营能带来一些转变吧。</p>
+]]></content>
+      <categories>
+        <category>随笔</category>
+      </categories>
+      <tags>
+        <tag>随笔</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>json的crud</title>
+    <url>/2021/05/30/10.json%E7%9A%84crud/</url>
+    <content><![CDATA[<p>说是crud，只有写和查而已</p>
+<span id="more"></span>
+
+<p>写：data是index.json中的所有数据，由于data一开始是二进制buffer，先用toString方法转化为字符串，再用JSON.parse转化为对象，把新的数据加入数组（allUser转为对象后是一个数组），把数组转化为字符串，再写入index.json文件</p>
+<p>查：用ES6的find方法就好</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">writeJson</span>(<span class="params">params</span>) </span>&#123;</span><br><span class="line">  fs.readFile(<span class="string">&#x27;./public/json/index.json&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">err, data</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (err) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">console</span>.error(err);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> allUser = data.toString();</span><br><span class="line">    allUser = <span class="built_in">JSON</span>.parse(allUser);  <span class="comment">// 对空字符串不能使用该方法，所以初始情况下json文件不能为空</span></span><br><span class="line">    allUser.push(params);</span><br><span class="line">    <span class="keyword">let</span> str = <span class="built_in">JSON</span>.stringify(allUser);</span><br><span class="line">    fs.writeFile(<span class="string">&#x27;./public/json/index.json&#x27;</span>, str, <span class="function"><span class="keyword">function</span> (<span class="params">err</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (err) &#123;</span><br><span class="line">        <span class="built_in">console</span>.error(err);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">&#x27;index.json：新增用户数据成功&#x27;</span>);</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">findJson</span>(<span class="params">str</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolved, rejected</span>) =&gt;</span> &#123;</span><br><span class="line">    fs.readFile(<span class="string">&#x27;./public/json/index.json&#x27;</span>,</span><br><span class="line">      <span class="function"><span class="keyword">function</span> (<span class="params">err, data</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (err) &#123;</span><br><span class="line">          rejected(err)</span><br><span class="line">          <span class="keyword">return</span> <span class="built_in">console</span>.error(err);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> allUser = data.toString();</span><br><span class="line">        allUser = <span class="built_in">JSON</span>.parse(allUser);</span><br><span class="line">        user = allUser.find(<span class="function"><span class="keyword">function</span> (<span class="params">user</span>) </span>&#123;</span><br><span class="line">          <span class="keyword">return</span> user.id === str;</span><br><span class="line">        &#125;)</span><br><span class="line">        resolved(user);</span><br><span class="line">      &#125;)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>实践</category>
+      </categories>
+      <tags>
+        <tag>js</tag>
+        <tag>前后端交互</tag>
+        <tag>json</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>前后端交互初尝试</title>
+    <url>/2021/05/30/09.%E5%89%8D%E5%90%8E%E7%AB%AF%E4%BA%A4%E4%BA%92%E5%88%9D%E5%B0%9D%E8%AF%95/</url>
+    <content><![CDATA[<p>之前对前后端交互的理解一直不够透彻，虽然也搞过模板引擎，但都是照着老师的做，自己懂的确实很有限。这两天搜搞前后端交互让我心力交瘁，但最后还是搞懂了一些</p>
+<span id="more"></span>
+
+<p>一图归纳我到目前的理解程度：</p>
+<p><img src="/2021/05/30/09.%E5%89%8D%E5%90%8E%E7%AB%AF%E4%BA%A4%E4%BA%92%E5%88%9D%E5%B0%9D%E8%AF%95/1.jpg"></p>
+<p>前端：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">regBtn.onclick = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">  xhr.open(<span class="string">&#x27;post&#x27;</span>, <span class="string">&#x27;/login&#x27;</span>);</span><br><span class="line">  xhr.setRequestHeader(<span class="string">&quot;Content-Type&quot;</span>, <span class="string">&quot;application/x-www-form-urlencoded&quot;</span>);</span><br><span class="line">  xhr.send(<span class="string">`id=<span class="subst">$&#123;input3.value&#125;</span>&amp;password=<span class="subst">$&#123;input4.value&#125;</span>`</span>);</span><br><span class="line">  xhr.onreadystatechange = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (xhr.readyState === <span class="number">4</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (xhr.status &gt;= <span class="number">200</span> &amp;&amp; xhr.status &lt; <span class="number">300</span>) &#123;</span><br><span class="line">        <span class="keyword">let</span> data = <span class="built_in">JSON</span>.parse(xhr.response);</span><br><span class="line">        <span class="keyword">if</span> (data.status == <span class="number">200</span>) &#123;</span><br><span class="line">          <span class="built_in">window</span>.location.href = <span class="string">&quot;/&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (data.status == <span class="number">499</span>) &#123;</span><br><span class="line">          alert(<span class="string">&#x27;该用户已注册！&#x27;</span>);</span><br><span class="line">          location.reload();</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>后端：get请求页面资源，post处理ajax</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">app.get(<span class="string">&#x27;/login&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">  fs.readFile(<span class="string">&#x27;./pc-views/login.html&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">err, data</span>) </span>&#123;</span><br><span class="line">    res.end(data);</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">app.post(<span class="string">&#x27;/login&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">  findJson(req.body.id).then(<span class="function"><span class="params">user</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(user);</span><br><span class="line">    <span class="keyword">if</span> (user === <span class="literal">undefined</span>) &#123;</span><br><span class="line">      writeJson(req.body);</span><br><span class="line">      res.send(&#123;</span><br><span class="line">        <span class="string">&quot;status&quot;</span>: <span class="number">200</span></span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">      res.send(&#123;</span><br><span class="line">        <span class="string">&quot;status&quot;</span>: <span class="number">499</span>,</span><br><span class="line">        <span class="string">&quot;msg&quot;</span>: <span class="string">&quot;user already registered&quot;</span></span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>实践</category>
+      </categories>
+      <tags>
+        <tag>前后端交互</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>原生ajax的req.body为空</title>
+    <url>/2021/05/30/08.%E5%8E%9F%E7%94%9Fajax%E7%9A%84req.body%E4%B8%BA%E7%A9%BA/</url>
+    <content><![CDATA[<p>原生ajax，很多人都不推荐在实战中使用，因为我别的都不会，只能先凑合着用原生，结果就遇到了发送post请求过去，结果req.body为空对象的情况</p>
+<span id="more"></span>
+
+<p>一开始的代码：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">regBtn.onclick = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> userjson = &#123;</span><br><span class="line">     <span class="comment">// 这里的数据格式不对</span></span><br><span class="line">    <span class="string">&quot;id&quot;</span>: input3.value,</span><br><span class="line">    <span class="string">&quot;password&quot;</span>: input4.value</span><br><span class="line">  &#125;;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">const</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">  xhr.open(<span class="string">&#x27;post&#x27;</span>, <span class="string">&#x27;/login&#x27;</span>);</span><br><span class="line">  xhr.setRequestHeader(<span class="string">&quot;Content-Type&quot;</span>, <span class="string">&quot;application/x-www-form-urlencoded&quot;</span>)</span><br><span class="line">  xhr.send(userjson);</span><br><span class="line"></span><br><span class="line">  xhr.onreadystatechange = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (xhr.readyState === <span class="number">4</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (xhr.status &gt;= <span class="number">200</span> &amp;&amp; xhr.status &lt; <span class="number">300</span>) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(xhr.response);</span><br><span class="line">        <span class="comment">//之后要根据不同的response进行不同的操作</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>主要修改两个地方：</p>
+<ul>
+<li>请求头</li>
+<li>数据格式</li>
+</ul>
+<p>修改后：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">regBtn.onclick = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">    </span><br><span class="line">  xhr.open(<span class="string">&#x27;post&#x27;</span>, <span class="string">&#x27;/login&#x27;</span>);</span><br><span class="line">    </span><br><span class="line">  xhr.setRequestHeader(<span class="string">&quot;Content-Type&quot;</span>, <span class="string">&quot;application/x-www-form-urlencoded&quot;</span>);</span><br><span class="line">  <span class="comment">// 修改请求头（没有深入理解）</span></span><br><span class="line">    </span><br><span class="line">  xhr.send(<span class="string">`id=<span class="subst">$&#123;input3.value&#125;</span>&amp;password=<span class="subst">$&#123;input4.value&#125;</span>`</span>);	</span><br><span class="line">  <span class="comment">// 在不配置的情况下，原生ajax发送post请求必须用这个数据格式：&#x27;a=xxx&amp;b=xxx&amp;c=xxx&#x27;</span></span><br><span class="line">    </span><br><span class="line">  xhr.onreadystatechange = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (xhr.readyState === <span class="number">4</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (xhr.status &gt;= <span class="number">200</span> &amp;&amp; xhr.status &lt; <span class="number">300</span>) &#123;</span><br><span class="line">        <span class="keyword">let</span> data = <span class="built_in">JSON</span>.parse(xhr.response);</span><br><span class="line">        <span class="keyword">if</span> (data.status == <span class="number">200</span>) &#123;</span><br><span class="line">          <span class="comment">// do something</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (data.status == <span class="number">499</span>) &#123;</span><br><span class="line">		  <span class="comment">// do something</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>js</category>
+      </categories>
+      <tags>
+        <tag>ajax</tag>
+        <tag>踩坑</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>返回回调函数中的变量</title>
+    <url>/2021/05/30/07.%E8%BF%94%E5%9B%9E%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0%E4%B8%AD%E7%9A%84%E5%8F%98%E9%87%8F/</url>
+    <content><![CDATA[<p>初次在实践中用到promise，下次学await</p>
+<span id="more"></span>
+
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">findJson</span>(<span class="params">str</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// str参数表示用户的账号（手机号）</span></span><br><span class="line">  fs.readFile(<span class="string">&#x27;./public/json/index.json&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">err, data</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (err) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">console</span>.error(err);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> allUser = data.toString();</span><br><span class="line">    allUser = <span class="built_in">JSON</span>.parse(allUser);</span><br><span class="line">    user = allUser.find(<span class="function"><span class="keyword">function</span> (<span class="params">user</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> user.id === str;</span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="comment">// 我希望findJson函数可以把user给return出来</span></span><br><span class="line">    <span class="comment">// 直接在这里return是没用的</span></span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>promise改进版：</p>
+<p>findJson函数写法：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">findJson</span>(<span class="params">str</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolved, rejected</span>) =&gt;</span> &#123;</span><br><span class="line">    fs.readFile(<span class="string">&#x27;./public/json/index.json&#x27;</span>,</span><br><span class="line">      <span class="function"><span class="keyword">function</span> (<span class="params">err, data</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (err) &#123;</span><br><span class="line">          rejected(err)</span><br><span class="line">          <span class="keyword">return</span> <span class="built_in">console</span>.error(err);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> allUser = data.toString();</span><br><span class="line">        allUser = <span class="built_in">JSON</span>.parse(allUser);</span><br><span class="line">        user = allUser.find(<span class="function"><span class="keyword">function</span> (<span class="params">user</span>) </span>&#123;</span><br><span class="line">          <span class="keyword">return</span> user.id === str;</span><br><span class="line">        &#125;)</span><br><span class="line">        resolved(user);</span><br><span class="line">      &#125;)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>调的时候可以这样：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">findJson(<span class="string">&#x27;11111111111&#x27;</span>).then(<span class="function"><span class="params">user</span> =&gt;</span> &#123;</span><br><span class="line">   <span class="built_in">console</span>.log(user)</span><br><span class="line"> &#125;).catch(<span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">   <span class="built_in">console</span>.error(err)</span><br><span class="line"> &#125;)</span><br></pre></td></tr></table></figure>
+
+<p>传入参数’11111111111’后，函数已经在index.json中找到了user（或者是undefined），执行resolved(user)，可以把user传入接下来的函数，可以得到user，这样就相当于return出来了。</p>
+<p>在我的函数中是这样写的：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">app.post(<span class="string">&#x27;/login&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">  findJson(req.body.id).then(<span class="function"><span class="params">user</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (user === <span class="literal">undefined</span>) &#123;</span><br><span class="line">	  <span class="comment">// do something</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">	  <span class="comment">// do something</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>js</category>
+      </categories>
+      <tags>
+        <tag>js</tag>
+        <tag>promise</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>移动端的rem布局</title>
+    <url>/2021/05/28/06.%E7%A7%BB%E5%8A%A8%E7%AB%AF%E7%9A%84rem%E5%B8%83%E5%B1%80/</url>
+    <content><![CDATA[<p>移动端的rem布局实践</p>
+<span id="more"></span>
+
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> designWidth = <span class="number">375</span>;  		<span class="comment">// 设计稿宽度</span></span><br><span class="line"><span class="keyword">const</span> remPx = <span class="number">100</span>;               <span class="comment">// 在屏幕宽度375px的时候，设置根元素字体大小 100px</span></span><br><span class="line"><span class="keyword">let</span> scale = <span class="built_in">window</span>.innerWidth / designWidth; <span class="comment">// 计算当前屏幕的宽度与设计稿比例</span></span><br><span class="line"><span class="comment">// 根据屏幕宽度动态计算根元素的字体大小</span></span><br><span class="line"><span class="built_in">document</span>.documentElement.style.fontSize = scale * remPx + <span class="string">&#x27;px&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>我为了保险，还在css中设置了根元素字体大小是100px，为了不影因为字体太大而影响布局，我又设置了body字体大小为16px</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">html</span>&#123;</span><br><span class="line">  <span class="attribute">font-size</span>: <span class="number">100px</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-tag">html</span> &gt; <span class="selector-tag">body</span>&#123;</span><br><span class="line">  <span class="attribute">font-size</span>: <span class="number">16px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样，其他元素都用rem即可</p>
+]]></content>
+      <categories>
+        <category>实践</category>
+      </categories>
+      <tags>
+        <tag>css</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>超出后省略剩余部分</title>
+    <url>/2021/05/28/05.%E8%B6%85%E5%87%BA%E5%90%8E%E7%9C%81%E7%95%A5%E5%89%A9%E4%BD%99%E9%83%A8%E5%88%86/</url>
+    <content><![CDATA[<p>效果如下：</p>
+<p><img src="/2021/05/28/05.%E8%B6%85%E5%87%BA%E5%90%8E%E7%9C%81%E7%95%A5%E5%89%A9%E4%BD%99%E9%83%A8%E5%88%86/1.jpg"></p>
+<span id="more"></span>
+
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;content&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h2</span>&gt;</span>美国顶级传染病专家福奇称「不确信新冠病毒来自大自然，应该继续调查中国」，他为何突然改口？<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>环球时报 ：我们都知道，自去年新冠肺炎疫情在美国暴发<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.content</span>&#123;</span><br><span class="line">  <span class="attribute">float</span>: left;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">2.02rem</span>;</span><br><span class="line">  <span class="attribute">margin-right</span>: <span class="number">0.16rem</span>;</span><br><span class="line">  <span class="attribute">line-height</span>: <span class="number">0.2rem</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.content</span> <span class="selector-tag">p</span>&#123;</span><br><span class="line">  <span class="attribute">margin-top</span>: <span class="number">0.04rem</span>;</span><br><span class="line">  <span class="attribute">font-size</span>: <span class="number">0.14rem</span>;</span><br><span class="line">    </span><br><span class="line">  <span class="comment">/*这三个需要一起用*/</span></span><br><span class="line">  <span class="attribute">white-space</span>: nowrap;</span><br><span class="line">  <span class="attribute">overflow</span>: hidden;</span><br><span class="line">  <span class="attribute">text-overflow</span>: ellipsis;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>效果：</p>
+<p><img src="/2021/05/28/05.%E8%B6%85%E5%87%BA%E5%90%8E%E7%9C%81%E7%95%A5%E5%89%A9%E4%BD%99%E9%83%A8%E5%88%86/2.jpg"></p>
+]]></content>
+      <categories>
+        <category>实践</category>
+      </categories>
+      <tags>
+        <tag>css</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>移动端和PC端设置不同页面</title>
+    <url>/2021/05/28/04.%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%92%8CPC%E7%AB%AF%E8%AE%BE%E7%BD%AE%E4%B8%8D%E5%90%8C%E9%A1%B5%E9%9D%A2/</url>
+    <content><![CDATA[<p>在服务端添加以下代码（以express为例）</p>
+<span id="more"></span>
+
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getMachine</span>(<span class="params">req</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> deviceAgent = req.headers[<span class="string">&quot;user-agent&quot;</span>].toLowerCase();</span><br><span class="line">  <span class="keyword">let</span> agentID = deviceAgent.match(<span class="regexp">/(iphone|ipod|ipad|android)/</span>);</span><br><span class="line">  <span class="keyword">if</span> (agentID) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="number">1</span>; <span class="comment">// 移动端</span></span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="number">0</span>; <span class="comment">// PC端</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">app.get(<span class="string">&#x27;/&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> machine = getMachine(req);</span><br><span class="line">  <span class="keyword">if</span> (machine) &#123;</span><br><span class="line">    fs.readFile(<span class="string">&#x27;./pe-views/index.html&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">err, data</span>) </span>&#123;</span><br><span class="line">      res.end(data);</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span> &#123;</span><br><span class="line">    fs.readFile(<span class="string">&#x27;./pc-views/index.html&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">err, data</span>) </span>&#123;</span><br><span class="line">      res.end(data);</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>实践</category>
+      </categories>
+      <tags>
+        <tag>后端</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>webpack笔记</title>
     <url>/2021/05/24/02.webpack%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[<p>一边啃JS和计网的书，一边来学webpack，学习完后就可以学习框架了，实战搞起来，理论补起来</p>
@@ -214,22 +625,6 @@
       </tags>
   </entry>
   <entry>
-    <title>移动端和PC端设置不同页面</title>
-    <url>/2021/05/28/04.%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%92%8CPC%E7%AB%AF%E8%AE%BE%E7%BD%AE%E4%B8%8D%E5%90%8C%E9%A1%B5%E9%9D%A2/</url>
-    <content><![CDATA[<p>在服务端添加以下代码（以express为例）</p>
-<span id="more"></span>
-
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getMachine</span>(<span class="params">req</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> deviceAgent = req.headers[<span class="string">&quot;user-agent&quot;</span>].toLowerCase();</span><br><span class="line">  <span class="keyword">let</span> agentID = deviceAgent.match(<span class="regexp">/(iphone|ipod|ipad|android)/</span>);</span><br><span class="line">  <span class="keyword">if</span> (agentID) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="number">1</span>; <span class="comment">// 移动端</span></span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="number">0</span>; <span class="comment">// PC端</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">app.get(<span class="string">&#x27;/&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> machine = getMachine(req);</span><br><span class="line">  <span class="keyword">if</span> (machine) &#123;</span><br><span class="line">    fs.readFile(<span class="string">&#x27;./pe-views/index.html&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">err, data</span>) </span>&#123;</span><br><span class="line">      res.end(data);</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span> &#123;</span><br><span class="line">    fs.readFile(<span class="string">&#x27;./pc-views/index.html&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">err, data</span>) </span>&#123;</span><br><span class="line">      res.end(data);</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>实践</category>
-      </categories>
-      <tags>
-        <tag>后端</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>前端模块化详解笔记</title>
     <url>/2021/05/24/03.%E5%89%8D%E7%AB%AF%E6%A8%A1%E5%9D%97%E5%8C%96%E8%AF%A6%E8%A7%A3%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[<p>参考博客：<a href="https://juejin.cn/post/6844903744518389768">前端模块化详解(完整版)</a></p>
@@ -257,369 +652,6 @@
       </categories>
       <tags>
         <tag>前端工程化</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>超出后省略剩余部分</title>
-    <url>/2021/05/28/05.%E8%B6%85%E5%87%BA%E5%90%8E%E7%9C%81%E7%95%A5%E5%89%A9%E4%BD%99%E9%83%A8%E5%88%86/</url>
-    <content><![CDATA[<p>效果如下：</p>
-<p><img src="/2021/05/28/05.%E8%B6%85%E5%87%BA%E5%90%8E%E7%9C%81%E7%95%A5%E5%89%A9%E4%BD%99%E9%83%A8%E5%88%86/1.jpg"></p>
-<span id="more"></span>
-
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;content&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h2</span>&gt;</span>美国顶级传染病专家福奇称「不确信新冠病毒来自大自然，应该继续调查中国」，他为何突然改口？<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>环球时报 ：我们都知道，自去年新冠肺炎疫情在美国暴发<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.content</span>&#123;</span><br><span class="line">  <span class="attribute">float</span>: left;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">2.02rem</span>;</span><br><span class="line">  <span class="attribute">margin-right</span>: <span class="number">0.16rem</span>;</span><br><span class="line">  <span class="attribute">line-height</span>: <span class="number">0.2rem</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.content</span> <span class="selector-tag">p</span>&#123;</span><br><span class="line">  <span class="attribute">margin-top</span>: <span class="number">0.04rem</span>;</span><br><span class="line">  <span class="attribute">font-size</span>: <span class="number">0.14rem</span>;</span><br><span class="line">    </span><br><span class="line">  <span class="comment">/*这三个需要一起用*/</span></span><br><span class="line">  <span class="attribute">white-space</span>: nowrap;</span><br><span class="line">  <span class="attribute">overflow</span>: hidden;</span><br><span class="line">  <span class="attribute">text-overflow</span>: ellipsis;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>效果：</p>
-<p><img src="/2021/05/28/05.%E8%B6%85%E5%87%BA%E5%90%8E%E7%9C%81%E7%95%A5%E5%89%A9%E4%BD%99%E9%83%A8%E5%88%86/2.jpg"></p>
-]]></content>
-      <categories>
-        <category>实践</category>
-      </categories>
-      <tags>
-        <tag>css</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>移动端的rem布局</title>
-    <url>/2021/05/28/06.%E7%A7%BB%E5%8A%A8%E7%AB%AF%E7%9A%84rem%E5%B8%83%E5%B1%80/</url>
-    <content><![CDATA[<p>移动端的rem布局实践</p>
-<span id="more"></span>
-
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> designWidth = <span class="number">375</span>;  		<span class="comment">// 设计稿宽度</span></span><br><span class="line"><span class="keyword">const</span> remPx = <span class="number">100</span>;               <span class="comment">// 在屏幕宽度375px的时候，设置根元素字体大小 100px</span></span><br><span class="line"><span class="keyword">let</span> scale = <span class="built_in">window</span>.innerWidth / designWidth; <span class="comment">// 计算当前屏幕的宽度与设计稿比例</span></span><br><span class="line"><span class="comment">// 根据屏幕宽度动态计算根元素的字体大小</span></span><br><span class="line"><span class="built_in">document</span>.documentElement.style.fontSize = scale * remPx + <span class="string">&#x27;px&#x27;</span>;</span><br></pre></td></tr></table></figure>
-
-<p>我为了保险，还在css中设置了根元素字体大小是100px，为了不影因为字体太大而影响布局，我又设置了body字体大小为16px</p>
-<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">html</span>&#123;</span><br><span class="line">  <span class="attribute">font-size</span>: <span class="number">100px</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-tag">html</span> &gt; <span class="selector-tag">body</span>&#123;</span><br><span class="line">  <span class="attribute">font-size</span>: <span class="number">16px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这样，其他元素都用rem即可</p>
-]]></content>
-      <categories>
-        <category>实践</category>
-      </categories>
-      <tags>
-        <tag>css</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>返回回调函数中的变量</title>
-    <url>/2021/05/30/07.%E8%BF%94%E5%9B%9E%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0%E4%B8%AD%E7%9A%84%E5%8F%98%E9%87%8F/</url>
-    <content><![CDATA[<p>初次在实践中用到promise，下次学await</p>
-<span id="more"></span>
-
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">findJson</span>(<span class="params">str</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// str参数表示用户的账号（手机号）</span></span><br><span class="line">  fs.readFile(<span class="string">&#x27;./public/json/index.json&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">err, data</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (err) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">console</span>.error(err);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> allUser = data.toString();</span><br><span class="line">    allUser = <span class="built_in">JSON</span>.parse(allUser);</span><br><span class="line">    user = allUser.find(<span class="function"><span class="keyword">function</span> (<span class="params">user</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> user.id === str;</span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="comment">// 我希望findJson函数可以把user给return出来</span></span><br><span class="line">    <span class="comment">// 直接在这里return是没用的</span></span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>promise改进版：</p>
-<p>findJson函数写法：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">findJson</span>(<span class="params">str</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolved, rejected</span>) =&gt;</span> &#123;</span><br><span class="line">    fs.readFile(<span class="string">&#x27;./public/json/index.json&#x27;</span>,</span><br><span class="line">      <span class="function"><span class="keyword">function</span> (<span class="params">err, data</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (err) &#123;</span><br><span class="line">          rejected(err)</span><br><span class="line">          <span class="keyword">return</span> <span class="built_in">console</span>.error(err);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> allUser = data.toString();</span><br><span class="line">        allUser = <span class="built_in">JSON</span>.parse(allUser);</span><br><span class="line">        user = allUser.find(<span class="function"><span class="keyword">function</span> (<span class="params">user</span>) </span>&#123;</span><br><span class="line">          <span class="keyword">return</span> user.id === str;</span><br><span class="line">        &#125;)</span><br><span class="line">        resolved(user);</span><br><span class="line">      &#125;)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>调的时候可以这样：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">findJson(<span class="string">&#x27;11111111111&#x27;</span>).then(<span class="function"><span class="params">user</span> =&gt;</span> &#123;</span><br><span class="line">   <span class="built_in">console</span>.log(user)</span><br><span class="line"> &#125;).catch(<span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">   <span class="built_in">console</span>.error(err)</span><br><span class="line"> &#125;)</span><br></pre></td></tr></table></figure>
-
-<p>传入参数’11111111111’后，函数已经在index.json中找到了user（或者是undefined），执行resolved(user)，可以把user传入接下来的函数，可以得到user，这样就相当于return出来了。</p>
-<p>在我的函数中是这样写的：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">app.post(<span class="string">&#x27;/login&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">  findJson(req.body.id).then(<span class="function"><span class="params">user</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (user === <span class="literal">undefined</span>) &#123;</span><br><span class="line">	  <span class="comment">// do something</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">	  <span class="comment">// do something</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>js</category>
-      </categories>
-      <tags>
-        <tag>js</tag>
-        <tag>promise</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>原生ajax的req.body为空</title>
-    <url>/2021/05/30/08.%E5%8E%9F%E7%94%9Fajax%E7%9A%84req.body%E4%B8%BA%E7%A9%BA/</url>
-    <content><![CDATA[<p>原生ajax，很多人都不推荐在实战中使用，因为我别的都不会，只能先凑合着用原生，结果就遇到了发送post请求过去，结果req.body为空对象的情况</p>
-<span id="more"></span>
-
-<p>一开始的代码：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">regBtn.onclick = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> userjson = &#123;</span><br><span class="line">     <span class="comment">// 这里的数据格式不对</span></span><br><span class="line">    <span class="string">&quot;id&quot;</span>: input3.value,</span><br><span class="line">    <span class="string">&quot;password&quot;</span>: input4.value</span><br><span class="line">  &#125;;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">const</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">  xhr.open(<span class="string">&#x27;post&#x27;</span>, <span class="string">&#x27;/login&#x27;</span>);</span><br><span class="line">  xhr.setRequestHeader(<span class="string">&quot;Content-Type&quot;</span>, <span class="string">&quot;application/x-www-form-urlencoded&quot;</span>)</span><br><span class="line">  xhr.send(userjson);</span><br><span class="line"></span><br><span class="line">  xhr.onreadystatechange = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (xhr.readyState === <span class="number">4</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (xhr.status &gt;= <span class="number">200</span> &amp;&amp; xhr.status &lt; <span class="number">300</span>) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(xhr.response);</span><br><span class="line">        <span class="comment">//之后要根据不同的response进行不同的操作</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>主要修改两个地方：</p>
-<ul>
-<li>请求头</li>
-<li>数据格式</li>
-</ul>
-<p>修改后：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">regBtn.onclick = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">    </span><br><span class="line">  xhr.open(<span class="string">&#x27;post&#x27;</span>, <span class="string">&#x27;/login&#x27;</span>);</span><br><span class="line">    </span><br><span class="line">  xhr.setRequestHeader(<span class="string">&quot;Content-Type&quot;</span>, <span class="string">&quot;application/x-www-form-urlencoded&quot;</span>);</span><br><span class="line">  <span class="comment">// 修改请求头（没有深入理解）</span></span><br><span class="line">    </span><br><span class="line">  xhr.send(<span class="string">`id=<span class="subst">$&#123;input3.value&#125;</span>&amp;password=<span class="subst">$&#123;input4.value&#125;</span>`</span>);	</span><br><span class="line">  <span class="comment">// 在不配置的情况下，原生ajax发送post请求必须用这个数据格式：&#x27;a=xxx&amp;b=xxx&amp;c=xxx&#x27;</span></span><br><span class="line">    </span><br><span class="line">  xhr.onreadystatechange = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (xhr.readyState === <span class="number">4</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (xhr.status &gt;= <span class="number">200</span> &amp;&amp; xhr.status &lt; <span class="number">300</span>) &#123;</span><br><span class="line">        <span class="keyword">let</span> data = <span class="built_in">JSON</span>.parse(xhr.response);</span><br><span class="line">        <span class="keyword">if</span> (data.status == <span class="number">200</span>) &#123;</span><br><span class="line">          <span class="comment">// do something</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (data.status == <span class="number">499</span>) &#123;</span><br><span class="line">		  <span class="comment">// do something</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>js</category>
-      </categories>
-      <tags>
-        <tag>ajax</tag>
-        <tag>踩坑</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>前后端交互初尝试</title>
-    <url>/2021/05/30/09.%E5%89%8D%E5%90%8E%E7%AB%AF%E4%BA%A4%E4%BA%92%E5%88%9D%E5%B0%9D%E8%AF%95/</url>
-    <content><![CDATA[<p>之前对前后端交互的理解一直不够透彻，虽然也搞过模板引擎，但都是照着老师的做，自己懂的确实很有限。这两天搜搞前后端交互让我心力交瘁，但最后还是搞懂了一些</p>
-<span id="more"></span>
-
-<p>一图归纳我到目前的理解程度：</p>
-<p><img src="/2021/05/30/09.%E5%89%8D%E5%90%8E%E7%AB%AF%E4%BA%A4%E4%BA%92%E5%88%9D%E5%B0%9D%E8%AF%95/1.jpg"></p>
-<p>前端：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">regBtn.onclick = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">  xhr.open(<span class="string">&#x27;post&#x27;</span>, <span class="string">&#x27;/login&#x27;</span>);</span><br><span class="line">  xhr.setRequestHeader(<span class="string">&quot;Content-Type&quot;</span>, <span class="string">&quot;application/x-www-form-urlencoded&quot;</span>);</span><br><span class="line">  xhr.send(<span class="string">`id=<span class="subst">$&#123;input3.value&#125;</span>&amp;password=<span class="subst">$&#123;input4.value&#125;</span>`</span>);</span><br><span class="line">  xhr.onreadystatechange = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (xhr.readyState === <span class="number">4</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (xhr.status &gt;= <span class="number">200</span> &amp;&amp; xhr.status &lt; <span class="number">300</span>) &#123;</span><br><span class="line">        <span class="keyword">let</span> data = <span class="built_in">JSON</span>.parse(xhr.response);</span><br><span class="line">        <span class="keyword">if</span> (data.status == <span class="number">200</span>) &#123;</span><br><span class="line">          <span class="built_in">window</span>.location.href = <span class="string">&quot;/&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (data.status == <span class="number">499</span>) &#123;</span><br><span class="line">          alert(<span class="string">&#x27;该用户已注册！&#x27;</span>);</span><br><span class="line">          location.reload();</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<p>后端：get请求页面资源，post处理ajax</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">app.get(<span class="string">&#x27;/login&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">  fs.readFile(<span class="string">&#x27;./pc-views/login.html&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">err, data</span>) </span>&#123;</span><br><span class="line">    res.end(data);</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">app.post(<span class="string">&#x27;/login&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">  findJson(req.body.id).then(<span class="function"><span class="params">user</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(user);</span><br><span class="line">    <span class="keyword">if</span> (user === <span class="literal">undefined</span>) &#123;</span><br><span class="line">      writeJson(req.body);</span><br><span class="line">      res.send(&#123;</span><br><span class="line">        <span class="string">&quot;status&quot;</span>: <span class="number">200</span></span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">      res.send(&#123;</span><br><span class="line">        <span class="string">&quot;status&quot;</span>: <span class="number">499</span>,</span><br><span class="line">        <span class="string">&quot;msg&quot;</span>: <span class="string">&quot;user already registered&quot;</span></span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>实践</category>
-      </categories>
-      <tags>
-        <tag>前后端交互</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>json的crud</title>
-    <url>/2021/05/30/10.json%E7%9A%84crud/</url>
-    <content><![CDATA[<p>说是crud，只有写和查而已</p>
-<span id="more"></span>
-
-<p>写：data是index.json中的所有数据，由于data一开始是二进制buffer，先用toString方法转化为字符串，再用JSON.parse转化为对象，把新的数据加入数组（allUser转为对象后是一个数组），把数组转化为字符串，再写入index.json文件</p>
-<p>查：用ES6的find方法就好</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">writeJson</span>(<span class="params">params</span>) </span>&#123;</span><br><span class="line">  fs.readFile(<span class="string">&#x27;./public/json/index.json&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">err, data</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (err) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">console</span>.error(err);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> allUser = data.toString();</span><br><span class="line">    allUser = <span class="built_in">JSON</span>.parse(allUser);  <span class="comment">// 对空字符串不能使用该方法，所以初始情况下json文件不能为空</span></span><br><span class="line">    allUser.push(params);</span><br><span class="line">    <span class="keyword">let</span> str = <span class="built_in">JSON</span>.stringify(allUser);</span><br><span class="line">    fs.writeFile(<span class="string">&#x27;./public/json/index.json&#x27;</span>, str, <span class="function"><span class="keyword">function</span> (<span class="params">err</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (err) &#123;</span><br><span class="line">        <span class="built_in">console</span>.error(err);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">&#x27;index.json：新增用户数据成功&#x27;</span>);</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">findJson</span>(<span class="params">str</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolved, rejected</span>) =&gt;</span> &#123;</span><br><span class="line">    fs.readFile(<span class="string">&#x27;./public/json/index.json&#x27;</span>,</span><br><span class="line">      <span class="function"><span class="keyword">function</span> (<span class="params">err, data</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (err) &#123;</span><br><span class="line">          rejected(err)</span><br><span class="line">          <span class="keyword">return</span> <span class="built_in">console</span>.error(err);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> allUser = data.toString();</span><br><span class="line">        allUser = <span class="built_in">JSON</span>.parse(allUser);</span><br><span class="line">        user = allUser.find(<span class="function"><span class="keyword">function</span> (<span class="params">user</span>) </span>&#123;</span><br><span class="line">          <span class="keyword">return</span> user.id === str;</span><br><span class="line">        &#125;)</span><br><span class="line">        resolved(user);</span><br><span class="line">      &#125;)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>实践</category>
-      </categories>
-      <tags>
-        <tag>js</tag>
-        <tag>前后端交互</tag>
-        <tag>json</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>未来の思考</title>
-    <url>/2021/06/04/12.%E6%9C%AA%E6%9D%A5%E3%81%AE%E6%80%9D%E8%80%83/</url>
-    <content><![CDATA[<p>一些关于未来的思考：</p>
-<span id="more"></span>
-<p>考研与工作的抉择：<br><img src="/2021/06/04/12.%E6%9C%AA%E6%9D%A5%E3%81%AE%E6%80%9D%E8%80%83/1.jpg"></p>
-<p>未来的打算：<br><img src="/2021/06/04/12.%E6%9C%AA%E6%9D%A5%E3%81%AE%E6%80%9D%E8%80%83/2.jpg"></p>
-]]></content>
-      <categories>
-        <category>随笔</category>
-      </categories>
-      <tags>
-        <tag>随笔</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>视频制作教程笔记(影视飓风)</title>
-    <url>/2021/06/05/13.%E8%A7%86%E9%A2%91%E5%88%B6%E4%BD%9C%E6%95%99%E7%A8%8B%E7%AC%94%E8%AE%B0(%E5%BD%B1%E8%A7%86%E9%A3%93%E9%A3%8E)/</url>
-    <content><![CDATA[<p>AV25783076：高画质的背后——视频的封装与编码</p>
-<p>AV20450727：超级转场的核心——变速 ⭐️</p>
-<p>AV18747023：Pr和Ae的无缝衔接大法</p>
-<p>AV7301488：小技巧：Pr被低估的10个快捷键</p>
-<p>AV7855737：小技巧：LUTS ⭐️</p>
-<p>AV7045442：Premiere小技巧：秘传技</p>
-<p>AV6936344：无缝转场与轨道蒙版 ⭐️</p>
-<p>AV6746166：小技巧：超级转场的制作 ⭐️</p>
-<span id="more"></span>
-
-
-
-<h1 id="视频的封装与编码"><a href="#视频的封装与编码" class="headerlink" title="视频的封装与编码"></a>视频的封装与编码</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><ul>
-<li><p>编码分为：剪辑编码、输出编码、拍摄编码</p>
-</li>
-<li><p>mov、mp4是封装格式（format），不是编码</p>
-</li>
-<li><p>常见编码有H.264（帧间编码）和Prores（帧内编码）</p>
-</li>
-</ul>
-<h2 id="帧内-帧间编码的对比"><a href="#帧内-帧间编码的对比" class="headerlink" title="帧内/帧间编码的对比"></a>帧内/帧间编码的对比</h2><h3 id="帧内编码"><a href="#帧内编码" class="headerlink" title="帧内编码"></a>帧内编码</h3><p>特点：针对每一帧的画面，进行单独的分析，就好比压缩一张照片。</p>
-<p>优点：</p>
-<ul>
-<li>电脑在回放的时候比较轻松。</li>
-</ul>
-<p>缺点：</p>
-<ul>
-<li>能压缩的大小有限，体积会受到限制（比如说背景没有变化的时候，每一针都会被记录一次，产生了数据上的冗余）。</li>
-</ul>
-<h3 id="帧间编码"><a href="#帧间编码" class="headerlink" title="帧间编码"></a>帧间编码</h3><p>特点：记录两张完整的画面，只记录中间像素产生的变化，在后期解码时再重新运算出中间的帧，恢复出当时画面。</p>
-<p>优点：</p>
-<ul>
-<li>有效压缩了素材体积。</li>
-</ul>
-<p>缺点：</p>
-<ul>
-<li>大了电脑的处理压力。</li>
-</ul>
-<h2 id="代理和输出编码"><a href="#代理和输出编码" class="headerlink" title="代理和输出编码"></a>代理和输出编码</h2><p>假如相机记录了4k的画面，又正好是帧间编码， 电脑又不够强大，应该选择使用<code>代理</code>，从而可以重新编码出一个分辨率更低，帧内编码的视频文件，使得在剪辑时更加流畅，剪辑完之后可以把它替换成原素材做进一步的处理（以后讲）。</p>
-<p>剪辑完成之后，需要输出编码，这直接影响了上传到网上的视频质量，<strong>最佳的网络传播的编码，应该是h264编码，MP4封装。</strong></p>
-<h2 id="码率"><a href="#码率" class="headerlink" title="码率"></a>码率</h2><p>码率也会影响画面和文件大小，编码决定了这个大小之下保留着最好的图像。</p>
-<p>码率分为<code>恒定码率</code>和<code>可变码率</code>，通常可变码率会更实用一些，因为编码器会分析画面，之后对复杂的画面提供更多的码率，对于更容易压缩的地方，总会减少码率，这样即便文件大小不变，整体画质也会获得提升。</p>
-<p>网络视频通常会在上传视频文件后进行二次压缩，可能造成码率降低，更低的码率很容易导致画面翻车，在面对具有大量随机移动的像素的时候，比如下雪或者灰尘，画面质量会迅速下降，因为编码器难以预测像素的运动，而码率不足以支撑画面。</p>
-<p><strong>可以通过将视频压到B站限定的码率之下，来规避二次压缩，这样可以针对自己的视频进行编码上的优化，来获得更好的画质</strong>。</p>
-<h1 id="变速"><a href="#变速" class="headerlink" title="变速"></a>变速</h1><h2 id="升格"><a href="#升格" class="headerlink" title="升格"></a>升格</h2><p><code>升格</code>是对慢动作比较专业的叫法，很多人直接把素材拖到时间线上，然后Ctrl+R，这个快捷键可以呼出速度控制窗口，然后可以输入25%或者50%，这样就可以实现升格，但是假如变速不是整除，就会遇到<code>跳帧</code>，所以应该使用<code>解释素材</code>来进行慢放，而不是纯粹的速度控制。</p>
-<blockquote>
-<p>升格：电影摄影中的一种技术手段，电影摄影拍摄标准是每秒24帧，也就是每秒拍摄24张，这样在放映时才能是正常速度的连续性画面，但为了实现一些简单的技巧，比如慢镜头效果，就要改变正常的拍摄速度，比如高于60帧/秒，这就是升格，放映效果就是慢动作。如果降低拍摄速度（低于24帧/秒），就是降格，放映效果就是快动作。</p>
-</blockquote>
-<blockquote>
-<p>跳帧（frameskip），假如显示器设定的刷新率是80Hz，显卡以100FPS循环显示0-9数字，那么，在开始的0.1秒内，显卡显示了10个数字而显示器只刷新了8次，最终你看到的图像很可能是这样的：由于显示器刷新率跟不上游戏的FPS，只能舍弃一部分画面，这种现象表现在游戏里就是跳帧。</p>
-</blockquote>
-<h2 id="解释素材"><a href="#解释素材" class="headerlink" title="解释素材"></a>解释素材</h2><p>使用解释素材就是，在素材箱右键你的素材→Modify →Interpret footage，然后只需要把帧率修改成想要回放的帧率（比如25），这样就可以一次性处理所有的素材，实现慢放。</p>
-<p>不存在整除的问题，因为可以理解成一卷胶片换了一个速度播放，就像以前升格一样，只是把每一帧映射到和之前不同的位置上。</p>
-<h2 id="渐变"><a href="#渐变" class="headerlink" title="渐变"></a>渐变</h2><p>当有了升格后，通常需要使用变速来强化效果，很多人喜欢直接切一刀画面，然后按一下R键，激活变速工具进行变速，没有渐变，所以看起来会很突兀。</p>
-<p>正确做法是右键素材的fx标记，然后选择time remapping（<code>时间重映射</code>），然后按住Ctrl+ALT键，这个键可以帮助快速添加关键帧（任何需要添加关键帧的地方都可以使用这个快捷键），打上关键帧之后可以上下拖动这根线来实现变速，随后可以分开这两个小的关键帧，这样就会有一个具有渐变的变速。也可以拖动拉杆来进一步改变速度曲线，来实现最好的效果。</p>
-<p>但是也有一个弊端，PR的速度上限是十倍，假如要突破这个限制，通常会在速度最大值处切一刀，然后单独按R键加速中间这一段，再把三段衔接起来。</p>
-<p>如果想要流畅的过渡镜头与镜头之间的连接，就很需要这种变速，通常就是快对快、慢对慢，如果前一个素材的尾部被加速了，那么后一个素材的起始部分也应该要被加速，这样的话，动势就能够被匹配，画面就会比较连贯。</p>
-<p><strong>此处需要练习</strong></p>
-<h2 id="帧采样、帧混合、光流"><a href="#帧采样、帧混合、光流" class="headerlink" title="帧采样、帧混合、光流"></a>帧采样、帧混合、光流</h2><p>如果画面不连贯，或者想要实现比相机拍摄帧率更高的慢动作，就需要使用不同的时间控制，在Pr的速度窗口里，最下方有三个选项，帧采样、帧混合、光流。</p>
-<ul>
-<li>帧采样，只是把同一帧展现两次或者更多次。</li>
-<li>帧混合也是重复出现同样的画面，但是添加了一点渐变和叠加，在视觉上稍微顺畅一点。</li>
-<li>光流是真正意义上添加了新的帧，它通过预测两帧之间的像素运动轨迹，重新运算出了中间的针帧，画面总的帧数增加，比较流畅，但是必须要对比非常大的画面，才能够实现最佳的光流效果，否则会出现畸变。</li>
-</ul>
-<p>通常在加速之后，突然实现短暂的光流升格，可以实现非常酷炫的画面；帧混合一般用于快放，可以实现类似于动态模糊的感觉。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>使用带有渐变的变速，选择合适的时间控制模式，能够大大提升整体剪辑的节奏感，也能实现更好的转场，同时也要注意音频。</p>
-]]></content>
-      <categories>
-        <category>视频制作</category>
-      </categories>
-      <tags>
-        <tag>视频制作</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Some ideas</title>
-    <url>/2021/06/15/14.Some%20ideas/</url>
-    <content><![CDATA[<p>记录一些我想做的东西：</p>
-<span id="more"></span>
-
-<h1 id="长远计划"><a href="#长远计划" class="headerlink" title="长远计划"></a>长远计划</h1><ul>
-<li>网页游戏/微信小程序游戏开发</li>
-<li>APP开发</li>
-</ul>
-<h1 id="近期计划"><a href="#近期计划" class="headerlink" title="近期计划"></a>近期计划</h1><ul>
-<li>TypeScript</li>
-<li>Vue</li>
-<li>webpack</li>
-<li>flutter</li>
-<li>Nginx</li>
-<li>Axios</li>
-<li>Git，系统学习Github的使用</li>
-<li>熟悉node（npm）</li>
-<li>完善Lofter</li>
-<li>完善cMind</li>
-<li>阅读《你不知道的JS》</li>
-<li>阅读《JS设计模式和开发实践》</li>
-<li>完成洛谷题目，数据结构进阶</li>
-</ul>
-]]></content>
-      <categories>
-        <category>随笔</category>
-      </categories>
-      <tags>
-        <tag>随笔</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>TypeScript笔记</title>
-    <url>/2021/06/18/15.TS%E7%AC%94%E8%AE%B0/</url>
-    <content><![CDATA[<p>开始学习TypeScript！</p>
-<p>改变记笔记的习惯，基础的内容请查阅文档，此处只强调一些重点/易错点。</p>
-<span id="more"></span>
-
-<h1 id="类型"><a href="#类型" class="headerlink" title="类型"></a>类型</h1><p>如果在声明变量时赋值，TS可以自动对变量进行<code>类型检测</code>。</p>
-<h2 id="any和unknown"><a href="#any和unknown" class="headerlink" title="any和unknown"></a>any和unknown</h2><p>都表示不确定的类型，但unknown比any更安全：</p>
-<ul>
-<li>any类型的变量可以直接赋给其他值，被赋的变量也会关闭类型检测</li>
-<li>unknown类型的变量不能直接被赋给其他变量</li>
-</ul>
-<p>如果要把它赋值给其他变量，使用断言：</p>
-<h2 id="never"><a href="#never" class="headerlink" title="never"></a>never</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// never 表示永远不会返回结果</span><br><span class="line">function fn(): never&#123;</span><br><span class="line">    throw new Error(&#x27;报错了！&#x27;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="字面量"><a href="#字面量" class="headerlink" title="字面量"></a>字面量</h2><p>对于字面量，如果直接用<code>let a: 1</code>这样的形式，则相当于常量。</p>
-<p>使用联合类型：</p>
-<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 可以使用 | 来连接多个类型（联合类型）</span></span><br><span class="line"><span class="keyword">let</span> b: <span class="string">&quot;male&quot;</span> | <span class="string">&quot;female&quot;</span>;</span><br><span class="line">b = <span class="string">&quot;male&quot;</span>;</span><br><span class="line">b = <span class="string">&quot;female&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> c: <span class="built_in">boolean</span> | <span class="built_in">string</span>;</span><br><span class="line">c = <span class="literal">true</span>;</span><br><span class="line">c = <span class="string">&#x27;hello&#x27;</span>;</span><br></pre></td></tr></table></figure>
-
-<h3 id="对象"><a href="#对象" class="headerlink" title="对象"></a>对象</h3><figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="comment">// &#123;&#125; 用来指定对象中可以包含哪些属性</span></span><br><span class="line"><span class="comment">// 语法：&#123;属性名:属性值,属性名:属性值&#125;</span></span><br><span class="line"><span class="comment">// 在属性名后边加上?，表示属性是可选的</span></span><br><span class="line"><span class="keyword">let</span> b: &#123;<span class="attr">name</span>: <span class="built_in">string</span>, age?: <span class="built_in">number</span>&#125;;</span><br><span class="line">b = &#123;<span class="attr">name</span>: <span class="string">&#x27;孙悟空&#x27;</span>, <span class="attr">age</span>: <span class="number">18</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// [propName: string]: any 表示任意类型的属性</span></span><br><span class="line"><span class="comment">// propName可以改成其他字符串</span></span><br><span class="line"><span class="keyword">let</span> c: &#123;<span class="attr">name</span>: <span class="built_in">string</span>, [propName: <span class="built_in">string</span>]: <span class="built_in">any</span>&#125;;</span><br><span class="line">c = &#123;<span class="attr">name</span>: <span class="string">&#x27;猪八戒&#x27;</span>, <span class="attr">age</span>: <span class="number">18</span>, <span class="attr">gender</span>: <span class="string">&#x27;男&#x27;</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// &amp;表示同时</span></span><br><span class="line"><span class="keyword">let</span> j: &#123; <span class="attr">name</span>: <span class="built_in">string</span> &#125; &amp; &#123; <span class="attr">age</span>: <span class="built_in">number</span> &#125;;</span><br><span class="line"><span class="comment">// j = &#123;name: &#x27;孙悟空&#x27;, age: 18&#125;;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h3 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h3><p>数组的类型声明：</p>
-<ul>
-<li><pre><code>  类型[]
-</code></pre>
-</li>
-<li><pre><code>  Array&lt;类型&gt;
-</code></pre>
-</li>
-</ul>
-<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="comment">// string[] 表示字符串数组</span></span><br><span class="line"><span class="keyword">let</span> e: <span class="built_in">string</span>[];</span><br><span class="line">e = [<span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;b&#x27;</span>, <span class="string">&#x27;c&#x27;</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// number[] 表示数值数组</span></span><br><span class="line"><span class="keyword">let</span> f: <span class="built_in">number</span>[];</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> g: <span class="built_in">Array</span>&lt;<span class="built_in">number</span>&gt;;</span><br><span class="line">g = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br></pre></td></tr></table></figure>
-
-<h3 id="元组"><a href="#元组" class="headerlink" title="元组"></a>元组</h3><p>元组，元组就是固定长度的数组</p>
-<ul>
-<li><pre><code>  语法：[类型, 类型, 类型]
-</code></pre>
-</li>
-</ul>
-<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> h: [<span class="built_in">string</span>, <span class="built_in">number</span>];</span><br><span class="line">h = [<span class="string">&#x27;hello&#x27;</span>, <span class="number">123</span>];</span><br></pre></td></tr></table></figure>
-
-<h3 id="枚举"><a href="#枚举" class="headerlink" title="枚举"></a>枚举</h3><figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="built_in">enum</span> Gender&#123;</span><br><span class="line">    Male,</span><br><span class="line">    Female</span><br><span class="line">&#125; <span class="comment">// 实际上Male值为0，Female值为1；也可以自己赋不同值</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> i: &#123;<span class="attr">name</span>: <span class="built_in">string</span>, <span class="attr">gender</span>: Gender&#125;;</span><br><span class="line">i = &#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&#x27;孙悟空&#x27;</span>,</span><br><span class="line">    <span class="attr">gender</span>: Gender.Male <span class="comment">// &#x27;male&#x27;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="type"><a href="#type" class="headerlink" title="type"></a>type</h3><figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 类型的别名</span></span><br><span class="line"><span class="keyword">type</span> myType = <span class="number">1</span> | <span class="number">2</span> | <span class="number">3</span> | <span class="number">4</span> | <span class="number">5</span>;</span><br><span class="line"><span class="keyword">let</span> k: myType;</span><br><span class="line"><span class="keyword">let</span> l: myType;</span><br><span class="line"><span class="keyword">let</span> m: myType;</span><br><span class="line"></span><br><span class="line">k = <span class="number">2</span>;</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>ts</category>
-      </categories>
-      <tags>
-        <tag>ts</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>2020 and Half of 2021</title>
-    <url>/2021/05/30/11.2020+2021%E4%B8%8A%E5%8D%8A%E5%B9%B4%E6%80%BB%E7%BB%93/</url>
-    <content><![CDATA[<p>刚刚无意间看到了某位前辈的博客，我想，既然有了自己的博客，总结还是不要写在qq空间为好。</p>
-<p>2020年至今，发生了不少事情，还是记录一下，作为以后的人生经验吧，不知道自己会以什么样的笔调写下这些话。</p>
-<span id="more"></span>
-
-<h1 id="挣扎与彷徨"><a href="#挣扎与彷徨" class="headerlink" title="挣扎与彷徨"></a>挣扎与彷徨</h1><h2 id="高三之前"><a href="#高三之前" class="headerlink" title="高三之前"></a>高三之前</h2><p>高中的往事已回忆数次，无非就是这样的开局：不自信/想要变强→怀抱着不切实际要当科学家的妄想→逼迫自己，强迫症/形体化→后悔，无力改变现状。那个时候，基本是个人我都会感到羡慕，我沉沦于无止境的痛苦之中，每天都感觉过得浑浑噩噩，觉得自己的青春和人生就这么被强迫症给废掉了。不论我怎么努力，都感觉自己被限制住了，就是发挥不出来自己的能力，考试也极少进年级前50，比起我初中玩着考入班级前十，现在的我稳在班级前50%都困难。</p>
-<p>现在觉得一切不过都是借口，强迫症也并没有那么可怕，虽然它让我的生活变得不太舒服，形体化的后患仍然存在，但并不影响我掌控自己的人生。当时成绩上不去，是我做了太多琐碎的事，摘抄或总结了很多笔记却很少复习且断断续续，自发刷题只坚持了英语，总之没有高效率地学习。顺带一提，这里提到的有些毛病我现在都还没有改掉。</p>
-<p>在高二的时候其实我已经认识到（现在我都不知道这种认识是否正确），自己或许不能专精于任何一个方向，因为努力学习后也考不到年级顶尖水平。比起某方面的专精，我可能更适合成为全能型庸才（但其实这样我也做不到），所以当时就买了心理学、计算机、美学、音乐的书来看，还读了《混血豺王》和《比尔盖茨传》等。但是这一切在高三到来的时候就又被我抛掷脑后。</p>
-<h2 id="疲于奔命"><a href="#疲于奔命" class="headerlink" title="疲于奔命"></a>疲于奔命</h2><p>高二暑假是我此生最短的暑假，短到只有两天。暑假前半段被迫参加每天200块的“名校通”，暑假后半段又要回去补课，回去前的一周我又自愿交钱补习化竞，顺带一提，后期到开学的这段时间我看完《钢之炼金术师》全套漫画。</p>
-<p>那个时候，我看到了北大2020的招生简章，简章十分精美，花花绿绿，我们班上放了几本，于是我便热衷于阅读它。那个时候我被北大所深深吸引，开始幻想能不能考上，并且由于自己心态的困境，我特别想去心理学系。其实去不去心理学也无所谓，那时候我觉得读个考古都可以，反正是北大嘛。这样靠着专项计划，我还是得考到680分才可以，而我只有650分的水平，平时的模考只能考580~620区间。</p>
-<p>我开始思考着自己如何达到这种“飞跃”，大概是一定要去找自己的节奏，有针对性地提分。前边还是比较顺利，在11月的一次模考中，我同时取得了语文（128，之后再也没达到过）和化学的双班级第一，年级31名，之后一次考试我坐在第一考场，考理综时心态突然崩溃，结果理综考了190，好状态完全止步于这次考试。于是我开始不听讲，不按着学校的复习进度来，自己整些笔记、刷题、网课，这些全都上了。但是随着时间的不断推移，我没觉得自己有什么进步，后边越来越过分。先是伪造病历去办了走读证，在学校旁边租了个小房间便于每天走读回去多学会，也方便刷网课。因为买的网课太多觉得刷不完，然后又跟班主任协商，翘掉四节晚自习。我开始觉得学校老师讲的啥用没有，平时的作业很多都在抄，觉得极其浪费时间，待在学校我都觉得痛苦，我把自己没有进步的错误都归咎于是学校限制了我。一轮复习结束，二轮复习开始，我觉得自己还是老样子。结果这段时间成绩不断下降，位次连着四五次都在一百名开外，老师也在找我谈话。</p>
-<p>最后我还是下定决心回家复习去了，结果没走几天撞上疫情，大家都只能在家学习。在家期间我的神经十分紧绷，每天的平均时长在14个小时以上，基本每天就是6点多起床一直学到晚上11点多，除了过年有两三天偷了个懒，三个月没怎么变过。也算是刷完了学校的二轮资料和几本网课资料。但是我仍然觉得自己的学习没有太大起色，从三月起学校开始让学生印模考卷做，我仍然只能考620左右，此时心态十分炸裂，后悔却又无可奈何，那个时候平均两天就会改一次qq签名，正能量的鸡汤背后是深深的负能量。我反思前面做的这一切，终于承认了自己就是普通人的事实，为何要追求680这一虚无缥缈的目标，就这样舒舒服服地苟着不就好了吗？</p>
-<h2 id="回归正常"><a href="#回归正常" class="headerlink" title="回归正常"></a>回归正常</h2><p>4月回到学校后我就开始佛系了，不再想着自己去做些什么，而是按部就班地跟着学校。回来的第一次模考，我在数学113血崩的情况下考了年级36，惊艳了一些同学。接下来的一次考试又到了100多名，然后又考了43名，之后就回到以前的段位，考60名左右的水平。事实证明，回家学习的这段时间我大概就物理有了进步，最头疼的数学还是老样子。进步最明显的是心态，我开始没那么在意高考，而且开始对现状持接纳态度，珍惜毕业前的日子。我会趁着晚上走读便利，和同学去吃华莱士、克莱堡、烧烤，甚至有一天住到他家里。考前两周我为全班同学吹奏《追梦赤子心》，高考完我回去给一位尊敬的老师吹奏《离歌》，弥补了高二的一次遗憾。</p>
-<p>那段时间，我也常思考未来，不再去追求一时脑热的化学和心理学专业，觉得作为一个普通人就学个计算机专业，到时候出来工作挣钱就行了。看知乎推荐觉得北邮是一所不错的学校，因为就业率非常高，华科也可以，有“北北邮，南华科”之称。我给自己的计算机专业学校排名是：浙大→北航→华科→北邮→西电/西工。虽然佛系，高考我仍旧全力以赴，最后655收场，语文数学略炸，英语正常，理综略超常，总分是正常水平。周围不少平时一般的同学考到了670+，确实还是有点点不甘心吧。</p>
-<p>报志愿的时候，这个分数在我省提前批次确实可以冲一冲华科，往年最高分数是656。但是华科CS给的名额很少，又是热门专业，所以心里没底。就这样，提前批我填了华科（只写了三个专业，还不服从调剂，事后后悔了，因为这不是稳进CS的方案），本一批填了北邮。其实这个分数挺合适的，分低一些我会进入华科非CS专业（光电/能动），分高一点（&gt;660）我说不定会冲进浙大的差专业。最后，事实证明我的担心多余，顺利来到华科CS。从结果上看，我的高考是比较顺利的。</p>
-<h2 id="一晃而过的暑假"><a href="#一晃而过的暑假" class="headerlink" title="一晃而过的暑假"></a>一晃而过的暑假</h2><p>暑假开始做一些自己想做的事了，比如说学完标日上下册，还背了一些日语单词；口琴继续练；本来说要做视频，还是没有去学，懂了Pr基本操作，在9月初才剪了一个自己勉强满意的视频；骑车上国道，玩了一天多。</p>
-<p>知道自己被华科CS录取后，我又开始“蠢蠢欲动”了，因为本质上我不是一个甘于平庸的人。早在高考之前，我就听说过华科的“三大团队”了，也十分希望自己能够进入。我加入了秋招群，在自己并不清楚想要选什么方向的情况下，开始准备冲击联创Lab组，至于为什么是Lab，因为Lab的学习指南里有C，在看到招新信息的时候我已经学了一周的C，不想浪费基础（现在看起来有点可笑）。于是暑假的后半段我每天抽很多时间去看C、Linux，但是都是刷视频且浮光掠影；试着啃了一下黑皮《计算机科学导论》，每天刷个十几二十页，也感觉很难吸收其中的知识，看后就忘。</p>
-<p>从这里我开始产生一个矛盾：自己有明确想要学的东西（日语、口琴、视频），但是因为我有别的东西要追求，所以没时间做自己喜欢的事。要做的事多和有限的精力之间产生了不可调和的矛盾。现在思考一下我想加入团队的原因，无非：①因为高中怎么学都考不进年级前列，对卷加权这件事没有信心，想建立自己在其他方向的优势；②不想继续卷，觉得团队能带来有意义和丰富的生活。其他原因都能归咎于这两点上——想变强/想过不同的生活。</p>
-<p>但是要加入团队，又不得不经历一个卷的过程，要努力卷进团队，就没有时间去做自己想做的事了。</p>
-<h1 id="步入大学"><a href="#步入大学" class="headerlink" title="步入大学"></a>步入大学</h1><h2 id="确定方向"><a href="#确定方向" class="headerlink" title="确定方向"></a>确定方向</h2><p>来华科以后，新鲜感很快就过去，由于疫情，军训只持续了不到两星期，最后一天坐在潮湿的地面导致我感冒了。这段时间最重要的事就是冲击团队。我同时报名了冰岩、联创和Dian，最开始招新的是冰岩，根据我学习的内容，我选择了程序组。</p>
-<p>那个时候我的基础，就是C语言能写printf和if、for循环的程度，连指针和数组都不会用。是的，美其名曰我暑假自学了C语言，其实就是刷视频，而且还没刷到指针，自己的代码能力几乎为0。Linux知道一些如ls、cd、pwd等的常用指令，自己配好了Vmware虚拟机。还稍微看了一点HTML和Python，但是几乎不会用。我还记得自己当时报名信息里吹得天花乱坠，把会的东西全部展开说，达到凑字数的目的，显得这个人很厉害。笔试时拿到题目，我几乎完全懵逼，但是还是硬生生的都编上去了，所有代码题和程序设计题都不会，就强行整个思路上去。最后笔试通过，国庆那天去了1006面试，为了试图作出“努力”的样子，我中午不到1点就到了，然后坐在那里为面试复习，拿起黑皮《计算机科学导论》，但是说实话什么都看不进去。那边有一两个学长学姐，我也不知道怎么跟他们寒暄。我当时思路清奇，走过去跟lyt学长说：“虽然笔试题我都不会，但我还是尽了最大努力去编答案”，似乎是想体现自己的顽强意志，结果得到了“不是给时间学了吗”的回复。然后面试开始，自我介绍，然后谈了自己会的东西，我刻意强调了自己会的都是很简单的皮毛。最后lyt学长问到如何用Python来把一个字符串逆序，我自然是承认自己不会。我最后还不忘补了一刀“我也存在一些同学在群里说的问题，就是像高中一样啃书学习，缺乏实践”。面试自然而然是被挂掉了。我认识到了自己的菜，所以后边的联创和Dian就鸽了。</p>
-<p>当时我觉得，程序组的题目这么难，我自学一学期后端应该也进不了组，而且我高中数学就不是很好，编程可能比不过一些大佬，还是选一个大家都是零基础的、好入门的方向吧。那时候就在知乎上搜，发现前端学习路线非常明确，好像比较简单，加之我之前有一点点HTML的基础，觉得努力学一学期应该可以冲一冲团队，于是我就立刻决定学前端。那时真的是特别想去团队，不去想自己到底热爱什么，想的是什么方向适合我冲击团队。</p>
-<p>其实大学四年的时间很长，完全可以什么方向都学一些，再看看自己到底喜欢什么方向；或许自己不适合搞开发，那么就应该去读研。但我的决定就是做得这么快。</p>
-<h2 id="生活与学习"><a href="#生活与学习" class="headerlink" title="生活与学习"></a>生活与学习</h2><p>我的大学，从一开始就放弃参加内卷游戏，选择冲击团队之路后，我还希望自己的生活过得丰富一些。于是加入了车协，去骑东湖、骑八分山、骑到武大。武大百团的时候，我还加入了樱之音口琴社（虽然加入后从没参加过活动）。</p>
-<p>不知怎么，现在的我已经没法沉下心来玩很长时间的游戏了，玩的时间一长就会导致做别的事情的时间变少，内心就会产生焦虑。其实我一点也不喜欢这样，初中那时一日十来个小时的游戏生活已经彻底远去。其他时间，就是看一看动漫，比起新番，我倾向于老的经典番剧，名作之壁。暑假看了凉宫、石头门、强风吹拂、排球、轻音、京吹，开学后继续看巨人、狼辛，后来又看了钢炼03、小圆、天元、Fate…</p>
-<p>然后谈谈学习吧，为了抽出来更多时间来学技术，学校排的课我都疯狂水过，还翘了不少课。平时简单自学一下，做作业都是面向答案，考前再突击一下，第一学期除了期中线代挂掉，其他的科目都还能看，总加权也算混进了前50%，自己还是比较满意的。</p>
-<p>但是技术学习，我还存在很多问题。首先我学习主要靠看视频（视频比较系统，看完了可以大概知道一个东西怎么做），而且对于100多集的视频，我一天也就看3~6集，所以学起来的速度非常慢，学完了还缺乏实践。于是就这样，我花了三个多月才完三剑客基础+Markdown，这种学习速度让我变得更加自卑，我不停地安慰自己：“不可心急，日积月累”。我想冲团队的愿望也影响了寝室的氛围，大家或多或少都在学习技术上的东西。</p>
-<p>还有一件不愿提及但是不得不提的事就是摔牙，那时候我也抑郁了一阵子，觉得自己不能啃东西了什么的，但是时间可以冲淡悲伤，现在的我也逐渐接纳了这件事。</p>
-<h2 id="忙碌的寒假"><a href="#忙碌的寒假" class="headerlink" title="忙碌的寒假"></a>忙碌的寒假</h2><p>我把寒假当作自己冲击冰岩的关键期，所以依然努力学习前端技术。我深入了一些JS，照着冰岩往年的笔试题来补充知识点，看了不少博客，最后觉得自己的实践能力不足，所以又复刻了一些页面。</p>
-<p>因为团队是鞭策我学习的重要因素，有时候我会上网搜索信息，读完以后我就会动力十足，继续学习。一次在Github上搜索冰岩，找到了以前夏令营开的仓库，以此我了解到了gc学姐，一次问她js问题的时候，她向我发了一篇博客，是xiong35学长的。当时我就觉得学长很强，这激励了我花了三天时间，去搞了一个WP博客。然后我也加了学长的好友，稍微聊了一些后他鼓励了我，说我春招很有希望进入冰岩。当时的我，确实也有了一些进入冰岩的自信。</p>
-<h2 id="冲冰岩失败"><a href="#冲冰岩失败" class="headerlink" title="冲冰岩失败"></a>冲冰岩失败</h2><p>开学以后，我一直期盼着冰岩的招新信息。这段时间我继续完成寒假的项目，以及看博客补充新的知识。很快招新就来了，因为心里激动，简历我是改了又改，最后我作了个大死，说自己搜冰岩的信息，想借此体现自己的热爱。殊不知，这是给自己挖了个天大的坑。我以为秋招面试被挂能带来一些教训，结果春招时我情商还是老样子。</p>
-<p>就这样我一路杀过简历、面试，实习选题时，我不敢给自己选太难的，就还是老老实实复刻网页。因为实习只能通过很少的人，而实习名单里好像有实力很强的大二学长，我就还是不自信。实习期我疯狂翘课抄作业，硬是把所有Level基本完成了，展示时我想让自己说得更有条理一些，于是准备了稿子（作死*2），展示完后我觉得自己稳了。</p>
-<p>然后就到了组面，在门外，我开始在脑海中构思着自我介绍。我一进门气氛就冷到冰点，然后就是我自顾自地说了很多（作死*3），接着被xiong35学长问到查资料的事，我也没有作出很好的解释。之后面试官问我还有没有什么问题，我反向让他们继续问我，结果被问到了答不上来的问题，场面继续尴尬。后面结局基本就注定了，组面没有通过。</p>
-<h2 id="继续迷茫"><a href="#继续迷茫" class="headerlink" title="继续迷茫"></a>继续迷茫</h2><p>组面结束后的那个下午，我就不带手机绕着主校区走了一圈，以排解心中的苦闷。后来我的舍友A通过了冰岩程序组的考核，舍友B通过了Dian的考核。当时最想进入团队的我就这样落败，而他们怀着试一试的心态参与，就这样顺利进入了，一点都不羡慕是不可能的。</p>
-<p>后来xiong35学长找我谈，说我技术很强，但是因为如上列举的原因没有让我通过，让我找到适合自己的组织。我开始迷茫了，竟然在技术过关的情况下，因为别的因素被团队挂掉，我不太能接受这个结局。而且说我技术很强，那个时候我还真的相信了，开始考虑换方向，甚至是读研——毕竟学习能力强嘛，又何必局限于“简单”的前端。但是我技术真的强吗，也不强。学了五六个月还是这么点水平。想想xiong35学长充沛的精力和很强的学习能力，从零开始40天就能写博客的前后端，我就觉得自己什么都算不上。最后我还是继续学前端，不想浪费基础，而且还可以继续冲击团队。</p>
-<p>可是说实话，我真的喜欢前端吗？不喜欢也不讨厌吧，遇到Bug会抓耳挠腮十分难受，可是解决问题时也会有巨大的成就感。写出赏心悦目的页面也可以给我带来正向反馈，但是也就仅仅是网页而已。现在我最需要的，大概就是要做出一个产品吧？一直孤立地自学，啃厚厚的书籍却什么也不做，又有何乐趣可言呢？总之，我目前还像是停留在“为了学习而学习，为了团队而学习”，而不是“为了需求而学习，一边实践一边学习”。</p>
-<p>这学期的课内学习要比上学期拉跨了，一来是课业明显变得繁重，二是难度开始加大。我的态度也比上学期要松懈了许多，作业中有很多没有搞懂的内容，考试前复习得也不充分，就这样，我的微积分期中考试直接挂科。以后必须要改善学习方法了，不想投入时间又不想挂科的话，必须要依赖网上的“速成课”，或者慕课。</p>
-<p>现在的我，还是想先坚持前端的路线，体验一下开发到底是什么感觉，后续作出的决定，很大程度上与我有没有进入团队有关。之前我想的是本科毕业就去投前端岗，去大厂996，但是最好还是读一下研究生，去外企955吧。</p>
-<p>希望HackDay和暑假的夏令营能带来一些转变吧。</p>
-]]></content>
-      <categories>
-        <category>随笔</category>
-      </categories>
-      <tags>
-        <tag>随笔</tag>
       </tags>
   </entry>
 </search>
