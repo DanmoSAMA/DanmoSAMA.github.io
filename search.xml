@@ -188,8 +188,7 @@
 <li>V：视图（View）：模板代码</li>
 <li>VM：视图模型（ViewModel）：Vue实例对象</li>
 </ul>
-<img src="/2021/06/18/16.%20Vue%E7%AC%94%E8%AE%B0/1.png" width="55%">
-
+<p><img src="/2021/06/18/16.%20Vue%E7%AC%94%E8%AE%B0/1.png"></p>
 <h4 id="数据代理"><a href="#数据代理" class="headerlink" title="数据代理"></a>数据代理</h4><ol>
 <li><p>什么是数据代理？</p>
 <p>（1）数据代理：配置对象data中的数据，会被收集到<code>vm._data</code>中，然后通过<code>Object.defineProperty</code>，让vm拥有data所有的值</p>
@@ -316,10 +315,7 @@
 </li>
 </ul>
 <p>一图胜千言：</p>
-<img src="/2021/06/18/16.%20Vue%E7%AC%94%E8%AE%B0/2.png" width="90%">
-
-
-
+<p><img src="/2021/06/18/16.%20Vue%E7%AC%94%E8%AE%B0/2.png"></p>
 ]]></content>
       <categories>
         <category>vue</category>
