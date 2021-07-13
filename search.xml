@@ -120,11 +120,6 @@
     <content><![CDATA[<p>开始入门Vue！</p>
 <span id="more"></span>
 
-<p>备注区：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 关闭生产提示</span></span><br><span class="line">Vue.config.productionTip = <span class="literal">false</span>;</span><br></pre></td></tr></table></figure>
-
-
-
 <h1 id="入门"><a href="#入门" class="headerlink" title="入门"></a>入门</h1><p>黑马四小时入门视频笔记：</p>
 <h2 id="基本-v-on"><a href="#基本-v-on" class="headerlink" title="基本/v-on"></a>基本/v-on</h2><p>从一个基本程序讲起，它的功能是：点击按钮增加数值</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">&quot;X-UA-Compatible&quot;</span> <span class="attr">content</span>=<span class="string">&quot;IE=edge&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!--引入Vue--&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;app&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--插值表达式--&gt;</span></span><br><span class="line">    &#123;&#123; message + &#x27;*&#x27; + num&#125;&#125;</span><br><span class="line">    <span class="tag">&lt;<span class="name">button</span> @<span class="attr">click</span>=<span class="string">&quot;addNum&quot;</span>&gt;</span>增加number值<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"></span></span><br><span class="line"><span class="javascript">    <span class="comment">// 创建Vue实例对象</span></span></span><br><span class="line"><span class="javascript">    <span class="keyword">let</span> app = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line"><span class="javascript">      <span class="attr">el</span>: <span class="string">&quot;#app&quot;</span>, <span class="comment">// 设置挂载点，可以用多种CSS选择器，推荐ID选择器</span></span></span><br><span class="line"><span class="javascript">      <span class="attr">data</span>: &#123;</span></span><br><span class="line"><span class="javascript">        <span class="attr">message</span>: <span class="string">&quot;Hello World&quot;</span>, <span class="comment">// 设置data，它的属性可以是对象或数组等</span></span></span><br><span class="line"><span class="javascript">        <span class="attr">num</span>: <span class="number">0</span></span></span><br><span class="line"><span class="javascript">      &#125;,</span></span><br><span class="line"><span class="javascript">      <span class="attr">methods</span>: &#123; <span class="comment">// 绑定的方法定义在methods属性中</span></span></span><br><span class="line"><span class="javascript">        <span class="attr">addNum</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">          <span class="built_in">this</span>.num++;</span></span><br><span class="line"><span class="javascript">        &#125;</span></span><br><span class="line"><span class="javascript">      &#125;</span></span><br><span class="line"><span class="javascript">    &#125;)</span></span><br><span class="line"><span class="javascript">  </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
@@ -222,12 +217,12 @@
 <h4 id="事件修饰符"><a href="#事件修饰符" class="headerlink" title="事件修饰符"></a>事件修饰符</h4><ul>
 <li><code>.prevent</code>：阻止默认行为，比如防止点击带href的a标签会跳转至其他页面</li>
 <li><code>.stop</code>：阻止事件冒泡，比如防止点击子元素的事件，冒泡到点击父元素的事件</li>
+<li><code>.once</code>：事件仅可触发一次</li>
 <li><code>keyup.enter</code>：输入回车键，与之类似的还有<code>.esc</code>等，也可以<code>.按键编码</code>（未来版本可能废弃.编码）</li>
+<li><code>.native</code>：该事件为原生DOM事件，不需要配置emit即可触发（见自定义事件）</li>
 </ul>
 <h4 id="表达式操作"><a href="#表达式操作" class="headerlink" title="表达式操作"></a>表达式操作</h4><p>如取反，不需要在methods中定义函数：</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">button</span> @<span class="attr">click</span>=<span class="string">&quot;isHot = !isHot&quot;</span>&gt;</span></span><br><span class="line">    切换天气</span><br><span class="line"><span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-
 
 <h3 id="计算属性"><a href="#计算属性" class="headerlink" title="计算属性"></a>计算属性</h3><ul>
 <li><p>介绍：计算属性是由data中属性计算得来的新属性，vm里有计算属性，但_data中没有</p>
@@ -379,7 +374,7 @@
 <p>再调用该插件：</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;plugin.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">// Vue会帮我们调用插件里的install方法</span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"></span></span><br><span class="line"><span class="javascript">    Vue.use(<span class="string">&#x27;plugin&#x27;</span>);</span></span><br><span class="line"><span class="javascript">    <span class="comment">// 其他操作（包括创建vm），可以console.log插件添加的属性，使用插件的方法等</span></span></span><br><span class="line"><span class="javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-<h2 id="组件化编程"><a href="#组件化编程" class="headerlink" title="组件化编程"></a>组件化编程</h2><h3 id="非单文件"><a href="#非单文件" class="headerlink" title="非单文件"></a>非单文件</h3><p>在真正开发中，不使用非单文件，它仅用于教学和理解原理，单文件的笔记结合了脚手架</p>
+<h2 id="组件基础"><a href="#组件基础" class="headerlink" title="组件基础"></a>组件基础</h2><h3 id="非单文件"><a href="#非单文件" class="headerlink" title="非单文件"></a>非单文件</h3><p>在真正开发中，不使用非单文件，它仅用于教学和理解原理，单文件的笔记结合了脚手架</p>
 <h4 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h4><p>组件：包含页面局部功能的代码和资源的集合，规范要求组件的首字母大写</p>
 <p>组件使用的基本流程：</p>
 <ul>
@@ -435,7 +430,7 @@
 <h4 id="render与h函数"><a href="#render与h函数" class="headerlink" title="render与h函数"></a>render与h函数</h4><p>模板解析器：解析template</p>
 <p>在<code>import Vue from &#39;vue&#39;</code>时，由于没有指定路径，根据package.json，默认引入的是vue.runtime.common.js，该文件的优点是体积很小，但是不含模板解析器，此时默认情况下只能解析.vue文件中的模板，不能解析main.js中的模板</p>
 <p>于是官方提供了render函数，它可以调用模板解析器，使得main.js中的模板可以被解析，并且有了render后，我们无需再在index.html中的div中写<code>&lt;app/&gt;</code></p>
-<h3 id="完整案例"><a href="#完整案例" class="headerlink" title="完整案例"></a>完整案例</h3><p>Hello.vue：</p>
+<h3 id="单文件案例"><a href="#单文件案例" class="headerlink" title="单文件案例"></a>单文件案例</h3><p>Hello.vue：</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/* 配置组件模板结构 */</span><br><span class="line">&lt;template&gt;</span><br><span class="line">	&lt;div&gt;</span><br><span class="line">		&lt;h2 class=&quot;title&quot;&gt;学校名：&#123;&#123;name&#125;&#125;&lt;/h2&gt;</span><br><span class="line">		&lt;h2 class=&quot;info&quot;&gt;学校地址：&#123;&#123;address&#125;&#125;&lt;/h2&gt;	</span><br><span class="line">	&lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">/* 配置组件数据、交互等 */</span><br><span class="line">&lt;script&gt;</span><br><span class="line">	// 暴露组件配置，并没有创建组件(因为没有调用Vue.extend)</span><br><span class="line">	export default &#123;</span><br><span class="line">		// data中存放组件所需数据</span><br><span class="line">		data()&#123; </span><br><span class="line">			return &#123;</span><br><span class="line">				name:&#x27;DanmoSAMA&#x27;,</span><br><span class="line">				address:&#x27;湖北省-武汉市-洪山区-华中科技大学&#x27;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&lt;/script&gt;	</span><br><span class="line"></span><br><span class="line">/* 配置组件样式 */</span><br><span class="line">&lt;style&gt;</span><br><span class="line">	.title&#123;</span><br><span class="line">		color: orange;</span><br><span class="line">	&#125;</span><br><span class="line">	.info&#123;</span><br><span class="line">		color: blue;</span><br><span class="line">	&#125;</span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure>
 
 <p>App.vue：</p>
@@ -447,7 +442,40 @@
 <p>index.html：</p>
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;utf-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">&quot;X-UA-Compatible&quot;</span> <span class="attr">content</span>=<span class="string">&quot;IE=edge&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width,initial-scale=1.0&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;icon&quot;</span> <span class="attr">href</span>=<span class="string">&quot;&lt;%= BASE_URL %&gt;favicon.ico&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>&lt;%= htmlWebpackPlugin.options.title %&gt;<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;app&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<h3 id="ref"><a href="#ref" class="headerlink" title="ref"></a>ref</h3><blockquote>
+
+
+<h3 id="mixin"><a href="#mixin" class="headerlink" title="mixin"></a>mixin</h3><p>minxin（混入）：</p>
+<ul>
+<li><p>功能：把多个组件共用的配置提取成一个混入对象</p>
+</li>
+<li><p>使用：如下</p>
+</li>
+<li><p>原则：如果混合中的属性和方法与组件中data和methods有冲突，组件优先；如果是生命周期钩子有冲突，则同时应用</p>
+</li>
+</ul>
+<p>定义混合：</p>
+<p>mixin.js：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> mixin&#123;</span><br><span class="line">    <span class="attr">data</span>:&#123;</span><br><span class="line">        <span class="attr">public</span>:<span class="string">&#x27;public data&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="attr">methods</span>:&#123;</span><br><span class="line">        <span class="function"><span class="title">showName</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">            alert(<span class="built_in">this</span>.name)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>引入混合：</p>
+<ul>
+<li><p>局部引入：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;mixin&#125; <span class="keyword">from</span> <span class="string">&#x27;../mixin&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span>&#123;</span><br><span class="line">    <span class="function"><span class="title">data</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">return</span>&#123;</span><br><span class="line">            <span class="attr">name</span>: <span class="string">&#x27;淡漠&#x27;</span>,</span><br><span class="line">            <span class="attr">age</span>: <span class="number">19</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">mixins</span>:[mixin]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>全局引入：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;mixin&#125; <span class="keyword">from</span> <span class="string">&#x27;../mixin&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 应用到所有vm和vc上</span></span><br><span class="line">Vue.mixin(mixin);</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="scope"><a href="#scope" class="headerlink" title="scope"></a>scope</h3><p><code>scope</code>写在style标签里，作用：让样式在局部生效，防止冲突</p>
+<p>但是，App组件里定义的样式一般用于所有的组件，因此App组件的style标签不写scope</p>
+<h3 id="书写less"><a href="#书写less" class="headerlink" title="书写less"></a>书写less</h3><p>如果要在style中写less：</p>
+<ul>
+<li>lang=”less”</li>
+<li>下载less-loader，不能下载最新版本，因为新版本用webpack5：<ul>
+<li><code>npm view less-loader versions</code>查看版本</li>
+<li><code>npm i less-loader@7</code>下载7.3版本的less-loader</li>
+</ul>
+</li>
+</ul>
+<h2 id="组件间通信"><a href="#组件间通信" class="headerlink" title="组件间通信"></a>组件间通信</h2><h3 id="ref"><a href="#ref" class="headerlink" title="ref"></a>ref</h3><blockquote>
 <p><code>ref</code>被用来给元素或子组件注册引用（reference）信息。引用信息将会注册在父组件的<code>$refs</code>对象上。如果在普通的DOM元素上使用，引用指向的就是DOM元素；如果用在子组件上，引用就指向组件实例。</p>
 </blockquote>
 <p>ref的使用：</p>
@@ -462,7 +490,7 @@
 </ul>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">	&lt;div&gt;</span><br><span class="line">        &lt;button ref=&quot;btn&quot; @click=&quot;showData&quot;&gt;</span><br><span class="line">        	点我获取焦点</span><br><span class="line">    	&lt;/button&gt;</span><br><span class="line">        </span><br><span class="line">        &lt;input type=&quot;text&quot; ref=&quot;keyWord&quot;&gt;</span><br><span class="line">        </span><br><span class="line">        &lt;School ref=&quot;xuexiao&quot;/&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">	import School from &#x27;./components/School&#x27;</span><br><span class="line">    </span><br><span class="line">    export default&#123;</span><br><span class="line">		components:&#123;School&#125;,</span><br><span class="line">        methods:&#123;</span><br><span class="line">            showData()&#123;</span><br><span class="line">                console.log(this.$refs.btn.innerText);</span><br><span class="line">                this.$refs.keyWord.focus();		 // 获取input的焦点</span><br><span class="line">                console.log(this.$refs.xuexiao); // vc</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
 
-<h3 id="props"><a href="#props" class="headerlink" title="props"></a>props</h3><p>props是properties的简称，它可以限制类型、控制必要性和指定默认值等…</p>
+<h3 id="props"><a href="#props" class="headerlink" title="props"></a>props</h3><p>props是properties的简称，它可以限制类型、控制必要性和指定默认值等，<strong>一般用于父组件向子组件传递数据</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">	&lt;div&gt;</span><br><span class="line">        &lt;h2 class=&quot;name&quot;&gt;学校名：&#123;&#123;name&#125;&#125;&lt;/h2&gt;</span><br><span class="line">        &lt;h2 class=&quot;address&quot;&gt;学校地址：&#123;&#123;address&#125;&#125;&lt;/h2&gt;</span><br><span class="line">        &lt;h4&gt;接收到的名字是&#123;&#123;username&#125;&#125;&lt;/h4&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">	export default&#123;</span><br><span class="line">        data()&#123;</span><br><span class="line">            return&#123;</span><br><span class="line">                name: &#x27;尚硅谷&#x27;,</span><br><span class="line">                address: &#x27;北京&#x27;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        props:&#123;</span><br><span class="line">            userName:&#123; 			  	 // 此处不能和data中的属性名重复，因为它也会成为vc的一个属性</span><br><span class="line">                type: String,     	 // 类型</span><br><span class="line">                required: true,   	 // 必要性</span><br><span class="line">                default: &#x27;DanmoSAMA&#x27; // 默认值</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
 
 <p>如果在School.vue里这样写了，则它的外壳App.vue必须绑定userName属性，否则会在控制台警告，并将默认值填入</p>
@@ -471,6 +499,71 @@
 <p>以上为完整写法，精简写法（更常用）如下：</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 次完整写法</span><br><span class="line">props:&#123;</span><br><span class="line">	userName:String</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 最精简写法</span><br><span class="line">props:[&#x27;userName&#x27;]</span><br></pre></td></tr></table></figure>
 
+<h3 id="组件自定义事件"><a href="#组件自定义事件" class="headerlink" title="组件自定义事件"></a>组件自定义事件</h3><ol>
+<li><p><code>组件自定义事件</code>是一种组件间通信的方式，适用于<strong>子组件=&gt;父组件</strong></p>
+</li>
+<li><p>使用场景：A是父组件，B是子组件，B想给A传数据，那么就要在A中给B绑定自定义事件，事件的回调在A中（<strong>回调在父组件中</strong>）</p>
+</li>
+<li><p>绑定自定义事件：</p>
+<ol>
+<li><p>方法一：在父组件中：<code>&lt;Demo @atguigu=&quot;test&quot;/&gt;</code>或<code>&lt;Demo v-on:atguigu=&quot;test&quot;&gt;</code></p>
+</li>
+<li><p>方法二：在父组件中：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;Demo ref=&quot;demo&quot;/&gt;</span><br><span class="line">	...</span><br><span class="line">	mounted()&#123;</span><br><span class="line">		this.$refs.xxx.$on(&#x27;atguigu&#x27;, this.test);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>若想让自定义事件只能触发一次，可以用<code>once</code>修饰符或<code>$once</code>方法</p>
+</li>
+</ol>
+</li>
+<li><p>触发自定义事件：<code>this.$emit(&#39;atguigu&#39;, 数据)</code></p>
+</li>
+<li><p>解绑自定义事件：<code>this.$off(&#39;atguigu&#39;)</code></p>
+</li>
+<li><p>组件上绑定原生DOM事件：使用<code>native</code>修饰符</p>
+</li>
+<li><p>注意：通过<code>this.$refs.xxx.$on(&#39;atguigu&#39;, 回调)</code>绑定自定义事件时，回调<strong>要么配置在methods中，要么用箭头函数</strong>，否则this指向会出问题</p>
+</li>
+</ol>
+<h3 id="全局事件总线"><a href="#全局事件总线" class="headerlink" title="全局事件总线"></a>全局事件总线</h3><p>可以实现任意组件间的通信。</p>
+<p>在main.js中安装全局事件总线：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//创建vm</span></span><br><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">	<span class="attr">el</span>:<span class="string">&#x27;#app&#x27;</span>,</span><br><span class="line">	<span class="attr">render</span>: <span class="function"><span class="params">h</span> =&gt;</span> h(App),</span><br><span class="line">	<span class="function"><span class="title">beforeCreate</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">		Vue.prototype.$bus = <span class="built_in">this</span> <span class="comment">//安装全局事件总线</span></span><br><span class="line">	&#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>（此处原理暂不深究，先记住这种方法）</p>
+<p><code>$bus</code>是一个东西，它不属于任何组件，A、B是兄弟组件，当A想收到数据时，在A组件里给<code>$bus</code>绑定一个自定义事件demo，此时demo的回调就留在A组件里。B想给A传数据时，触发<code>$bus</code>上的demo自定义事件，并带一些数据过去，则<code>$bus</code>上的demo事件被触发后，触发A中的回调，就把数据带过去了。</p>
+<h1 id="杂项"><a href="#杂项" class="headerlink" title="杂项"></a>杂项</h1><h2 id="关闭生产提示"><a href="#关闭生产提示" class="headerlink" title="关闭生产提示"></a>关闭生产提示</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Vue.config.productionTip = <span class="literal">false</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="webStorage"><a href="#webStorage" class="headerlink" title="webStorage"></a>webStorage</h2><p>浏览器F12-&gt;Application可以查看本地存储</p>
+<ol>
+<li><p>存储内容大小一般支持5MB左右</p>
+</li>
+<li><p>浏览器端通过 <code>Window.sessionStorage</code>和 <code>Window.localStorage</code>属性实现本地存储</p>
+</li>
+<li><p>API：</p>
+<ol>
+<li><p><code>xxxStorage.setItem(&#39;key&#39;, &#39;value&#39;)</code></p>
+<p>将键值对添加到存储中，如果键名存在，则更新其对应值</p>
+<p>如果value不是字符串则浏览器会使用<code>toString()</code>转换，如果传对象，这样会破坏其内部结构</p>
+<p>使用<code>JSON.stringify()</code>，将其转换为字符串同时不破坏内部结构</p>
+</li>
+<li><p><code>xxxStorage.getItem(&#39;key&#39;)</code></p>
+<p>返回键名对应的值，不存在则返回null</p>
+<p>获取对象时，使用<code>JSON.parse()</code></p>
+</li>
+<li><p><code>xxxStorage.getItem(&#39;key&#39;)</code></p>
+<p>删除该键名和键值</p>
+</li>
+<li><p><code>xxxStorage.getItem(&#39;key&#39;)</code></p>
+<p>清空存储中的所有数据</p>
+</li>
+</ol>
+</li>
+<li><p>备注：</p>
+<ol>
+<li>SessionStorage存储的内容随着浏览器窗口关闭而消失</li>
+<li>LocalStorage存储的内容需要手动清除（调API或清空缓存）</li>
+<li><code>JSON.parse(null)</code>的结果是null</li>
+</ol>
+</li>
+</ol>
 ]]></content>
       <categories>
         <category>vue</category>
