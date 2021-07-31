@@ -473,53 +473,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <span id="more"></span>
-
-<p>概念：</p>
-<p><strong><a href="https://link.zhihu.com/?target=https://github.com/Matt-Esch/virtual-dom/blob/master/docs/vnode.md">VNode</a></strong></p>
-<p>VNode 虚拟结点，它可以代表一个真实的 dom 结点。通过 createElement 方法能将 VNode 渲染成 dom 结点。</p>
-<p><a href="https://link.zhihu.com/?target=https://github.com/Matt-Esch/virtual-dom/blob/master/docs/vtext.md">VText</a></p>
-<p>VText 虚拟文本结点，代表了一个真实的文本结点。内容中若有 HTML 会被转义。</p>
-<p><strong><a href="https://link.zhihu.com/?target=https://github.com/Matt-Esch/virtual-dom/blob/master/docs/hooks.md">Hooks</a></strong></p>
-<p>Hooks 钩子方法，如给结点注册 ev-click 等事件。</p>
-<p><strong><a href="https://link.zhihu.com/?target=https://github.com/Matt-Esch/virtual-dom/blob/master/docs/thunk.md">Thunk</a></strong></p>
-<p>Thunk 方法允许开发者参与 diff 过程。如对于某结点，能够预先判断状态不会发生改变，则可以通过此方法，在 diff 过程中直接返回旧 VNode 。</p>
-<p><strong><a href="https://link.zhihu.com/?target=https://github.com/Matt-Esch/virtual-dom/blob/master/docs/widget.md">Widget</a></strong></p>
-<p>Widget 和 Thunk 的作用有点相似，但它参与的是 patch 的过程。它能定制如何渲染成最终的 dom 结点。如要求某个状态只为偶数时，重新渲染等。</p>
-<p><strong>VPatch</strong></p>
-<p>VPatch 权且称之为「补丁对象 」，它描述了对于某个结点的具体操作，比如删除，插入，排序等等。</p>
-<p>三个模块：</p>
-<ul>
-<li>响应式模块：创建JS响应对象，并观察其变化，当使用这些对象的代码运行时，它们会被跟踪</li>
-<li>编译器模块：获得HTML模板，将它们编译成渲染函数，在构建Vue项目时常见</li>
-<li>渲染模块：在网页上渲染组件的三个不同阶段</li>
-</ul>
-<p>三个阶段：</p>
-<ul>
-<li>渲染阶段（Render Pha）：调用render函数，返回vdom结点</li>
-<li>挂载阶段（Mount Pha）：使用vdom，创建网页</li>
-<li>补丁阶段（Patch Pha）：渲染器将旧的vdom和新的vdom进行比较，只更新网页变化部分</li>
-</ul>
-<p>完整流程：</p>
-<ol>
-<li>模板编译器将HTML转换为render函数</li>
-<li>初始化响应对象，使用响应式模块</li>
-<li>进入渲染阶段：调用render函数（它引用了响应对象），观察该响应对象的变化，render函数返回vdom结点</li>
-<li>在挂载阶段，调用mount函数，使用vdom创建web页面</li>
-<li>如果响应对象改变，渲染器再次调用render函数，创建新的vdom，新旧vdom被发送到patch函数中，比较后更新网页</li>
-</ol>
-<p>vdom的优势：</p>
-<ul>
-<li>让组件的渲染逻辑完全从真实dom中解耦，并让它在其他环境中更直接地重用框架运行时</li>
-<li>提供了能力，以编程方式构造、检查、克隆和操作所需dom结构，在实际返回渲染引擎之前</li>
-</ul>
-<p>Vue2 render函数：</p>
-<p>h直接作为渲染函数的参数，可以用它来创造vnode</p>
-<p>vnode接收的第一个参数是类型，第二个参数是对象，包含vnode上的所有数据或属性，第三个参数是vnode的子结点</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">render</span>(<span class="params">h</span>)</span> &#123;					</span><br><span class="line">    <span class="keyword">return</span> h(<span class="string">&#x27;div&#x27;</span>, &#123;</span><br><span class="line">        <span class="attr">attrs</span>: &#123;</span><br><span class="line">            <span class="attr">id</span>: <span class="string">&#x27;foo&#x27;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">on</span>: &#123;</span><br><span class="line">            <span class="attr">click</span>: <span class="built_in">this</span>.onClick</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;, <span class="string">&#x27;hello&#x27;</span>)	<span class="comment">// 字符串代表文本结点，也可以是数组，数组里嵌套更多的h调用</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>render代替template</p>
-
+          <p>深入vue！</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/07/22/21.%20Deep%20Live%20with%20Evan%20You/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -552,7 +514,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/07/19/20.%20koa%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">async、await</a>
+            <a href="/2021/07/19/20.%20koa%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">koa笔记</a>
         </h2>
 
         <div class="post-meta">
