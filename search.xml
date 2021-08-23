@@ -2713,12 +2713,147 @@ window对象
 
 
 <p>总结：</p>
-<pre><code>1. 虚析构或纯虚析构就是用来解决通过父类指针释放子类对象
+<ol>
+<li>虚析构或纯虚析构就是用来解决通过父类指针释放子类对象</li>
+<li>如果子类中没有堆区数据，可以不写为虚析构或纯虚析构</li>
+<li>拥有纯虚析构函数的类也属于抽象类</li>
+</ol>
+<h2 id="5-文件操作"><a href="#5-文件操作" class="headerlink" title="5 文件操作"></a>5 文件操作</h2><p>程序运行时产生的数据都属于临时数据，程序一旦运行结束都会被释放</p>
+<p>通过<strong>文件可以将数据持久化</strong></p>
+<p>C++中对文件操作需要包含头文件 ==&lt; fstream &gt;==</p>
+<p>文件类型分为两种：</p>
+<ol>
+<li><strong>文本文件</strong>     -  文件以文本的<strong>ASCII码</strong>形式存储在计算机中</li>
+<li><strong>二进制文件</strong> -  文件以文本的<strong>二进制</strong>形式存储在计算机中，用户一般不能直接读懂它们</li>
+</ol>
+<p>操作文件的三种流对象:</p>
+<ol>
+<li>ofstream：写操作</li>
+<li>ifstream： 读操作</li>
+<li>fstream ： 读写操作</li>
+</ol>
+<h3 id="5-1文本文件"><a href="#5-1文本文件" class="headerlink" title="5.1文本文件"></a>5.1文本文件</h3><h4 id="5-1-1写文件"><a href="#5-1-1写文件" class="headerlink" title="5.1.1写文件"></a>5.1.1写文件</h4><p>   写文件步骤如下：</p>
+<ol>
+<li><p>包含头文件   </p>
+<p>#include &lt;fstream&gt;</p>
+</li>
+<li><p>创建流对象  </p>
+<p>ofstream ofs;</p>
+</li>
+<li><p>打开文件</p>
+<p>ofs.open(“文件路径”,打开方式);</p>
+</li>
+<li><p>写数据</p>
+<p>ofs &lt;&lt; “写入的数据”;</p>
+</li>
+<li><p>关闭文件</p>
+<p>ofs.close();</p>
+</li>
+</ol>
+<p>其中，2、3可以合并为一步</p>
+<p>文件打开方式：</p>
+<table>
+<thead>
+<tr>
+<th>打开方式</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ios::in</td>
+<td>为读文件而打开文件</td>
+</tr>
+<tr>
+<td>ios::out</td>
+<td>为写文件而打开文件</td>
+</tr>
+<tr>
+<td>ios::ate</td>
+<td>初始位置：文件尾</td>
+</tr>
+<tr>
+<td>ios::app</td>
+<td>追加方式写文件</td>
+</tr>
+<tr>
+<td>ios::trunc</td>
+<td>如果文件存在先删除，再创建</td>
+</tr>
+<tr>
+<td>ios::binary</td>
+<td>二进制方式</td>
+</tr>
+</tbody></table>
+<p><strong>注意：</strong> 文件打开方式可以配合使用，利用|操作符</p>
+<p><strong>例如：</strong>用二进制方式写文件 <code>ios::binary |  ios:: out</code></p>
+<p><strong>示例：</strong></p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std; <span class="comment">// 少了这句会报错</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test01</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  ofstream ofs;</span><br><span class="line">  <span class="comment">//只写文件名，则在当前目录下创建文件</span></span><br><span class="line">  ofs.<span class="built_in">open</span>(<span class="string">&quot;test.txt&quot;</span>, ios::out);</span><br><span class="line">  <span class="comment">//ofstream ofs(&quot;test.txt&quot;, ios::out); 等价于以上写法</span></span><br><span class="line">  </span><br><span class="line">  ofs &lt;&lt; <span class="string">&quot;姓名：张三&quot;</span> &lt;&lt; endl;</span><br><span class="line">  ofs &lt;&lt; <span class="string">&quot;性别：男&quot;</span> &lt;&lt; endl;</span><br><span class="line">  ofs &lt;&lt; <span class="string">&quot;年龄：18&quot;</span> &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">  ofs.<span class="built_in">close</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="built_in">test01</span>();</span><br><span class="line"></span><br><span class="line">  <span class="built_in">system</span>(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-2. 如果子类中没有堆区数据，可以不写为虚析构或纯虚析构
+<p>总结：</p>
+<ul>
+<li>文件操作必须包含头文件 fstream</li>
+<li>读文件可以利用 ofstream  ，或者fstream类</li>
+<li>打开文件时候需要指定操作文件的路径，以及打开方式</li>
+<li>利用&lt;&lt;可以向文件中写数据</li>
+<li>操作完毕，要关闭文件</li>
+</ul>
+<h4 id="5-1-2读文件"><a href="#5-1-2读文件" class="headerlink" title="5.1.2读文件"></a>5.1.2读文件</h4><p>读文件步骤如下：</p>
+<ol>
+<li><p>包含头文件   </p>
+<p>#include &lt;fstream&gt;</p>
+</li>
+<li><p>创建流对象  </p>
+<p>ifstream ifs;</p>
+</li>
+<li><p>打开文件并判断文件是否打开成功</p>
+<p>ifs.open(“文件路径”,打开方式);</p>
+</li>
+<li><p>读数据</p>
+<p>四种方式读取</p>
+</li>
+<li><p>关闭文件</p>
+<p>ifs.close();</p>
+</li>
+</ol>
+<p><strong>示例：</strong></p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std; <span class="comment">// 少了这句会报错</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test01</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  ifstream ifs;</span><br><span class="line">  ifs.<span class="built_in">open</span>(<span class="string">&quot;test.txt&quot;</span>, ios::in);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!ifs.<span class="built_in">is_open</span>()) &#123;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;文件打开失败&quot;</span> &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//第一种方式</span></span><br><span class="line">  <span class="keyword">char</span> buf[<span class="number">1024</span>] = &#123; <span class="number">0</span> &#125;;</span><br><span class="line">  <span class="keyword">while</span> (ifs &gt;&gt; buf) &#123;</span><br><span class="line">    cout &lt;&lt; buf &lt;&lt; endl;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//第二种</span></span><br><span class="line">  <span class="keyword">char</span> buf[<span class="number">1024</span>] = &#123; <span class="number">0</span> &#125;;</span><br><span class="line">  <span class="keyword">while</span> (ifs.<span class="built_in">getline</span>(buf,<span class="built_in"><span class="keyword">sizeof</span></span>(buf))) &#123;</span><br><span class="line">    cout &lt;&lt; buf &lt;&lt; endl;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//第三种</span></span><br><span class="line">  string buf;</span><br><span class="line">  <span class="keyword">while</span> (<span class="built_in">getline</span>(ifs, buf)) &#123;</span><br><span class="line">    cout &lt;&lt; buf &lt;&lt; endl;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//第四种</span></span><br><span class="line">  <span class="keyword">char</span> c;</span><br><span class="line">  <span class="keyword">while</span> ((c = ifs.<span class="built_in">get</span>()) != EOF) &#123;</span><br><span class="line">    cout &lt;&lt; c;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  ifs.<span class="built_in">close</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="built_in">test01</span>();</span><br><span class="line"></span><br><span class="line">  <span class="built_in">system</span>(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-3. 拥有纯虚析构函数的类也属于抽象类
-</code></pre>
+<p>总结：</p>
+<ul>
+<li>读文件可以利用 ifstream  ，或者fstream类</li>
+<li>利用is_open函数可以判断文件是否打开成功</li>
+<li>close 关闭文件 </li>
+</ul>
+<h3 id="5-2-二进制文件"><a href="#5-2-二进制文件" class="headerlink" title="5.2 二进制文件"></a>5.2 二进制文件</h3><p>以二进制的方式对文件进行读写操作，打开方式要指定为 ==ios::binary==</p>
+<h4 id="5-2-1-写文件"><a href="#5-2-1-写文件" class="headerlink" title="5.2.1 写文件"></a>5.2.1 写文件</h4><p>二进制方式写文件主要利用流对象调用成员函数write</p>
+<p>函数原型 ：<code>ostream&amp; write(const char * buffer,int len);</code></p>
+<p>参数解释：字符指针buffer指向内存中一段存储空间。len是读写的字节数</p>
+<p><strong>示例：</strong></p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std; <span class="comment">// 少了这句会报错</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="keyword">char</span> m_Name[<span class="number">64</span>];</span><br><span class="line">  <span class="keyword">int</span> m_Age;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//二进制文件  写文件</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test01</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="comment">//1、包含头文件</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">//2、创建输出流对象</span></span><br><span class="line">  <span class="comment">//可以在这一步就指定打开方式，从而省略open</span></span><br><span class="line">  <span class="function">ofstream <span class="title">ofs</span><span class="params">(<span class="string">&quot;person.txt&quot;</span>, ios::out | ios::binary)</span></span>;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//3、打开文件</span></span><br><span class="line">  <span class="comment">//ofs.open(&quot;person.txt&quot;, ios::out | ios::binary);</span></span><br><span class="line"></span><br><span class="line">  Person p = &#123;<span class="string">&quot;张三&quot;</span>  , <span class="number">18</span>&#125;;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//4、写文件</span></span><br><span class="line">  ofs.<span class="built_in">write</span>((<span class="keyword">const</span> <span class="keyword">char</span> *)&amp;p, <span class="built_in"><span class="keyword">sizeof</span></span>(p)); <span class="comment">// 第一个参数需要强制类型转换为char *</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">//5、关闭文件</span></span><br><span class="line">  ofs.<span class="built_in">close</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="built_in">test01</span>();</span><br><span class="line"></span><br><span class="line">  <span class="built_in">system</span>(<span class="string">&quot;pause&quot;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>总结：</p>
+<ul>
+<li>文件输出流对象 可以通过write函数，以二进制方式写数据</li>
+</ul>
+<h1 id="拓展"><a href="#拓展" class="headerlink" title="拓展"></a>拓展</h1><h2 id="1-命名空间"><a href="#1-命名空间" class="headerlink" title="1 命名空间"></a>1 命名空间</h2><h3 id="1-1-命名空间的介绍"><a href="#1-1-命名空间的介绍" class="headerlink" title="1.1 命名空间的介绍"></a>1.1 命名空间的介绍</h3><p>namespace即命名空间，它的目的是解决同一作用域下同名变量或函数的冲突</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">namespace</span> space_1 &#123;</span><br><span class="line">  <span class="keyword">int</span> num; <span class="comment">// 访问时使用 space_1::num</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> space_2 &#123;</span><br><span class="line">  <span class="keyword">int</span> num; <span class="comment">// 访问时使用 space_2::num</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2-using-namespace"><a href="#1-2-using-namespace" class="headerlink" title="1.2 using namespace"></a>1.2 using namespace</h3><p>如果每一个同名变量都使用 <code>命名空间::变量名</code>的方式去访问，显得冗余</p>
+<p>因此，可以使用 <code>using namespace 命名空间名</code>，指定默认的命名空间，从而当只写变量名时，会访问该命名空间下的变量</p>
+<p>不过，如果某一个函数在某一命名空间下声明，在写实现的时候，必须加命名空间名，否则编译器会认为是一个新的全局函数，而不是对已声明函数的实现</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> myspace &#123;</span><br><span class="line">  <span class="keyword">int</span> size;</span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">double</span> pi = <span class="number">3.14</span>;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">print</span><span class="params">()</span></span>;</span><br><span class="line">  <span class="keyword">namespace</span> inner &#123;</span><br><span class="line">    <span class="keyword">int</span> size; <span class="comment">// 不会冲突</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> myspace;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">myspace::print</span><span class="params">()</span> </span>&#123; cout &lt;&lt; <span class="string">&quot;pi&quot;</span> &lt;&lt; pi &lt;&lt; endl;&#125; <span class="comment">// 必须加命名空间名</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</span><br><span class="line">  size = <span class="number">100</span>; <span class="comment">// 即myspace::size = 100</span></span><br><span class="line">  inner::size = <span class="number">200</span>; <span class="comment">// 此处不可简写</span></span><br><span class="line">  cout &lt;&lt; size &lt;&lt; endl;</span><br><span class="line">  cout &lt;&lt; inner::size &lt;&lt; endl;</span><br><span class="line">  <span class="built_in">print</span>();</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="1-3-std"><a href="#1-3-std" class="headerlink" title="1.3 std"></a>1.3 std</h3><p>常见的cin、cout、endl等对象都定义在std这个命名空间中，因此如果不使用<code>using namespace std</code>，访问他们就必须加std::</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="comment">// using namespace std;</span></span><br><span class="line"><span class="comment">// using namespace myspace;</span></span><br><span class="line"><span class="comment">// 如果同时使用了这两个命名空间，会出现变量名冲突</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> myspace &#123;</span><br><span class="line"> <span class="keyword">int</span> cout = <span class="number">5</span>;</span><br><span class="line"> <span class="keyword">int</span> endl = <span class="number">8</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line"> std::cout &lt;&lt; myspace::cout &lt;&lt; <span class="string">&quot; _This is myspace_ &quot;</span> &lt;&lt; myspace::endl &lt;&lt; std::endl;</span><br><span class="line"> <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
 ]]></content>
       <categories>
         <category>c++</category>
