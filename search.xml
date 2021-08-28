@@ -57,6 +57,484 @@
       </tags>
   </entry>
   <entry>
+    <title>linux笔记——基础篇</title>
+    <url>/2021/08/26/39.Linux%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<h1 id="基础篇"><a href="#基础篇" class="headerlink" title="基础篇"></a>基础篇</h1><h2 id="网络连接的三种方式"><a href="#网络连接的三种方式" class="headerlink" title="网络连接的三种方式"></a>网络连接的三种方式</h2><p>同一网段下（如在192.168.0下）的主机可以互相通信</p>
+<p>三种方式：</p>
+<ul>
+<li><p>桥接模式：虚拟系统可以和外部系统相互通讯，但是容易造成IP冲突</p>
+</li>
+<li><p>NAT模式：网络地址转换模式，虚拟系统可以和外部系统相互通讯（通过代理），不造成IP冲突</p>
+</li>
+<li><p>主机模式：独立系统，不与外部发生联系</p>
+</li>
+</ul>
+<h2 id="Linux目录结构"><a href="#Linux目录结构" class="headerlink" title="Linux目录结构"></a>Linux目录结构</h2><p>特点：</p>
+<ul>
+<li>层级式的树状目录结构</li>
+<li>linux中一切皆文件（linux会把硬件映射成文件来管理）</li>
+</ul>
+<p>具体目录结构：</p>
+<ul>
+<li>/bin ：存放常用命令</li>
+<li>/sbin：存放系统管理员使用的系统管理程序</li>
+<li>/home：存放普通用户的主目录，目录名以用户账号命名</li>
+<li>/root：系统管理员主目录</li>
+<li>/lib：系统开机所需要的动态连接共享库</li>
+<li>/lost+found：一般是空的，系统非法关机后会存放一些文件</li>
+<li>/etc：系统管理所需的<strong>配置文件</strong>(.conf)和子目录</li>
+<li>/usr：存放用户的应用程序和文件</li>
+<li>/usr/local：给主机额外安装软件所存放的目录，一般通过编译源码方式安装的程序</li>
+<li>/opt：给主机额外安装软件所存放的目录</li>
+<li>/boot：存放<strong>启动</strong>linux的核心文件</li>
+<li>/proc：虚拟目录，是系统内存的映射，访问该目录可获取系统信息</li>
+<li>/srv：存放服务启动后需要提取的数据</li>
+<li>/sys：该目录安装了文件系统sysfs</li>
+<li>/tmp：存放临时文件</li>
+<li>/dev：<strong>设备管理器</strong>，把所有硬件用文件形式存储</li>
+<li>/media：linux识别U盘、光驱后，把这些<strong>设备挂载</strong>到该目录下</li>
+<li>/mnt：该目录可<strong>挂载外部的存储</strong>（临时挂载其他文件系统）</li>
+<li>/var：存惯存放经常被修改的目录，包括日志文件</li>
+</ul>
+<h2 id="远程登陆和文件传输"><a href="#远程登陆和文件传输" class="headerlink" title="远程登陆和文件传输"></a>远程登陆和文件传输</h2><ul>
+<li><p>准备工作：下载xshell和xftp</p>
+</li>
+<li><p>使用<code>ifconfig</code>查看虚拟机ip</p>
+</li>
+<li><p>cmd ping 以上ip，确保互通</p>
+</li>
+<li><p>xshell和xftp的操作略，需要时看视频</p>
+</li>
+</ul>
+<h2 id="vi和vim"><a href="#vi和vim" class="headerlink" title="vi和vim"></a>vi和vim</h2><p>常用快捷键（不声明则在标准模式下）：</p>
+<ul>
+<li><code>yy</code>拷贝当前行，<code>5yy</code>拷贝当前行向下的5行，<code>p</code>粘贴至光标处</li>
+<li><code>dd</code>删除当前行，<code>5dd</code>删除当前行向下的5行</li>
+<li>查找：<code>/关键字</code>，回车查找，输入<code>n</code>查找下一个</li>
+<li>设置行号：<code>:set nu</code>和<code>:set nonu</code></li>
+<li><code>G</code>到文档末行，<code>gg</code>到文档首行</li>
+<li><code>u</code>撤销</li>
+</ul>
+<p>tips：</p>
+<ul>
+<li>写文件名到一半，按<code>tab</code>有代码补全功能</li>
+</ul>
+<h2 id="关机重启"><a href="#关机重启" class="headerlink" title="关机重启"></a>关机重启</h2><ul>
+<li><code>shutdown -h now</code>：立刻关机</li>
+<li><code>shutdown -h 1</code>：1分钟后关机</li>
+<li><code>shutdown -r now</code>：立刻重启</li>
+<li><code>halt</code>：关机</li>
+<li><code>reboot</code>：重启</li>
+<li><code>sync</code>：把内存数据同步到磁盘</li>
+</ul>
+<p>tips：</p>
+<ul>
+<li>最好在关机和重启前执行<code>sync</code>，避免内存数据丢失，尽管关机重启前会默认执行sync，但小心为妙</li>
+</ul>
+<h2 id="登录注销"><a href="#登录注销" class="headerlink" title="登录注销"></a>登录注销</h2><ul>
+<li><p><code>su - 用户名</code>：切换用户，如 su - root 切换到管理员；从权限高的用户切换到权限低的用户，不需要密码，反之需要</p>
+</li>
+<li><p>shell（运行级别3，在GUI下不可）下输入<code>logout</code>可以注销用户，使用<code>exit</code>登出的效果类似</p>
+<p>假设第一次登录的用户是tom，tom使用 su - root 切换到管理员，此时logout，会从管理员变为tom，再logout，会退出系统</p>
+</li>
+</ul>
+<h2 id="用户管理"><a href="#用户管理" class="headerlink" title="用户管理"></a>用户管理</h2><h3 id="增删用户"><a href="#增删用户" class="headerlink" title="增删用户"></a>增删用户</h3><ul>
+<li><code>useradd 用户名</code>：创建用户，并在/home下生成同名文件夹，作为该用户的文件夹</li>
+<li><code>useradd -d 指定目录 用户名</code>：把指定目录作为该用户的文件夹</li>
+<li><code>passwd 用户名</code>：设置某一用户的密码，<strong>如果不加用户名，设置的是当前登录用户的密码</strong></li>
+<li><code>userdel 用户名</code>：删除用户，但保留家目录</li>
+<li><code>userdel -r 用户名</code>：删除用户，同时删除家目录</li>
+</ul>
+<p>tips：</p>
+<ul>
+<li>删除用户前，最好使用logout退登，再重新登录root，防止删除普通用户时，这个用户还登陆着（如果从普通用户登录，使用su - root登录管理员，那么该普通用户仍保持着登陆状态）</li>
+<li>不要轻易删除家目录</li>
+</ul>
+<h3 id="查看用户"><a href="#查看用户" class="headerlink" title="查看用户"></a>查看用户</h3><ul>
+<li><code>id 用户名</code>：查看用户信息</li>
+<li><code>whoami/who am i</code>：查看当前第一次登录的用户信息</li>
+</ul>
+<h3 id="用户组"><a href="#用户组" class="headerlink" title="用户组"></a>用户组</h3><h4 id="指令"><a href="#指令" class="headerlink" title="指令"></a>指令</h4><ul>
+<li><p><code>groupadd 组名</code>：新增组</p>
+</li>
+<li><p><code>groupdel 组名</code>：删除组</p>
+</li>
+<li><p><code>useradd -g 用户组 用户名</code>：创建用户，并将其添加至指定用户组</p>
+<p>如果直接使用<code>useradd 用户名</code>，会自动创建和该用户同名的组，再把该用户添加至这个组内</p>
+</li>
+<li><p><code>usermod -g 用户组 用户名</code>：修改用户的组</p>
+</li>
+<li><p><code>usermod -d 目录 用户名</code>：改变该用户登录的初始目录（该用户必须拥有进入该目录的权限）</p>
+</li>
+</ul>
+<h4 id="相关文件"><a href="#相关文件" class="headerlink" title="相关文件"></a>相关文件</h4><ol>
+<li><p>/etc/passwd</p>
+<p>用户的配置文件，记录用户的各种信息</p>
+<p>每行的含义：==用户名:口令:用户标识号:组标识号:注释性描述:主目录:登录Shell==</p>
+<p>Shell：linux内核是不认识各种指令的，可以认为shell帮助翻译了指令。一般情况下，shell是bash</p>
+</li>
+<li><p>/etc/shadow</p>
+<p>口令的配置文件</p>
+<p>每行的含义：==登录名:加密口令:最后一次修改时间:最小时间间隔:最大时间间隔:警告时间:不活动时间:失效时间:标志==</p>
+</li>
+<li><p>/etc/group</p>
+<p>组配置文件，记录linux包含的组的信息</p>
+<p>每行的含义：==组名:口令:组标识号:组内用户列表==</p>
+</li>
+</ol>
+<h3 id="用户级别"><a href="#用户级别" class="headerlink" title="用户级别"></a>用户级别</h3><p>运行级别说明：</p>
+<ul>
+<li><p>0：关机</p>
+</li>
+<li><p>1：单用户（找回丢失密码，视频在下一节，本人跳过）</p>
+</li>
+<li><p>2：多用户状态，无网络服务</p>
+</li>
+<li><p><strong>3：多用户状态，有网络服务</strong></p>
+</li>
+<li><p>4：自定义</p>
+</li>
+<li><p>5：图形界面</p>
+</li>
+<li><p>6：重启</p>
+</li>
+</ul>
+<p>指令：</p>
+<ul>
+<li><p><code>init [0123456]</code>：切换运行级别</p>
+<p>init 0可关机，init 6可重启</p>
+</li>
+<li><p><code>systemctl get-default</code>：查看默认运行级别</p>
+</li>
+<li><p><code>systemctl set-default target名称</code>：修改默认运行级别</p>
+<p>target一般有两种：<code>multi-user.target</code>（级别3）和<code>graphical.target</code></p>
+</li>
+</ul>
+<h2 id="帮助令"><a href="#帮助令" class="headerlink" title="帮助令"></a>帮助令</h2><ul>
+<li><code>man 指令</code>：获得某指令的帮助信息（中文，按<strong>空格</strong>可以直接跳到下一页）</li>
+<li><code>help 指令</code>：获得<strong>shell内置命令</strong>的帮助信息（英文）</li>
+</ul>
+<p>tips：</p>
+<ul>
+<li>linux下，隐藏文件以 . 开头</li>
+<li>指令的选项可以组合使用，如ls -al和ls -la /root</li>
+</ul>
+<h2 id="文件目录"><a href="#文件目录" class="headerlink" title="文件目录"></a>文件目录</h2><h3 id="目录增删"><a href="#目录增删" class="headerlink" title="目录增删"></a>目录增删</h3><ul>
+<li><p><code>ls -h</code>：将文件大小以人类可以读懂的方式显示，如433M（不开-h，默认显示字节数）</p>
+</li>
+<li><p><code>ll</code>：相当于<code>ls -l</code>，显示详细信息。因此也可以写ll -ah</p>
+</li>
+<li><p><code>cd ~</code>或<code>cd</code>：回到自己的家目录，比如你是root，那么cd ~到 /root</p>
+</li>
+<li><p><code>mkdir -p</code>：创建多级目录，如mkdir -p /home/animal/tiger。如果不加-p，linux必须得找到上一级目录才会创建下一级目录，否则会报错</p>
+</li>
+<li><p><code>cp -r 源目录 目标目录</code>：递归复制整个文件夹，如cp -r /home/bbb /opt（将整个目录拷贝到/opt），如果需要强制覆盖不提示，把cp改为<code>\cp</code></p>
+</li>
+<li><p><code>rm -r 目录</code>：递归删除整个目录，如果需要强制删除不提示，再加<code>-f</code>选项</p>
+</li>
+</ul>
+<h3 id="查看文件"><a href="#查看文件" class="headerlink" title="查看文件"></a>查看文件</h3><p>知识补充：</p>
+<ul>
+<li>管道命令：把前一个命令的结果交给下一个命令处理，类似于命令的组合</li>
+</ul>
+<ul>
+<li><p><code>cat -n 文件名</code>：读文件，带行号。比vm读更安全，因为只能读不能改</p>
+</li>
+<li><p><code>more 文件名</code>：读文件，并提供了多种交互功能，交互如下：</p>
+<ul>
+<li>空白：向下翻动一页</li>
+<li>q：离开程序</li>
+</ul>
+</li>
+<li><p><code>cat -n 文件名| more</code>：这是一个管道命令，把cat的结果交给more，好处：使用more也可以显示行号</p>
+</li>
+<li><p><code>less 文件名</code>：交互比more更多，并且<strong>动态读取文本</strong>，而不是一下子把文本全部载入内存，推荐使用</p>
+<ul>
+<li>PgUp：向上翻动一页</li>
+<li>PgDn：向下翻动一页</li>
+<li>/字串：向下搜寻【字串】的功能；n：向下查找；N：向上查找（记住它）</li>
+<li>?字串：向上搜寻【字串】的功能；n：向上查找；N：向下查找</li>
+<li>G：跳转至末尾</li>
+<li>g：跳转至开头</li>
+</ul>
+</li>
+<li><p><code>head 文件</code>：查看文件前10行内容，<code>tail</code>查看后10行内容</p>
+</li>
+<li><p><code>head -n 5 文件</code>：查看文件前5行内容</p>
+</li>
+</ul>
+<h3 id="覆盖追加"><a href="#覆盖追加" class="headerlink" title="覆盖追加"></a>覆盖追加</h3><ul>
+<li><p><code>echo 环境变量</code>：查看环境变量，如echo $PATH</p>
+</li>
+<li><p><code>echo &quot;内容&quot;</code>：将内容打印在屏幕上，如echo “hello”</p>
+</li>
+<li><p><code>tail -f 文件</code>：实时追踪文档的所有更新</p>
+</li>
+</ul>
+<p>&gt;表示覆盖写，&gt;&gt;表示追加写</p>
+<ul>
+<li><code>ls -l &gt; 文件</code>：将列表内容写入文件（目标文件不存在就会自动创建，下同）</li>
+<li><code>cat 文件1 &gt; 文件2</code>：将文件1的内容覆盖到文件2</li>
+<li><code>echo &quot;内容&quot; &gt;&gt; 文件 </code>：将内容追加进文件</li>
+<li><code>cal &gt;&gt; 文件</code>：将日历信息追加进文件</li>
+</ul>
+<h3 id="软链接"><a href="#软链接" class="headerlink" title="软链接"></a>软链接</h3><p><code>软链接</code>又称为符号链接，类似于win中的快捷方式，存放了链接其他文件的路径</p>
+<ul>
+<li><p><code>ln -s 原文件或目录 软链接名</code>：为原文件创建一个软链接</p>
+<p>创建好指向某一目录的软链接，并cd进入软链接以后，使用ls，看到的列表 和 在原目录下看到的列表 一致</p>
+<p>使用pwd查看目录时，仍然看到的是软链接所在目录</p>
+</li>
+<li><p><code>rm 软链接名</code>：删除软链接，如rm /home/myroot</p>
+</li>
+</ul>
+<h3 id="历史"><a href="#历史" class="headerlink" title="历史"></a>历史</h3><ul>
+<li><code>history</code>：显示所有的历史指令</li>
+<li><code>history 10</code>：显示最近使用过的10个指令</li>
+<li><code>!5</code>：执行历史编号为5的指令</li>
+</ul>
+<h2 id="时间日期"><a href="#时间日期" class="headerlink" title="时间日期"></a>时间日期</h2><p>字母注意大小写：</p>
+<ul>
+<li><p><code>date</code>：显示当前时间</p>
+</li>
+<li><p><code>date +%Y </code>：显示当前年份</p>
+</li>
+<li><p><code>date +%m</code>：月份</p>
+</li>
+<li><p><code>date +%d</code>：天</p>
+</li>
+<li><p><code>date &quot;+%Y-%m-%d %H:%M:%S&quot;</code>：显示年月日时分秒</p>
+<p>引号内除第一个加号必需，后面的-和空格只是起修改格式的作用，可以任意修改</p>
+</li>
+</ul>
+<h2 id="搜索查找"><a href="#搜索查找" class="headerlink" title="搜索查找"></a>搜索查找</h2><ul>
+<li><p><code>find 搜索范围 选项</code>： 从指定目录向下递归地遍历各个子目录，将满足条件的文件或目录显示在终端</p>
+<ul>
+<li>-name 按指定文件名查找</li>
+<li>-user 查找属于某一用户名的所有文件</li>
+<li>-size 按照大小查找，+n大于，-n小于，n等于，如<code>find / -size +200M</code></li>
+</ul>
+<p>可以组合使用 | less，避免显示内容过长不便于阅读</p>
+</li>
+<li><p><code>locate 文件名</code>：快速定位文件路径</p>
+<p>locate指令利用事先建立的==系统中所有文件名称及路径的locate数据库==实现快速定位给定的文件，无需遍历整个文件系统</p>
+<p>使用locate之前，先使用<code>updatedb</code>更新locate数据库</p>
+</li>
+<li><p><code>which 指令名</code>：查看指令所在的目录</p>
+</li>
+<li><p><code>gerp 选项 查找内容 文件名</code>：筛选文件的特定内容</p>
+<ul>
+<li>-n：显示匹配行及行号</li>
+<li>-i：忽略字母大小写</li>
+</ul>
+<p>可以直接用grep，也可以用管道指令，如==grep -n “yes” hello.txt== 等价于 ==cat hello.txt | grep “yes”==</p>
+</li>
+</ul>
+<h2 id="压缩和解压"><a href="#压缩和解压" class="headerlink" title="压缩和解压"></a>压缩和解压</h2><ul>
+<li><p><code>gzip 文件</code>：将文件压缩为*.gz文件（将原本的文件变为压缩文件，而不是新生成压缩文件）</p>
+</li>
+<li><p><code>gunzip 压缩文件</code>：解压缩</p>
+</li>
+<li><p><code>zip 选项 压缩后的文件名 目录或文件 </code>：压缩文件，选项-r表示递归压缩</p>
+<p>在“压缩后的文件名”处还可以提供压缩后文件所在的目录</p>
+<p>如zip -r /opt/myhome.zip /home，表示将home目录及其包含的文件和子目录都压缩为/opt目录下的myhome.zip文件，同时原目录/文件被保留，相当于新生成了压缩文件</p>
+</li>
+<li><p><code>unzip 压缩文件</code>：解压缩</p>
+<ul>
+<li><code>unzip -d 目录 压缩文件</code>：指定压缩文件解压缩到某个目录下，如unzip -d /tmp /home/myhome.zip，表示将该压缩文件解压到/tmp目录下</li>
+</ul>
+</li>
+<li><p><code>tar 选项 xxx.tar.gz 打包的内容</code>：打包目录，压缩后的文件格式.tar.gz</p>
+<p>选项：</p>
+<ul>
+<li>-c：产生.tar打包文件</li>
+<li>-v：显示详细信息</li>
+<li>-f：指定压缩后的文件名</li>
+<li>-z：打包同时压缩</li>
+<li>-x：解包.tar文件</li>
+<li>-C：解压到的位置</li>
+</ul>
+<p>案例：</p>
+<ul>
+<li>==tar -zcvf test.tar.gz a.txt b.txt==：压缩多个文件（空格分隔文件名）</li>
+<li>==tar -zcvf test.tar.gz /dir==：压缩某个目录</li>
+<li>==tar -zxvf test.tar.gz==：解压到当前目录</li>
+<li>==tar -zxvf test.tar.gz -C /opt==：解压到/opt目录下</li>
+</ul>
+</li>
+</ul>
+<h2 id="linux组"><a href="#linux组" class="headerlink" title="linux组"></a>linux组</h2><h3 id="修改所有者和所在组"><a href="#修改所有者和所在组" class="headerlink" title="修改所有者和所在组"></a>修改所有者和所在组</h3><p>linux中的<strong>每个文件</strong>有所有者、所在组、其它组的概念</p>
+<ul>
+<li><code>chown 用户名 文件名</code>：修改文件/目录的所有者</li>
+<li><code>chown 用户名:组名 文件/目录</code>：同时修改文件/目录的所有者和所在组</li>
+<li><code>chgrp 组名 文件名</code>：修改文件/目录所在的组</li>
+<li><code>-R</code>：添加这个选项后，如果是目录，其下所有子文件或目录递归生效</li>
+</ul>
+<h3 id="权限"><a href="#权限" class="headerlink" title="权限"></a>权限</h3><p>ls -l后，会看到很多信息，如：==-rwxrw-r– 1 root root 1213 Feb 2 09:39 abc==</p>
+<p>0-9位说明：</p>
+<ul>
+<li>第0位确定文件类型：<ul>
+<li>-：普通文件</li>
+<li>d：目录</li>
+<li>l：软链接</li>
+<li>c：字符设备文件，如鼠标、键盘</li>
+<li>b：块设备文件，如键盘</li>
+</ul>
+</li>
+<li>第1-3位确定所有者的权限，第4-6位确定所属组的权限，第7-9位确定其他用户的权限</li>
+</ul>
+<p>rwx权限：</p>
+<ul>
+<li>到文件：<ul>
+<li>r：可读取、查看</li>
+<li>w：可修改，但不代表可以删除文件，删除文件的前提条件是<strong>用户对文件所在的目录有写权限</strong></li>
+<li>x：可执行</li>
+</ul>
+</li>
+<li>到目录：<ul>
+<li>r：可以用ls查看目录内容</li>
+<li>w：可在目录内创建和删除（也可以删除目录），可以重命名目录</li>
+<li>x：可以进入目录</li>
+</ul>
+</li>
+</ul>
+<p>其他说明：</p>
+<ul>
+<li>1：如果只有一个文件，则该数为1；如果是目录，该数 = 子目录数 + 目录下文件数（只用找一层）</li>
+</ul>
+<h3 id="修改权限"><a href="#修改权限" class="headerlink" title="修改权限"></a>修改权限</h3><p>第一种方式：u：所有者，g：所属组，o：其它组，a：所有人</p>
+<ul>
+<li><code>chmod u=rwx,g=rx,o=x 文件/目录名</code>：设置权限</li>
+<li><code>chmod o+w o+w 文件/目录名</code>：增加权限</li>
+<li><code>chmod a-x 文件/目录名</code>：减少权限</li>
+</ul>
+<p>第二种方式：r=4，w=2，x=1</p>
+<ul>
+<li><code>chmod 751 文件/目录名</code>等价于上方的第一条</li>
+</ul>
+<h1 id="实操篇"><a href="#实操篇" class="headerlink" title="实操篇"></a>实操篇</h1><h2 id="任务调度"><a href="#任务调度" class="headerlink" title="任务调度"></a>任务调度</h2><p>任务调度：指系统在某个时间执行的特定的命令或程序</p>
+<p>分类：</p>
+<ul>
+<li>系统工作：有些重要的工作必须周而复始地进行，如病毒扫描等</li>
+<li>个别用户工作：个别用户可能希望执行某些程序，比如对mysql数据库的备份（也可以只是执行一条简单指令）</li>
+</ul>
+<p>指令：</p>
+<ul>
+<li><code>crontab 选项</code>：<ul>
+<li>-e：编辑crontab定时任务</li>
+<li>-l：查询crontab任务</li>
+<li>-r：删除当前用户所有的crontab任务</li>
+</ul>
+</li>
+</ul>
+<p>操作：</p>
+<ul>
+<li>设置任务调度：crontab -e</li>
+<li>输入任务到调度文件，如：==*/1 * * * * ls -l /etc &gt; /tmp/to.txt==，意思是每分钟执行ls -l /etc…这个指令</li>
+</ul>
+<p>5个占位符的说明：</p>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>含义</th>
+<th>范围</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>第一个 *</td>
+<td>一小时中的第几分钟</td>
+<td>0-59</td>
+</tr>
+<tr>
+<td>第二个 *</td>
+<td>一天中的第几小时</td>
+<td>0-23</td>
+</tr>
+<tr>
+<td>第三个 *</td>
+<td>一个月中的第几天</td>
+<td>1-31</td>
+</tr>
+<tr>
+<td>第四个 *</td>
+<td>一年中的第几月</td>
+<td>1-12</td>
+</tr>
+<tr>
+<td>第五个 *</td>
+<td>一周中的星期几</td>
+<td>0-7（0和7代表星期日）</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>星期几和几号最好不要同时出现，容易使人混乱</p>
+</blockquote>
+<p>特殊符号的说明：</p>
+<table>
+<thead>
+<tr>
+<th>特殊符号</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>*</td>
+<td>代表任何时间</td>
+</tr>
+<tr>
+<td>,</td>
+<td>代表不连续的时间，如”0 8,12,16 * * *”命令，表示在每天8:00，12:00，16:00都执行一次命令</td>
+</tr>
+<tr>
+<td>-</td>
+<td>代表连续的时间，如”0 5 * * 1-6”命令，表示在周一到周六的凌晨5点执行命令</td>
+</tr>
+<tr>
+<td>*/n</td>
+<td>代表每隔多久执行一次，如”*/10 * * * *”命令，表示每隔10分钟就执行一次命令</td>
+</tr>
+</tbody></table>
+]]></content>
+      <categories>
+        <category>linux</category>
+      </categories>
+      <tags>
+        <tag>linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>洛谷——P3884 [JLOI2009]二叉树问题</title>
+    <url>/2021/08/26/38.%E6%B4%9B%E8%B0%B7-P3884%20%5BJLOI2009%5D%E4%BA%8C%E5%8F%89%E6%A0%91%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<p><a href="https://www.luogu.com.cn/problem/P3884">https://www.luogu.com.cn/problem/P3884</a></p>
+<p>LCA：最近公共祖先</p>
+<p>题目代码：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> n, fa[<span class="number">1001</span>], root[<span class="number">1001</span>], son[<span class="number">1001</span>], depth[<span class="number">1001</span>], width[<span class="number">1001</span>];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">lca</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;       <span class="comment">// 求最近公共祖先</span></span><br><span class="line"> <span class="keyword">if</span> (x == y) &#123;</span><br><span class="line">  <span class="keyword">return</span> x;                 <span class="comment">// 两个点如果相同，那么 LCA 就是它本身</span></span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">else</span> <span class="keyword">if</span> (depth[x] == depth[y]) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">lca</span>(fa[x], fa[y]); <span class="comment">// 如果两个点深度相同，就访问它们的父亲结点</span></span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">else</span> <span class="keyword">if</span> (depth[x] &lt; depth[y]) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">lca</span>(x, fa[y]);     <span class="comment">// 如果x的深度小于y的深度，就访问y的父亲结点，直到x y 深度相同</span></span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">lca</span>(fa[x], y);     <span class="comment">// 同理</span></span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line"> cin &gt;&gt; n;</span><br><span class="line"> depth[<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line"> <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; i++) &#123;</span><br><span class="line">  cin &gt;&gt; root[i] &gt;&gt; son[i];</span><br><span class="line">  depth[son[i]] = depth[root[i]] + <span class="number">1</span>;  <span class="comment">// 子结点的深度 = 父亲结点的深度 + 1</span></span><br><span class="line">  fa[son[i]] = root[i];                <span class="comment">// 记录结点的父子关系</span></span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">int</span> x, y;</span><br><span class="line"> cin &gt;&gt; x &gt;&gt; y;</span><br><span class="line"> <span class="keyword">int</span> max_depth = <span class="number">1</span>;     <span class="comment">// 记录深度</span></span><br><span class="line"> <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">  max_depth = <span class="built_in">max</span>(max_depth, depth[i]);</span><br><span class="line">  width[depth[i]]++; <span class="comment">// 记录不同深度的结点个数</span></span><br><span class="line"> &#125;</span><br><span class="line"> cout &lt;&lt; max_depth &lt;&lt; endl;</span><br><span class="line"> <span class="keyword">int</span> max_width = <span class="number">1</span>;</span><br><span class="line"> <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">  max_width = <span class="built_in">max</span>(max_width, width[i]);</span><br><span class="line"> &#125;</span><br><span class="line"> cout &lt;&lt; max_width &lt;&lt; endl;</span><br><span class="line"> <span class="keyword">int</span> k = <span class="built_in">lca</span>(x, y);     <span class="comment">//求 LCA 的结点序号</span></span><br><span class="line"> cout &lt;&lt; (depth[x] - depth[k]) * <span class="number">2</span> + (depth[y] - depth[k]);</span><br><span class="line"> <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>要点：</p>
+<ul>
+<li><p>树的深度、宽度不一定要用递归的方式求</p>
+<p>可以开depth数组记录每个结点所在的层数，并且子结点深度 = 父结点深度 + 1</p>
+<p>之后遍历每个结点就可以得到最大深度</p>
+</li>
+<li><p>宽度同理，开width数组</p>
+<p>遍历每个结点，巧妙的是，根据每个结点的depth值，算出每一层的宽度，并存入width不同的位置</p>
+<p>之后遍历width数组就可以得到最大宽度</p>
+</li>
+<li><p>最后，还需要关注lca（最近公共祖先），根据代码注释来理解</p>
+<p>据说这是一个暴力lca，应该可以有优化版本，在此谢过原题解作者</p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>算法</category>
+        <category>LCA</category>
+      </categories>
+      <tags>
+        <tag>算法</tag>
+        <tag>LCA</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>洛谷——P1322 logo语言</title>
     <url>/2021/08/26/37.%E6%B4%9B%E8%B0%B7-P1322%20logo%E8%AF%AD%E8%A8%80/</url>
     <content><![CDATA[<p><a href="https://www.luogu.com.cn/problem/P1322">https://www.luogu.com.cn/problem/P1322</a></p>
