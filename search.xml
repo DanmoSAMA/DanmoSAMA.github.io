@@ -57,7 +57,7 @@
       </tags>
   </entry>
   <entry>
-    <title>linux笔记——基础篇</title>
+    <title>linux笔记</title>
     <url>/2021/08/26/39.Linux%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[<h1 id="基础篇"><a href="#基础篇" class="headerlink" title="基础篇"></a>基础篇</h1><h2 id="网络连接的三种方式"><a href="#网络连接的三种方式" class="headerlink" title="网络连接的三种方式"></a>网络连接的三种方式</h2><p>同一网段下（如在192.168.0下）的主机可以互相通信</p>
 <p>三种方式：</p>
@@ -123,7 +123,7 @@
 <li><code>shutdown -h now</code>：立刻关机</li>
 <li><code>shutdown -h 1</code>：1分钟后关机</li>
 <li><code>shutdown -r now</code>：立刻重启</li>
-<li><code>halt</code>：关机</li>
+<li><code>halt</code>：关机（使用该命令后虚拟机只是提示cpu已禁用，还需要在虚拟机里手动关机）</li>
 <li><code>reboot</code>：重启</li>
 <li><code>sync</code>：把内存数据同步到磁盘</li>
 </ul>
@@ -210,9 +210,9 @@
 <p>target一般有两种：<code>multi-user.target</code>（级别3）和<code>graphical.target</code></p>
 </li>
 </ul>
-<h2 id="帮助令"><a href="#帮助令" class="headerlink" title="帮助令"></a>帮助令</h2><ul>
-<li><code>man 指令</code>：获得某指令的帮助信息（中文，按<strong>空格</strong>可以直接跳到下一页）</li>
-<li><code>help 指令</code>：获得<strong>shell内置命令</strong>的帮助信息（英文）</li>
+<h2 id="帮助指令"><a href="#帮助指令" class="headerlink" title="帮助指令"></a>帮助指令</h2><ul>
+<li><code>man 指令</code>：获得某指令的帮助信息（按<strong>空格</strong>可以直接跳到下一页）</li>
+<li><code>help 指令</code>：获得<strong>shell内置命令</strong>的帮助信息</li>
 </ul>
 <p>tips：</p>
 <ul>
@@ -220,18 +220,13 @@
 <li>指令的选项可以组合使用，如ls -al和ls -la /root</li>
 </ul>
 <h2 id="文件目录"><a href="#文件目录" class="headerlink" title="文件目录"></a>文件目录</h2><h3 id="目录增删"><a href="#目录增删" class="headerlink" title="目录增删"></a>目录增删</h3><ul>
-<li><p><code>ls -h</code>：将文件大小以人类可以读懂的方式显示，如433M（不开-h，默认显示字节数）</p>
-</li>
-<li><p><code>ll</code>：相当于<code>ls -l</code>，显示详细信息。因此也可以写ll -ah</p>
-</li>
-<li><p><code>cd ~</code>或<code>cd</code>：回到自己的家目录，比如你是root，那么cd ~到 /root</p>
-</li>
-<li><p><code>mkdir -p</code>：创建多级目录，如mkdir -p /home/animal/tiger。如果不加-p，linux必须得找到上一级目录才会创建下一级目录，否则会报错</p>
-</li>
-<li><p><code>cp -r 源目录 目标目录</code>：递归复制整个文件夹，如cp -r /home/bbb /opt（将整个目录拷贝到/opt），如果需要强制覆盖不提示，把cp改为<code>\cp</code></p>
-</li>
-<li><p><code>rm -r 目录</code>：递归删除整个目录，如果需要强制删除不提示，再加<code>-f</code>选项</p>
-</li>
+<li><code>ls -h</code>：将文件大小以人类可以读懂的方式显示，如433M（不开-h，默认显示字节数）</li>
+<li><code>ls -R</code>：递归显示整个目录的内容</li>
+<li><code>ll</code>：相当于<code>ls -l</code>，显示详细信息。因此也可以写ll -ah</li>
+<li><code>cd ~</code>或<code>cd</code>：回到自己的家目录，比如你是root，那么cd ~到 /root</li>
+<li><code>mkdir -p</code>：创建多级目录，如mkdir -p /home/animal/tiger。如果不加-p，linux必须得找到上一级目录才会创建下一级目录，否则会报错</li>
+<li><code>cp -r 源目录 目标目录</code>：递归复制整个文件夹，如cp -r /home/bbb /opt（将整个目录拷贝到/opt），如果需要强制覆盖不提示，把cp改为<code>\cp</code></li>
+<li><code>rm -r 目录</code>：递归删除整个目录，如果需要强制删除不提示，再加<code>-f</code>选项</li>
 </ul>
 <h3 id="查看文件"><a href="#查看文件" class="headerlink" title="查看文件"></a>查看文件</h3><p>知识补充：</p>
 <ul>
@@ -411,7 +406,7 @@
 <ul>
 <li><code>chmod 751 文件/目录名</code>等价于上方的第一条</li>
 </ul>
-<h1 id="实操篇"><a href="#实操篇" class="headerlink" title="实操篇"></a>实操篇</h1><h2 id="任务调度"><a href="#任务调度" class="headerlink" title="任务调度"></a>任务调度</h2><p>任务调度：指系统在某个时间执行的特定的命令或程序</p>
+<h1 id="实操篇"><a href="#实操篇" class="headerlink" title="实操篇"></a>实操篇</h1><h2 id="任务调度"><a href="#任务调度" class="headerlink" title="任务调度"></a>任务调度</h2><h3 id="crontab-任务调度"><a href="#crontab-任务调度" class="headerlink" title="crontab 任务调度"></a>crontab 任务调度</h3><h4 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h4><p>任务调度：指系统在某个时间执行的特定的命令或程序</p>
 <p>分类：</p>
 <ul>
 <li>系统工作：有些重要的工作必须周而复始地进行，如病毒扫描等</li>
@@ -421,10 +416,11 @@
 <ul>
 <li><code>crontab 选项</code>：<ul>
 <li>-e：编辑crontab定时任务</li>
-<li>-l：查询crontab任务</li>
-<li>-r：删除当前用户所有的crontab任务</li>
+<li>-l：查询crontab任务（列出当前有哪些任务调度）</li>
+<li>-r：删除当前用户所有的crontab任务（终止任务调度）</li>
 </ul>
 </li>
+<li><code>service crond restart</code>：重启任务调度</li>
 </ul>
 <p>操作：</p>
 <ul>
@@ -494,6 +490,366 @@
 <td>代表每隔多久执行一次，如”*/10 * * * *”命令，表示每隔10分钟就执行一次命令</td>
 </tr>
 </tbody></table>
+<h4 id="执行脚本"><a href="#执行脚本" class="headerlink" title="执行脚本"></a>执行脚本</h4><p>将命令写入脚本，通过执行脚本来执行命令：</p>
+<ol>
+<li><code>vim xxx.sh</code> 写入内容，如 date &gt;&gt; /home/mycal 和 cal &gt;&gt; /home/mycal</li>
+<li>给xxx.sh增加执行权限，<code>chmod u+x xxx.sh</code></li>
+<li><code>crontab -e</code>增加 ==*/1 * * * * xxx.sh==</li>
+</ol>
+<h3 id="at-定时任务"><a href="#at-定时任务" class="headerlink" title="at 定时任务"></a>at 定时任务</h3><h4 id="介绍-1"><a href="#介绍-1" class="headerlink" title="介绍"></a>介绍</h4><p>简介：</p>
+<ul>
+<li>at命令是<strong>一次性定时计划任务</strong>，at的守护进程atd会以后台模式运行，检查作业队列来运行</li>
+<li>默认情况下，atd守护进程每60s检查作业队列，有作业时，会检查作业运行时间，如果时间与当前时间匹配，则运行此作业</li>
+<li>at命令执行完一个任务后，以后不再执行此任务</li>
+<li>使用at命令时需要保证atd进程的启动，可以使用<code>ps -ef | grep atd</code>来检测atd是否在运行（ps -ef 用于检测当前运行的所有进程）</li>
+</ul>
+<p>at命令格式：</p>
+<ul>
+<li><code>at 选项 时间</code>：添加at任务</li>
+<li><code>atq</code>：查看系统中没有执行的工作任务</li>
+<li><code>atrm 编号</code>：从队列中删除指定编号的任务</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-m</td>
+<td>当指定的任务被完成后，将给用户发送邮件，即使没有标准输出</td>
+</tr>
+<tr>
+<td>-I</td>
+<td>atq的别名</td>
+</tr>
+<tr>
+<td>-d</td>
+<td>atrm的别名</td>
+</tr>
+<tr>
+<td>-v</td>
+<td>显示任务将被执行的时间</td>
+</tr>
+<tr>
+<td>-c</td>
+<td>打印任务的内容到标准输出</td>
+</tr>
+<tr>
+<td>-V</td>
+<td>显示版本信息</td>
+</tr>
+<tr>
+<td>-q &lt;队列&gt;</td>
+<td>使用指定队列</td>
+</tr>
+<tr>
+<td>-f &lt;文件&gt;</td>
+<td>从指定文件读入任务，而不是从标准输入读入</td>
+</tr>
+<tr>
+<td>-t &lt;时间参数&gt;</td>
+<td>以时间参数的形式提交要运行的任务</td>
+</tr>
+</tbody></table>
+<p>at时间定义：</p>
+<img src="https://z3.ax1x.com/2021/08/29/h8QD2t.png" style="zoom: 80%;">
+
+<h4 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h4><p>输入at指令开始编辑后，退出时，按两次<code>ctrl + D</code></p>
+<ul>
+<li><p>案例1：2天后的下午5点执行 ls /home：</p>
+<p>at 5pm +2days</p>
+<p>ls /home</p>
+</li>
+<li><p>案例2：2分钟后，输出时间到指定文件内：</p>
+<p>at now +2minutes</p>
+<p>date &gt; /root/date.log</p>
+</li>
+</ul>
+<h2 id="磁盘分区与挂载"><a href="#磁盘分区与挂载" class="headerlink" title="磁盘分区与挂载"></a>磁盘分区与挂载</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>每块硬盘有多个分区，而linux系统中有多个目录，所谓“挂载”，就是把一个分区和一个目录联系起来</p>
+<p>真正存放数据的是分区，比如在下图中，如果在/home下创建文件，就会把该文件存入分区1</p>
+<img src="https://z3.ax1x.com/2021/08/29/h83RaD.png" style="zoom:80%;">
+
+<p>硬盘说明：</p>
+<ul>
+<li>linux硬盘分为<code>IDE硬盘</code>和<code>SCSI硬盘</code>，目前以后者为主</li>
+<li>IDE硬盘的标识为”hdx~“，SCSI硬盘的标识为”sdx~“</li>
+<li>x为盘号，a为基本盘，b为基本从属盘，c为辅助主盘，d为辅助从属盘（或简单理解为第一个盘、第二个盘…）</li>
+<li>~代表分区，前四个分区用1到4表示，它们是主分区或拓展分区。从5开始是逻辑分区</li>
+</ul>
+<p>指令：</p>
+<ul>
+<li><code>lsblk</code>：查看设备挂载情况</li>
+<li><code>lsblk -f</code>：信息更详细，显示磁盘每个分区对应的40位唯一标识符（当且仅当分区格式化后，才会生成该UUID）</li>
+</ul>
+<h3 id="增加磁盘实例"><a href="#增加磁盘实例" class="headerlink" title="增加磁盘实例"></a>增加磁盘实例</h3><p>步骤：虚拟机添加硬盘→分区→格式化→挂载→设置可以自动挂载</p>
+<ul>
+<li><p>虚拟机添加硬盘：vmware内操作，设置→添加硬盘→一路下一步</p>
+<p>reboot 重启系统才能识别新的硬盘</p>
+</li>
+<li><p>分区：</p>
+<ul>
+<li><p><code>fdisk /dev/sdb</code>开始对/sdb 分区，具体操作：</p>
+<ol>
+<li><p>开始分区后输入n，新增分区</p>
+</li>
+<li><p>然后选择p，分区类型为主分区</p>
+</li>
+<li><p>两次回车，默认剩余全部空间</p>
+</li>
+<li><p>输入w</p>
+</li>
+</ol>
+<p>m：显示命令列表</p>
+<p>p：显示磁盘分区，同 <code>fdisk -l</code></p>
+<p>n：新增分区</p>
+<p>d：删除分区</p>
+<p>w：写入并退出</p>
+<p>q：不保存退出</p>
+</li>
+</ul>
+</li>
+<li><p>格式化磁盘：</p>
+<ul>
+<li><code>mkfs -t ext4 /dev/stb1</code>：格式化命令，其中ext4是分区类型</li>
+</ul>
+</li>
+<li><p>挂载：</p>
+<ul>
+<li><code>mount 设备名称 挂载目录</code>：如 mount /dev/sdb1 /newdisk</li>
+<li><code>umount 设备名称/挂载目录</code>：卸载命令，如 umount /dev/sdb1 或 umount /newdisk</li>
+<li>注意：用命令行挂载，<strong>重启后会失效</strong></li>
+</ul>
+</li>
+<li><p>设置自动挂载：修改/etc/fstab，添加完成后，执行mount -a即刻生效（重启也可生效）</p>
+<p>最前面的UUID也可以填写设备名称，如/dev/sdb1，最后两个参数写 0 0（目前不懂）</p>
+</li>
+</ul>
+<h3 id="取消挂载的情况"><a href="#取消挂载的情况" class="headerlink" title="取消挂载的情况"></a>取消挂载的情况</h3><p>情景：当取消挂载后，原文件夹里的文件访问不到了，如何解决？</p>
+<p>比如说，先创建了dir1，把/dev/sdb1 挂载到dir1上，并在dir1内创建了几个文件。现在取消挂载，再进入dir1，发现找不到这些文件了。</p>
+<p>做法：再创建dir2，把/dev/sdb1 挂载到dir2上，就能找回那些文件了</p>
+<h3 id="转移硬盘的情况"><a href="#转移硬盘的情况" class="headerlink" title="转移硬盘的情况"></a>转移硬盘的情况</h3><p>（以下内容是自己总结的，未必准确，以后可能修改）</p>
+<p>情景：/dev/sdb1此时挂载在dir上，现在我们想让/dev/sdb2挂载到dir上</p>
+<p>做法：</p>
+<ul>
+<li>创建新的目录/new，使用<code>mv /dir/* /new</code>将dir中的内容剪切过去</li>
+<li>取消挂载</li>
+<li>将另一块硬盘挂载到/new目录下</li>
+</ul>
+<h3 id="磁盘情况查询"><a href="#磁盘情况查询" class="headerlink" title="磁盘情况查询"></a>磁盘情况查询</h3><ul>
+<li><p><code>df -h</code>：查询系统整体磁盘使用情况</p>
+</li>
+<li><p><code>du -h</code>：查询指定目录的磁盘占用情况，默认为当前目录</p>
+<p>选项：</p>
+<ul>
+<li>-h：带计量单位</li>
+<li>-a：带文件，而不仅是子目录</li>
+<li>–max-depth=1：子目录深度</li>
+<li>-c：列出明细的同时，增加汇总值</li>
+</ul>
+<p>应用：==du -hac –max-depth=1 /opt==可查询/opt目录的磁盘占用情况，深度为1</p>
+</li>
+</ul>
+<h3 id="磁盘实用指令"><a href="#磁盘实用指令" class="headerlink" title="磁盘实用指令"></a>磁盘实用指令</h3><p>grep可以接收一个正则表达式，以下指令如果不加 wc -l，则页面上只显示文件/文件夹：</p>
+<ol>
+<li><code>ls -l /opt | grep &quot;^-&quot; | wc -l</code>：统计/opt目录下文件的个数</li>
+<li><code>ls -l /opt | grep &quot;^d&quot; | wc -l</code>：统计/opt目录下一级子目录的个数</li>
+<li><code>ls -lR /opt | grep &quot;^-&quot; | wc -l</code>：统计/opt目录下全部文件的个数，包括子目录里的</li>
+<li><code>ls -lR /opt | grep &quot;^d&quot; | wc -l</code>：统计/opt目录下全部目录的个数，包括子目录里的</li>
+<li><code>tree 目录</code>：以树状显示目录结构，需要先<code>yum install tree</code>按照tree指令</li>
+</ol>
+<h2 id="网络配置"><a href="#网络配置" class="headerlink" title="网络配置"></a>网络配置</h2><h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>NAT网络配置原理图：</p>
+<img src="https://z3.ax1x.com/2021/08/29/hGeMJx.png" style="zoom:80%;">
+
+<p>可见，linux虚拟机和vmnet8的ip地址是一样的</p>
+<p>指令：</p>
+<ul>
+<li><code>ipconfig</code>：查看windows的网络配置</li>
+<li><code>ifconfig</code>：查看linux的网络配置</li>
+<li><code>ping 目的主机</code>：测试当前服务器是否可以连接目的主机</li>
+</ul>
+<h3 id="配置静态ip"><a href="#配置静态ip" class="headerlink" title="配置静态ip"></a>配置静态ip</h3><p>默认情况下，linux的ip是自动获取的，每次获取的ip地址可能不一样，因此我们需要指定ip</p>
+<p>指定ip的方法：<code>vi /etc/sysconfig/network-scripts/ifcfg-ens33</code></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">TYPE=&quot;Ethernet&quot;</span><br><span class="line">PROXY_METHOD=&quot;none&quot;</span><br><span class="line">BROWSER_ONLY=&quot;no&quot;</span><br><span class="line"><span class="meta">#</span><span class="bash"> 从DHCP修改为static</span></span><br><span class="line">BOOTPROTO=&quot;static&quot; </span><br><span class="line">DEFROUTE=&quot;yes&quot;</span><br><span class="line">IPV4_FAILURE_FATAL=&quot;no&quot;</span><br><span class="line">IPV6INIT=&quot;yes&quot;</span><br><span class="line">IPV6_AUTOCONF=&quot;yes&quot;</span><br><span class="line">IPV6_DEFROUTE=&quot;yes&quot;</span><br><span class="line">IPV6_FAILURE_FATAL=&quot;no&quot;</span><br><span class="line">IPV6_ADDR_GEN_MODE=&quot;stable-privacy&quot;</span><br><span class="line">NAME=&quot;ens33&quot;</span><br><span class="line">UUID=&quot;49034b55-e0a4-4493-a105-50ab889139ad&quot;</span><br><span class="line">DEVICE=&quot;ens33&quot;</span><br><span class="line">ONBOOT=&quot;yes&quot;</span><br><span class="line"><span class="meta">#</span><span class="bash">IP地址</span></span><br><span class="line">IPADDR=192.168.200.130</span><br><span class="line"><span class="meta">#</span><span class="bash">网关</span></span><br><span class="line">GATEWAY=192.168.200.2</span><br><span class="line"><span class="meta">#</span><span class="bash">域名解析器</span></span><br><span class="line">DNS1=192.168.200.2</span><br></pre></td></tr></table></figure>
+
+<p>修改后，使用<code>service network restart</code>或<code>reboot</code>生效</p>
+<p>同时，还要修改vmware中虚拟网络编辑器中的ip，和xshell的属性（见视频）</p>
+<h3 id="主机名和hosts映射"><a href="#主机名和hosts映射" class="headerlink" title="主机名和hosts映射"></a>主机名和hosts映射</h3><p>Hosts：一个文本文件，用来记录IP和Hostname（主机名）的映射关系</p>
+<h4 id="设置主机名"><a href="#设置主机名" class="headerlink" title="设置主机名"></a>设置主机名</h4><ul>
+<li><code>hostname</code>：查看主机名</li>
+<li><code>vi /etc/hostname</code>：指定主机名</li>
+<li>重启生效</li>
+</ul>
+<h4 id="设置hosts映射"><a href="#设置hosts映射" class="headerlink" title="设置hosts映射"></a>设置hosts映射</h4><p>windows→linux：在C:\Windows\System32\drivers\etc\hosts 文件指定即可，如</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">192.168.200.130 centos7.6</span><br></pre></td></tr></table></figure>
+
+<p>linux→windows：在/etc/hosts 文件指定，如</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">192.168.200.1 win10</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="进程管理"><a href="#进程管理" class="headerlink" title="进程管理"></a>进程管理</h2><p>在linux中，每个执行的程序都称为一个进程，每一个进程都分配一个pid（进程号）</p>
+<p>每个进程都可能以<strong>前台</strong>和<strong>后台</strong>两种方式存在，前台是用户目前的屏幕上可以操作的进程，后台是实际在操作，但屏幕上无法看到的进程</p>
+<p>一般系统发服务通常以后台进程的方式存在，常驻系统中，直到关机才结束</p>
+<h3 id="查看进程"><a href="#查看进程" class="headerlink" title="查看进程"></a>查看进程</h3><p>ps：用于查看目前系统中的进程状况</p>
+<p>选项：</p>
+<ul>
+<li>-a：显示<strong>当前终端</strong>的所有进程信息（不是所有进程）</li>
+<li>-u：以用户的格式显示进程信息</li>
+<li>-x：显示后台进程运行的参数</li>
+<li>-e：显示所有进程</li>
+<li>-f：全格式</li>
+</ul>
+<p>查看有无特定服务：<code>ps -aux | grep xxx</code>，比如查看有无sshd服务</p>
+<h4 id="ps-aux"><a href="#ps-aux" class="headerlink" title="ps -aux"></a>ps -aux</h4><p>使用ps -aux：</p>
+<img src="https://z3.ax1x.com/2021/08/29/hGtEZt.png" style="zoom:80%;">
+
+
+
+<table>
+<thead>
+<tr>
+<th>USER</th>
+<th>PID</th>
+<th>%CPU</th>
+<th>%MEM</th>
+<th>VSZ</th>
+<th>RSS</th>
+<th>TTY</th>
+<th>STAT</th>
+<th>START</th>
+<th>TIME</th>
+<th>COMMAND</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>用户名称</td>
+<td>进程号</td>
+<td>占用CPU百分比</td>
+<td>占物理内存百分比</td>
+<td>占用虚拟内存大小(KB)</td>
+<td>占用物理内存大小(KB)</td>
+<td>终端名称(缩写，因此显示?)</td>
+<td>进程状态</td>
+<td>启动时间</td>
+<td>使用CPU的时间</td>
+<td>启动进程所用的命令和参数(太长会截断显示)</td>
+</tr>
+</tbody></table>
+<p>关于进程状态STAT：</p>
+<ul>
+<li>S：睡眠</li>
+<li>s：表示该进程是会话的先导进程</li>
+<li>N：表示进程比普通优先级更低的优先级</li>
+<li>R：正在运行</li>
+<li>D：短期等待</li>
+<li>Z：僵尸进程</li>
+<li>T：被跟踪或被停止</li>
+</ul>
+<h4 id="ps-ef-与父子进程"><a href="#ps-ef-与父子进程" class="headerlink" title="ps -ef 与父子进程"></a>ps -ef 与父子进程</h4><p><code>ps -ef</code>：以全格式显示当前所有的进程</p>
+<img src="https://z3.ax1x.com/2021/08/29/hGawQg.png" style="zoom:80%;">
+
+<table>
+<thead>
+<tr>
+<th>UID</th>
+<th>PID</th>
+<th>PPID</th>
+<th>C</th>
+<th>STIME</th>
+<th>TTY</th>
+<th>TIME</th>
+<th>CMD</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>用户名称</td>
+<td>进程号</td>
+<td><strong>父进程ID</strong></td>
+<td>见下方</td>
+<td>进程启动的时间</td>
+<td>终端名称</td>
+<td>使用CPU的时间</td>
+<td>启动进程所用的命令和参数</td>
+</tr>
+</tbody></table>
+<p>C：CPU用于计算执行优先级的银子。数值越大，表明进程是CPU密集型运算，优先级降低；数值越小，表面进程是I/O密集型运算，优先级升高</p>
+<p>父子进程：进程存在父子关系，先有父进程，再由父进程创建子进程，如图所示为sshd（远程登陆服务）的相关进程：</p>
+<img src="https://z3.ax1x.com/2021/08/29/hGaUW8.png" style="zoom:80%;">
+
+<h3 id="终止进程"><a href="#终止进程" class="headerlink" title="终止进程"></a>终止进程</h3><p>指令：</p>
+<ul>
+<li><p><code>kill 选项 进程号</code>：通过进程号杀死/终止进程；-9选项 表示强迫进程立即停止</p>
+</li>
+<li><p><code>killall 进程名称</code>：通过进程名杀死进程；同时，杀死父进程时也会杀死它的子进程；支持通配符</p>
+</li>
+</ul>
+<p>最佳实践：</p>
+<ul>
+<li><p>踢掉某个非法登录用户：<code>kill 进程号</code>（查看sshd进程，找到进程号）</p>
+</li>
+<li><p>终止远程登录服务sshd，在适当的时候再次重启sshd服务：</p>
+<p><code>kill sshd 进程号</code></p>
+<p>重启：<code>/bin/systemctl start sshd.service</code></p>
+</li>
+<li><p>终止多个gedit（文本编辑器）：<code>killall gedit</code></p>
+</li>
+<li><p>强制杀死一个终端：<code>kill -9 bash的进程号</code></p>
+</li>
+</ul>
+<h3 id="查看进程树"><a href="#查看进程树" class="headerlink" title="查看进程树"></a>查看进程树</h3><p><code>pstree 选项</code>可以直观查看进程信息</p>
+<p>选项：</p>
+<ul>
+<li>-p：显示进程的PID</li>
+<li>-u：显示进程的所属用户</li>
+</ul>
+<h3 id="动态监控进程"><a href="#动态监控进程" class="headerlink" title="动态监控进程"></a>动态监控进程</h3><p>top指令和ps类似，不同之处是它在执行一段时间后可以更新正在运行的进程</p>
+<p><code>top -d 秒数</code>：指定top每隔几秒更新，默认3秒</p>
+<p>其他选项：</p>
+<ul>
+<li>-i：使top不显示任何闲置或僵尸进程</li>
+<li>-p：通过指定监控进程ID，来仅仅监控某个进程的状态</li>
+</ul>
+<h2 id="服务管理"><a href="#服务管理" class="headerlink" title="服务管理"></a>服务管理</h2><p>后台程序 ~ 服务 ~ 守护进程 </p>
+<h3 id="service"><a href="#service" class="headerlink" title="service"></a>service</h3><p>service管理指令：</p>
+<ul>
+<li><code>service 服务名 [start|stop|restart|reload|status]</code></li>
+<li>在centos7.0后，很多服务不再使用service，而是使用systemctl</li>
+<li>service指令管理的服务在<code>/etc/init.d</code>查看</li>
+</ul>
+<p>查看服务名：</p>
+<ul>
+<li><code>setup</code>：查看全部系统服务</li>
+</ul>
+<h3 id="chkconfig"><a href="#chkconfig" class="headerlink" title="chkconfig"></a>chkconfig</h3><p>chkconfig指令：可以给服务的各个运行级别设置自启动/关闭（在centos7.0后，很多服务使用systemctl，管理的服务在<code>/etc/init.d</code>查看）</p>
+<ul>
+<li><p><code>chkconfig --list [|grep xxx]</code>：查看全部服务</p>
+</li>
+<li><p><code>chkconfig 服务名 --list</code>：查看某项服务</p>
+</li>
+<li><p><code>chkconfig --level 数字 服务名 on/off</code>：对服务的各个运行级别设置自启动/关闭，需要重启生效</p>
+<p>如：chkconfig –level 3 network off</p>
+</li>
+</ul>
+<h3 id="systemctl"><a href="#systemctl" class="headerlink" title="systemctl"></a>systemctl</h3><p>systemctl管理指令：它管理的服务在<code>/usr/lib/systemd/system</code>查看</p>
+<ul>
+<li><code>systemctl [start|stop|restart|status] 服务名</code>：如果选择stop，只是临时关闭服务，下次启动还看is-enabled</li>
+<li><code>systemctl list-unit-files [|grep 服务名]</code>：查看服务开机启动状态</li>
+<li><code>systemctl enable 服务名</code>：设置服务（在3和5级别下）开机启动</li>
+<li><code>systemctl disable 服务名</code>：关闭服务（在3和5级别下）开机启动</li>
+<li><code>systemctl is-enabled 服务名</code>：查询某个服务是否是自启动的</li>
+</ul>
+<h3 id="firewall"><a href="#firewall" class="headerlink" title="firewall"></a>firewall</h3><p>防火墙：外界想要访问服务器ip（比如192.168.200.130）下的某个端口（如111），要先经过防火墙。防火墙将一些端口开放，将一些端口关闭，如果外界访问了关闭的端口，则访问失败</p>
+<p>比如防火墙未开放111端口，此时在windows <code>telnet 192.168.200.130 111</code>会失败 </p>
+<p>防火墙指令：</p>
+<p>输入<code>netstat -anp | more</code>，最前面一列可以看到端口对应的协议</p>
+<ul>
+<li><code>firewall-cmd --permanent --add-port=端口号/协议</code>：打开端口</li>
+<li><code>firewall-cmd --permanent --remove-port=端口号/协议</code>：关闭端口</li>
+<li><code>firewall-cmd --reload</code>：重新载入，使上方指令生效</li>
+<li><code>firewall-cmd --query-port=端口/协议</code>：查询端口是否开放</li>
+</ul>
 ]]></content>
       <categories>
         <category>linux</category>
@@ -503,11 +859,47 @@
       </tags>
   </entry>
   <entry>
+    <title>dart + flutter笔记</title>
+    <url>/2021/08/26/42.flutter%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<blockquote>
+<p>SDK：指一些被软件工程师用于为特定的软件包、软件框架、硬性平台及作业系统等建立应用软件的开发工具之集合。</p>
+</blockquote>
+<h1 id="dart"><a href="#dart" class="headerlink" title="dart"></a>dart</h1><h2 id="入口方法"><a href="#入口方法" class="headerlink" title="入口方法"></a>入口方法</h2><p>Hello world程序的两种写法：</p>
+<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 1</span></span><br><span class="line">main() &#123;</span><br><span class="line">  <span class="built_in">print</span>(<span class="string">&#x27;hello dart&#x27;</span>); <span class="comment">// 分号不可省略</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2</span></span><br><span class="line"><span class="keyword">void</span> main() &#123;</span><br><span class="line">  <span class="built_in">print</span>(<span class="string">&#x27;hello dart&#x27;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><ul>
+<li>可以不预先定义变量类型，用<code>var</code>定义变量，类型会自动推导</li>
+<li>也可以定义变量类型</li>
+</ul>
+<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="keyword">void</span> main() &#123;</span><br><span class="line">  <span class="keyword">var</span> str1 = <span class="string">&#x27;hello dart1&#x27;</span>;</span><br><span class="line">  <span class="keyword">var</span> num1 = <span class="number">123</span>;</span><br><span class="line">  </span><br><span class="line">  <span class="built_in">String</span> str2 = <span class="string">&#x27;hello dart2&#x27;</span>;</span><br><span class="line">  <span class="built_in">int</span> num2 = <span class="number">456</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>dart存在类型校验，类型确定后，再给变量赋值为另一个类型，会报错</li>
+</ul>
+<h3 id="final和const的区别"><a href="#final和const的区别" class="headerlink" title="final和const的区别"></a>final和const的区别</h3><ul>
+<li>final可以开始不赋值，之后只能赋值一次</li>
+<li>final不仅有const的编译时常量的特性，最重要的是它是<code>运行时常量</code>，并且final是惰性初始化，即在运行时第一次使用前才初始化</li>
+</ul>
+<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="keyword">final</span> a = <span class="keyword">new</span> <span class="built_in">DateTime</span>.now(); <span class="comment">// 不报错</span></span><br><span class="line"><span class="keyword">const</span> a = <span class="keyword">new</span> <span class="built_in">DateTime</span>.now(); <span class="comment">// 报错</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="flutter"><a href="#flutter" class="headerlink" title="flutter"></a>flutter</h1>]]></content>
+      <categories>
+        <category>web开发</category>
+        <category>dart/flutter</category>
+      </categories>
+      <tags>
+        <tag>dart</tag>
+        <tag>flutter</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>洛谷——P3884 [JLOI2009]二叉树问题</title>
     <url>/2021/08/26/38.%E6%B4%9B%E8%B0%B7-P3884%20%5BJLOI2009%5D%E4%BA%8C%E5%8F%89%E6%A0%91%E9%97%AE%E9%A2%98/</url>
     <content><![CDATA[<p><a href="https://www.luogu.com.cn/problem/P3884">https://www.luogu.com.cn/problem/P3884</a></p>
 <p>LCA：最近公共祖先</p>
-<p>题目代码：</p>
+<p>代码：</p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> n, fa[<span class="number">1001</span>], root[<span class="number">1001</span>], son[<span class="number">1001</span>], depth[<span class="number">1001</span>], width[<span class="number">1001</span>];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">lca</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;       <span class="comment">// 求最近公共祖先</span></span><br><span class="line"> <span class="keyword">if</span> (x == y) &#123;</span><br><span class="line">  <span class="keyword">return</span> x;                 <span class="comment">// 两个点如果相同，那么 LCA 就是它本身</span></span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">else</span> <span class="keyword">if</span> (depth[x] == depth[y]) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">lca</span>(fa[x], fa[y]); <span class="comment">// 如果两个点深度相同，就访问它们的父亲结点</span></span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">else</span> <span class="keyword">if</span> (depth[x] &lt; depth[y]) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">lca</span>(x, fa[y]);     <span class="comment">// 如果x的深度小于y的深度，就访问y的父亲结点，直到x y 深度相同</span></span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">lca</span>(fa[x], y);     <span class="comment">// 同理</span></span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line"> cin &gt;&gt; n;</span><br><span class="line"> depth[<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line"> <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; i++) &#123;</span><br><span class="line">  cin &gt;&gt; root[i] &gt;&gt; son[i];</span><br><span class="line">  depth[son[i]] = depth[root[i]] + <span class="number">1</span>;  <span class="comment">// 子结点的深度 = 父亲结点的深度 + 1</span></span><br><span class="line">  fa[son[i]] = root[i];                <span class="comment">// 记录结点的父子关系</span></span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">int</span> x, y;</span><br><span class="line"> cin &gt;&gt; x &gt;&gt; y;</span><br><span class="line"> <span class="keyword">int</span> max_depth = <span class="number">1</span>;     <span class="comment">// 记录深度</span></span><br><span class="line"> <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">  max_depth = <span class="built_in">max</span>(max_depth, depth[i]);</span><br><span class="line">  width[depth[i]]++; <span class="comment">// 记录不同深度的结点个数</span></span><br><span class="line"> &#125;</span><br><span class="line"> cout &lt;&lt; max_depth &lt;&lt; endl;</span><br><span class="line"> <span class="keyword">int</span> max_width = <span class="number">1</span>;</span><br><span class="line"> <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">  max_width = <span class="built_in">max</span>(max_width, width[i]);</span><br><span class="line"> &#125;</span><br><span class="line"> cout &lt;&lt; max_width &lt;&lt; endl;</span><br><span class="line"> <span class="keyword">int</span> k = <span class="built_in">lca</span>(x, y);     <span class="comment">//求 LCA 的结点序号</span></span><br><span class="line"> cout &lt;&lt; (depth[x] - depth[k]) * <span class="number">2</span> + (depth[y] - depth[k]);</span><br><span class="line"> <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>要点：</p>
@@ -538,7 +930,7 @@
     <title>洛谷——P1322 logo语言</title>
     <url>/2021/08/26/37.%E6%B4%9B%E8%B0%B7-P1322%20logo%E8%AF%AD%E8%A8%80/</url>
     <content><![CDATA[<p><a href="https://www.luogu.com.cn/problem/P1322">https://www.luogu.com.cn/problem/P1322</a></p>
-<p>题目代码：</p>
+<p>代码：</p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">recursion</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    string s;</span><br><span class="line">    <span class="keyword">char</span> c;</span><br><span class="line">    <span class="keyword">int</span> k = <span class="number">0</span>, l = <span class="number">0</span>, v = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (cin &gt;&gt; c) &#123;</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">&#x27;]&#x27;</span>) <span class="keyword">break</span>;</span><br><span class="line">        cin &gt;&gt; s &gt;&gt; k;      <span class="comment">// s是未读完的字符串，k是前进或倒退的值</span></span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">&#x27;R&#x27;</span>) &#123;</span><br><span class="line">            v = <span class="built_in">getchar</span>();  <span class="comment">// 读&#x27;[&#x27;</span></span><br><span class="line">            l += k * <span class="built_in">recursion</span>();</span><br><span class="line">            v = <span class="built_in">getchar</span>();  <span class="comment">// 读&#x27;]&#x27;</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">&#x27;B&#x27;</span>) &#123;</span><br><span class="line">            v = <span class="built_in">getchar</span>();</span><br><span class="line">            l -= k;</span><br><span class="line">        &#125; </span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">&#x27;F&#x27;</span>) &#123;</span><br><span class="line">            v = <span class="built_in">getchar</span>();</span><br><span class="line">            l += k;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (v == <span class="built_in"><span class="keyword">int</span></span>(<span class="string">&#x27;]&#x27;</span>)) <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> l;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    cout &lt;&lt; <span class="built_in">abs</span>(<span class="built_in">recursion</span>());</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
@@ -565,10 +957,58 @@
       </tags>
   </entry>
   <entry>
+    <title>洛谷——P1381 单词背诵</title>
+    <url>/2021/08/26/40.%E6%B4%9B%E8%B0%B7-P1381%20%E5%8D%95%E8%AF%8D%E8%83%8C%E8%AF%B5/</url>
+    <content><![CDATA[<p><a href="https://www.luogu.com.cn/problem/P1381">https://www.luogu.com.cn/problem/P1381</a></p>
+<p>思路：</p>
+<ul>
+<li><p>首先，字符串哈希可以把一个字符串变成唯一的值，从而匹配每一个单词</p>
+</li>
+<li><p>尺取法：<a href="https://www.cnblogs.com/fusiwei/p/11313817.html">https://www.cnblogs.com/fusiwei/p/11313817.html</a></p>
+<p>它可以避免暴力枚举左右端点，达到优化区间枚举的作用</p>
+<p>本质就是设置l（左端点）和r（右端点），通过移动二者来求出最优解</p>
+</li>
+<li><p>对于本题，整个区间在不断向右移动，只要当前的区间内包括了所有单词就会退出循环，计算并更新ans的值，最后的ans即为最小值</p>
+</li>
+</ul>
+<p>代码：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ll long long</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> maxn = <span class="number">1010</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> maxm = <span class="number">1e5</span> + <span class="number">10</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> mod = <span class="number">1e6</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> p = <span class="number">31</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> INF = <span class="number">1e9</span>;</span><br><span class="line"><span class="keyword">int</span> n, m, cnt, ans = INF, l, r;</span><br><span class="line"><span class="keyword">int</span> a[maxn], b[maxm], appear[mod];</span><br><span class="line"><span class="keyword">char</span> input[<span class="number">110</span>];</span><br><span class="line"><span class="keyword">bool</span> need[mod], v[mod];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Hash</span><span class="params">(<span class="keyword">char</span> s[])</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> len = <span class="built_in">strlen</span>(s);</span><br><span class="line">    ll ret = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= len; i++) &#123;</span><br><span class="line">        ret *= p;</span><br><span class="line">        ret += s[i] - <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">        ret %= mod;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ret %= mod;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;n);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%s&quot;</span>, input);</span><br><span class="line">        a[i] = <span class="built_in">Hash</span>(input);</span><br><span class="line">        need[a[i]] = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;m);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= m; i++) &#123;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%s&quot;</span>, input);</span><br><span class="line">        b[i] = <span class="built_in">Hash</span>(input);</span><br><span class="line">        <span class="keyword">if</span> (need[b[i]] &amp;&amp; !v[b[i]]) &#123;</span><br><span class="line">            <span class="comment">// 课文中的单词和要背的单词匹配</span></span><br><span class="line">            cnt++;</span><br><span class="line">            v[b[i]] = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (!cnt) &#123;</span><br><span class="line">        <span class="built_in">puts</span>(<span class="string">&quot;0&quot;</span>);</span><br><span class="line">        <span class="built_in">puts</span>(<span class="string">&quot;0&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, cnt);         <span class="comment">// 匹配的单词数</span></span><br><span class="line">    &#125;</span><br><span class="line">    l = <span class="number">1</span>, r = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (cnt) &#123;</span><br><span class="line">            <span class="keyword">if</span> (r &gt; m) &#123;             <span class="comment">// 尺取法——右区间</span></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (need[b[r]]) &#123;</span><br><span class="line">                <span class="keyword">if</span> (!appear[b[r]]) &#123; <span class="comment">// 单词第一次出现</span></span><br><span class="line">                    cnt--;</span><br><span class="line">                &#125;</span><br><span class="line">                appear[b[r]]++;      <span class="comment">// 单词出现次数增加</span></span><br><span class="line">            &#125;</span><br><span class="line">            r++;                     <span class="comment">// 下一个单词</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">while</span> (!need[b[l]]) &#123;    <span class="comment">// 目前的单词不是需要背的</span></span><br><span class="line">                l++;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (l &gt; m) &#123;             <span class="comment">// 尺取法——左区间</span></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            ans = <span class="built_in">min</span>(ans, r - l);   <span class="comment">// 更新ans</span></span><br><span class="line">            <span class="keyword">if</span> (appear[b[l]] == <span class="number">1</span>) &#123;</span><br><span class="line">                cnt++;               <span class="comment">// 让右指针继续右移</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (appear[b[l]] &gt;= <span class="number">1</span>) &#123;</span><br><span class="line">                appear[b[l]]--;</span><br><span class="line">                l++;</span><br><span class="line">            &#125; </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>, ans);  <span class="comment">//包含最多要背单词的最短的连续段的长度</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>算法</category>
+      </categories>
+      <tags>
+        <tag>算法</tag>
+        <tag>尺取法</tag>
+        <tag>哈希</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>洛谷——P1090 合并果子</title>
+    <url>/2021/08/26/41.%E6%B4%9B%E8%B0%B7-P1090%20%E5%90%88%E5%B9%B6%E6%9E%9C%E5%AD%90/</url>
+    <content><![CDATA[<p><a href="https://www.luogu.com.cn/problem/P1090">https://www.luogu.com.cn/problem/P1090</a></p>
+<p>代码：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;queue&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</span><br><span class="line"><span class="keyword">int</span> n;</span><br><span class="line"><span class="comment">// 第一个参数是存储对象的类型，第二个参数是存储元素的底层容器，第三个参数是函数对象</span></span><br><span class="line"><span class="comment">// 优先队列，在入队时会自动作排序</span></span><br><span class="line"><span class="comment">// 使用greater，则容器中最小的元素会排在队列前面</span></span><br><span class="line">priority_queue&lt; <span class="keyword">int</span>, vector&lt;<span class="keyword">int</span>&gt;, greater&lt;<span class="keyword">int</span>&gt; &gt; pri_q;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line"> <span class="keyword">int</span> x,b1, b2;</span><br><span class="line"> ll sum = <span class="number">0</span>;</span><br><span class="line"> cin &gt;&gt; n;</span><br><span class="line"> <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">  cin &gt;&gt; x;</span><br><span class="line">  pri_q.<span class="built_in">push</span>(x);</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; i++) &#123;</span><br><span class="line">  b1 = pri_q.<span class="built_in">top</span>();         <span class="comment">// 返回优先队列中第一个元素的引用</span></span><br><span class="line">  pri_q.<span class="built_in">pop</span>();              <span class="comment">// 出队</span></span><br><span class="line">  b2 = pri_q.<span class="built_in">top</span>();</span><br><span class="line">  pri_q.<span class="built_in">pop</span>();</span><br><span class="line">  sum += (b1 + b2);</span><br><span class="line">  pri_q.<span class="built_in">push</span>(b1 + b2);      <span class="comment">// 把合并的堆放回队列</span></span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> cout &lt;&lt; sum &lt;&lt; endl;</span><br><span class="line"> <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>本题使用了STL中的优先队列</p>
+]]></content>
+      <categories>
+        <category>算法</category>
+        <category>队列</category>
+      </categories>
+      <tags>
+        <tag>算法</tag>
+        <tag>优先队列</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>洛谷——AHOI2017初中组 rexp</title>
     <url>/2021/08/26/36.%E6%B4%9B%E8%B0%B7-AHOI2017%E5%88%9D%E4%B8%AD%E7%BB%84rexp/</url>
     <content><![CDATA[<p><a href="https://www.luogu.com.cn/problem/P3719">https://www.luogu.com.cn/problem/P3719</a></p>
-<p>题目代码：</p>
+<p>代码：</p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">p</span><span class="params">(<span class="keyword">int</span> j)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">char</span> c;</span><br><span class="line">    <span class="keyword">while</span> (cin &gt;&gt; c &amp;&amp; c) &#123;</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">&#x27;a&#x27;</span>) j++;</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">&#x27;(&#x27;</span>) j = j + <span class="built_in">p</span>(<span class="number">0</span>);</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">&#x27;|&#x27;</span>) <span class="keyword">return</span> <span class="built_in">max</span>(j, <span class="built_in">p</span>(<span class="number">0</span>));</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">&#x27;)&#x27;</span>) <span class="keyword">return</span> j;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> j;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    cout &lt;&lt; <span class="built_in">p</span>(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>不应该被“先算带括号的序列”误导，只需把括号里的部分视作一个整体即可。</p>
@@ -593,7 +1033,7 @@
     <title>洛谷——UVA540 团体队列</title>
     <url>/2021/08/25/35.%E6%B4%9B%E8%B0%B7-UVA540%20%E5%9B%A2%E4%BD%93%E9%98%9F%E5%88%97/</url>
     <content><![CDATA[<p><a href="https://www.luogu.com.cn/problem/UVA540">https://www.luogu.com.cn/problem/UVA540</a></p>
-<p>题目代码：</p>
+<p>代码：</p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;queue&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;map&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAX 1001</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> t;</span><br><span class="line">    <span class="keyword">int</span> m = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (cin &gt;&gt; t &amp;&amp; t) &#123;</span><br><span class="line">        map&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; v;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= t; i++) &#123;</span><br><span class="line">            <span class="keyword">int</span> n;</span><br><span class="line">            cin &gt;&gt; n;</span><br><span class="line">            <span class="keyword">while</span> (n--) &#123;</span><br><span class="line">                <span class="keyword">int</span> x;</span><br><span class="line">                cin &gt;&gt; x;</span><br><span class="line">                v[x] = i;     <span class="comment">// 存队列编号</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;Scenario #&quot;</span> &lt;&lt; m++ &lt;&lt; endl;</span><br><span class="line">        queue&lt;<span class="keyword">int</span>&gt; team[MAX]; <span class="comment">// MAX支队伍</span></span><br><span class="line">        queue&lt;<span class="keyword">int</span>&gt; total;     <span class="comment">// 存队号</span></span><br><span class="line">        string op;</span><br><span class="line">        <span class="keyword">while</span> (cin &gt;&gt; op) &#123;</span><br><span class="line">            <span class="keyword">if</span> (op == <span class="string">&quot;STOP&quot;</span>)  <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">if</span> (op == <span class="string">&quot;ENQUEUE&quot;</span>) &#123;</span><br><span class="line">                <span class="keyword">int</span> x;</span><br><span class="line">                cin &gt;&gt; x;</span><br><span class="line">                <span class="keyword">int</span> t = v[x]; <span class="comment">// 读取队列编号</span></span><br><span class="line">                <span class="keyword">if</span> (team[t].<span class="built_in">empty</span>()) &#123;</span><br><span class="line">                    total.<span class="built_in">push</span>(t);</span><br><span class="line">                &#125;</span><br><span class="line">                team[t].<span class="built_in">push</span>(x);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (op == <span class="string">&quot;DEQUEUE&quot;</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (!total.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">                    <span class="keyword">int</span> t = total.<span class="built_in">front</span>();</span><br><span class="line">                    cout &lt;&lt; team[t].<span class="built_in">front</span>() &lt;&lt; endl;</span><br><span class="line">                    team[t].<span class="built_in">pop</span>();</span><br><span class="line">                    <span class="keyword">if</span> (team[t].<span class="built_in">empty</span>()) &#123;</span><br><span class="line">                    <span class="comment">// 队伍空了，则将队伍编号从total中移除</span></span><br><span class="line">                        total.<span class="built_in">pop</span>();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        cout &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>总结：</p>
