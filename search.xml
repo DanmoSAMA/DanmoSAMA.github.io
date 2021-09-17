@@ -8851,4 +8851,101 @@ window对象
         <tag>c++</tag>
       </tags>
   </entry>
+  <entry>
+    <title>React.js笔记</title>
+    <url>/2021/09/04/43.react%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<h1 id="旧版"><a href="#旧版" class="headerlink" title="旧版"></a>旧版</h1><h2 id="hello-world"><a href="#hello-world" class="headerlink" title="hello world"></a>hello world</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=&quot;en&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">  &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="line">  &lt;title&gt;hello_react&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">  &lt;!-- 准备好一个“容器” --&gt;</span><br><span class="line">  &lt;div id=&quot;test&quot;&gt;&lt;/div&gt;</span><br><span class="line"></span><br><span class="line">  &lt;!-- 引入react核心库，必须第一个引入 --&gt;</span><br><span class="line">  &lt;script type=&quot;text/javascript&quot; src=&quot;../js/react.development.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">  &lt;!-- 引入react-dom，用于支持react操作DOM --&gt;</span><br><span class="line">  &lt;script type=&quot;text/javascript&quot; src=&quot;../js/react-dom.development.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">  &lt;!-- 引入babel，用于将jsx转为js --&gt;</span><br><span class="line">  &lt;script type=&quot;text/javascript&quot; src=&quot;../js/babel.min.js&quot;&gt;&lt;/script&gt;</span><br><span class="line"></span><br><span class="line">  &lt;script type=&quot;text/babel&quot;&gt; /* 此处一定要写babel */</span><br><span class="line">    //1.创建虚拟DOM</span><br><span class="line">    const VDOM = &lt;h1&gt;Hello,React&lt;/h1&gt; /* 此处一定不要写引号，因为不是字符串 */</span><br><span class="line">    //2.渲染虚拟DOM到页面</span><br><span class="line">    ReactDOM.render(VDOM,document.getElementById(&#x27;test&#x27;))</span><br><span class="line">  &lt;/script&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="vdom"><a href="#vdom" class="headerlink" title="vdom"></a>vdom</h2><h3 id="vdom介绍"><a href="#vdom介绍" class="headerlink" title="vdom介绍"></a>vdom介绍</h3><p>关于虚拟DOM：</p>
+<ol>
+<li>本质是Object类型的对象</li>
+<li>虚拟DOM比较“轻”，真实DOM比较“重”，因为虚拟DOM是React内部在用，无需真实DOM上那么多的属性。</li>
+<li>虚拟DOM最终会被React转化为真实DOM，呈现在页面上。</li>
+</ol>
+<h3 id="vdom的创建方式"><a href="#vdom的创建方式" class="headerlink" title="vdom的创建方式"></a>vdom的创建方式</h3><p>使用jsx：语法糖</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;script type=&quot;text/babel&quot;&gt;</span><br><span class="line">  const VDOM = (</span><br><span class="line">  &lt;h1 id=&quot;title&quot;&gt;</span><br><span class="line">    &lt;span&gt;Hello,React&lt;/span&gt;</span><br><span class="line">  &lt;/h1&gt;</span><br><span class="line">  )</span><br><span class="line">  ReactDOM.render(VDOM,document.getElementById(&#x27;test&#x27;))</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p>使用js：不便于处理嵌套标签</p>
+<p>bable会把jsx翻译成js，即转化为下方的代码↓</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;script type=&quot;text/javascript&quot; &gt; </span><br><span class="line">  const VDOM = React.createElement(&#x27;h1&#x27;,&#123;id:&#x27;title&#x27;&#125;,React.createElement(&#x27;span&#x27;,&#123;&#125;,&#x27;Hello,React&#x27;))</span><br><span class="line">  ReactDOM.render(VDOM,document.getElementById(&#x27;test&#x27;))</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="jsx语法"><a href="#jsx语法" class="headerlink" title="jsx语法"></a>jsx语法</h2><p>jsx语法规则：</p>
+<ol>
+<li>定义虚拟DOM时，不要写引号</li>
+<li>标签中混入<strong>JS表达式</strong>时要用{}</li>
+<li>样式的类名指定不要用class，要用className</li>
+<li>内联样式，要用<code>style=&#123;&#123;key:value&#125;&#125;</code>的形式去写</li>
+<li>只有一个根标签</li>
+<li><strong>标签必须闭合</strong></li>
+<li>标签首字母<br>(1) 若小写字母开头，则将该标签转为html中同名元素，若html中无该标签对应的同名元素，则报错<br>(2) 若大写字母开头，react就去渲染对应的组件，若组件没有定义，则报错</li>
+</ol>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> myId = <span class="string">&#x27;aTgUiGu&#x27;</span></span><br><span class="line"><span class="keyword">const</span> myData = <span class="string">&#x27;HeLlo,rEaCt&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//1.创建虚拟DOM</span></span><br><span class="line"><span class="keyword">const</span> VDOM = (</span><br><span class="line">  <span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">h2</span> <span class="attr">className</span>=<span class="string">&quot;title&quot;</span> <span class="attr">id</span>=<span class="string">&#123;myId.toLowerCase()&#125;</span>&gt;</span></span></span><br><span class="line"><span class="xml">      <span class="tag">&lt;<span class="name">span</span> <span class="attr">style</span>=<span class="string">&#123;&#123;color:</span>&#x27;<span class="attr">white</span>&#x27;,<span class="attr">fontSize:</span>&#x27;<span class="attr">29px</span>&#x27;&#125;&#125;&gt;</span>&#123;myData.toLowerCase()&#125;<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">h2</span> <span class="attr">className</span>=<span class="string">&quot;title&quot;</span> <span class="attr">id</span>=<span class="string">&#123;myId.toUpperCase()&#125;</span>&gt;</span></span></span><br><span class="line"><span class="xml">      <span class="tag">&lt;<span class="name">span</span> <span class="attr">style</span>=<span class="string">&#123;&#123;color:</span>&#x27;<span class="attr">white</span>&#x27;,<span class="attr">fontSize:</span>&#x27;<span class="attr">29px</span>&#x27;&#125;&#125;&gt;</span>&#123;myData.toLowerCase()&#125;<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span>/&gt;</span></span></span><br><span class="line"><span class="xml">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 注意&#123;&#125;内必须是表达式，语句是不可以的</span></span><br><span class="line"><span class="keyword">const</span> VDOM = (</span><br><span class="line">  <span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">h1</span>&gt;</span>前端js框架列表<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span></span><br><span class="line"><span class="xml">      &#123;</span></span><br><span class="line"><span class="xml">        data.map((item,index)=&gt;&#123;</span></span><br><span class="line"><span class="xml">          return <span class="tag">&lt;<span class="name">li</span> <span class="attr">key</span>=<span class="string">&#123;index&#125;</span>&gt;</span>&#123;item&#125;<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span></span><br><span class="line"><span class="xml">        &#125;)</span></span><br><span class="line"><span class="xml">      &#125;</span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span></span><br><span class="line"><span class="xml">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">)</span><br><span class="line"><span class="comment">//2.渲染虚拟DOM到页面</span></span><br><span class="line">ReactDOM.render(VDOM,<span class="built_in">document</span>.getElementById(<span class="string">&#x27;test&#x27;</span>))</span><br></pre></td></tr></table></figure>
+
+<h2 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h2><h3 id="函数式组件"><a href="#函数式组件" class="headerlink" title="函数式组件"></a>函数式组件</h3><p>执行了<code>ReactDOM.render(&lt;MyComponent/&gt;...</code>之后，发生了什么？</p>
+<ol>
+<li>React解析组件标签，找到了MyComponent组件。</li>
+<li>发现组件是使用函数定义的，随后<strong>调用该函数</strong>，将返回的虚拟DOM转为真实DOM，随后呈现在页面中。</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">//1.创建函数式组件</span><br><span class="line">function MyComponent()&#123;</span><br><span class="line">  console.log(this); //此处的this是undefined，因为babel编译后开启了严格模式</span><br><span class="line">  return &lt;h2&gt;我是用函数定义的组件(适用于【简单组件】的定义)&lt;/h2&gt;</span><br><span class="line">&#125;</span><br><span class="line">//2.渲染组件到页面</span><br><span class="line">ReactDOM.render(&lt;MyComponent/&gt;,document.getElementById(&#x27;test&#x27;))</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="类式组件"><a href="#类式组件" class="headerlink" title="类式组件"></a>类式组件</h3><p>执行了<code>ReactDOM.render(&lt;MyComponent/&gt;...</code>之后，发生了什么？</p>
+<ol>
+<li>React解析组件标签，找到了MyComponent组件。</li>
+<li>发现组件是使用类定义的，随后<strong>new出该类的实例</strong>，并通过该实例调用到原型上的render方法。</li>
+<li>将render返回的虚拟DOM转为真实DOM，随后呈现在页面中。</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">//1.创建类式组件</span><br><span class="line">class MyComponent extends React.Component &#123;</span><br><span class="line">  render()&#123;</span><br><span class="line">    //render是放在哪里的？—— MyComponent的原型对象上，供实例使用。</span><br><span class="line">    //render中的this是谁？—— MyComponent的实例对象 &lt;=&gt; 也叫MyComponent组件实例对象。</span><br><span class="line">    console.log(&#x27;render中的this:&#x27;,this);</span><br><span class="line">    return &lt;h2&gt;我是用类定义的组件(适用于【复杂组件】的定义)&lt;/h2&gt;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">//2.渲染组件到页面</span><br><span class="line">ReactDOM.render(&lt;MyComponent/&gt;,document.getElementById(&#x27;test&#x27;))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="组件实例三大属性"><a href="#组件实例三大属性" class="headerlink" title="组件实例三大属性"></a>组件实例三大属性</h3><h4 id="state"><a href="#state" class="headerlink" title="state"></a>state</h4><p><strong>理解：</strong></p>
+<ol>
+<li><p>state是组件对象最重要的属性, 值是对象(可以包含多个key-value的组合)</p>
+</li>
+<li><p>组件被称为”状态机”, 通过更新组件的state来更新对应的页面显示(重新渲染组件)</p>
+</li>
+</ol>
+<p><strong>this指向问题：</strong></p>
+<p>首先需要明确的内容：</p>
+<ul>
+<li>构造器内的this指向实例对象</li>
+<li>render内的this也指向实例对象</li>
+<li>class内开启局部严格模式，类其余方法内的this为undefined</li>
+</ul>
+<p>现在关注render函数：</p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">h1</span> <span class="attr">onClick</span>=<span class="string">&#123;this.changeWeather&#125;</span>&gt;</span>今天天气很&#123;isHot ? &#x27;炎热&#x27; : &#x27;凉爽&#x27;&#125;，&#123;wind&#125;<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>如果没有上方的bind语句，在点击时以普通函数的方式触发changeWeather</p>
+<p>故changeWeather内的this指向window，又因为局部的严格模式，所以this指向undefined，访问它的state就会报错</p>
+<p>所以要使用bind，将weather实例对象绑定给changeWeather方法，使得this指向正确</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">class Weather extends React.Component&#123;</span><br><span class="line">  //构造器调用1次</span><br><span class="line">  constructor(props)&#123;</span><br><span class="line">    super(props)</span><br><span class="line">    //初始化状态</span><br><span class="line">    this.state = &#123;isHot:false,wind:&#x27;微风&#x27;&#125;</span><br><span class="line">    //解决changeWeather中this指向问题</span><br><span class="line">    //将changeWeather方法绑定到实例对象上，以后在调用该方法时，其中的this指向实例对象</span><br><span class="line">    this.changeWeather = this.changeWeather.bind(this)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  //render调用1+n次（1表示初始化 n是状态更新的次数）</span><br><span class="line">  render()&#123;</span><br><span class="line">    const &#123;isHot,wind&#125; = this.state</span><br><span class="line">    return &lt;h1 onClick=&#123;this.changeWeather&#125;&gt;今天天气很&#123;isHot ? &#x27;炎热&#x27; : &#x27;凉爽&#x27;&#125;，&#123;wind&#125;&lt;/h1&gt;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  //changeWeather调用几次？ ———— 点几次调几次</span><br><span class="line">  changeWeather()&#123;</span><br><span class="line">    //changeWeather放在哪里？ ———— Weather的原型对象上，供实例使用</span><br><span class="line">    //由于changeWeather是作为onClick的回调，所以不是通过实例调用的，是直接调用</span><br><span class="line"></span><br><span class="line">    console.log(&#x27;changeWeather&#x27;);</span><br><span class="line">    //获取原来的isHot值</span><br><span class="line">    const isHot = this.state.isHot</span><br><span class="line">    //注意：状态必须通过setState进行更新,且更新是一种合并，不是替换。</span><br><span class="line">    this.setState(&#123;isHot:!isHot&#125;)</span><br><span class="line">    console.log(this);</span><br><span class="line"></span><br><span class="line">    //注意：状态(state)不可直接更改</span><br><span class="line">    //this.state.isHot = !isHot //这是错误的写法</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>总结：</strong></p>
+<ol>
+<li><p>组件中render方法中的this为组件实例对象</p>
+</li>
+<li><p>组件自定义的方法中this为undefined，如何解决？</p>
+<ol>
+<li>强制绑定this: 通过函数对象的bind()</li>
+<li>箭头函数</li>
+</ol>
+</li>
+<li><p>状态数据，不能直接修改或更新</p>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>web开发</category>
+        <category>react</category>
+      </categories>
+      <tags>
+        <tag>react</tag>
+      </tags>
+  </entry>
 </search>
