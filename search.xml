@@ -57,17 +57,224 @@
       </tags>
   </entry>
   <entry>
+    <title></title>
+    <url>/2021/09/20/48.makefile/</url>
+    <content><![CDATA[<p>参考资料：<br><a href="https://www.ruanyifeng.com/blog/2015/02/make.html">https://www.ruanyifeng.com/blog/2015/02/make.html</a><br><a href="http://c.biancheng.net/makefile/">http://c.biancheng.net/makefile/</a></p>
+<p>这篇笔记大多为整合阮一峰老师的博客所得，这样更便于我的理解</p>
+<h1 id="makefile"><a href="#makefile" class="headerlink" title="makefile"></a>makefile</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><blockquote>
+<p>在软件开发中，make是一个工具程式（Utility software），经由读取叫做“makefile”的文件，自动化构建软件。它是一种转化文件形式的工具，转换的目标称为“target”；与此同时，它也检查文件的依赖关系，如果需要的话，它会调用一些外部软件来完成任务。它的依赖关系检查系统非常简单，主要根据依赖文件的修改时间进行判断。大多数情况下，它被用来编译源代码，生成结果代码，然后把结果代码连接起来生成可执行文件或者库文件。它使用叫做“makefile”的文件来确定一个target文件的依赖关系，然后把生成这个target的相关命令传给shell去执行。 ——wikipedia</p>
+</blockquote>
+<h2 id="文件格式"><a href="#文件格式" class="headerlink" title="文件格式"></a>文件格式</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>Makefile文件由一系列规则（rules）构成。每条规则的形式如下：</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&lt;target&gt; : &lt;prerequisites&gt;   |   &lt;目标&gt; : &lt;前置条件&gt;</span><br><span class="line">[tab]  &lt;commands&gt;            |   [tab]  &lt;命令&gt;</span><br></pre></td></tr></table></figure>
+
+<p>“目标”必需；”前置条件”和”命令”可选，但是两者之中必须至少存在一个</p>
+<p>每条规则就明确两件事：构建目标的前置条件是什么，以及如何构建</p>
+<h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><p>目标通常是：</p>
+<ol>
+<li>文件名，可以是一个，也可以是多个，指明Make命令所要构建的对象</li>
+<li>某个操作的名字，这称为<strong>伪目标（phony target）</strong></li>
+</ol>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">clean:</span><br><span class="line">      rm *.o</span><br></pre></td></tr></table></figure>
+
+<p>上面代码的目标是clean，它不是文件名，而是一个操作的名字，属于伪目标，作用是删除对象文件</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ make  clean</span><br></pre></td></tr></table></figure>
+
+<p>伪目标可能与当前目录中的文件名产生冲突（比如当前目录下有clean文件），则需要明确声明其为伪目标，这样make就不会去检查是否存在一个叫做clean的文件，而是每次运行都执行对应的命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">.PHONY: clean</span><br><span class="line">clean:</span><br><span class="line">        rm *.o temp</span><br></pre></td></tr></table></figure>
+
+<p>如果Make命令运行时没有指定目标，默认会执行Makefile文件的第一个目标</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ make</span><br></pre></td></tr></table></figure>
+
+<h3 id="前置条件"><a href="#前置条件" class="headerlink" title="前置条件"></a>前置条件</h3><p>前置条件通常是一组文件名，之间用空格分隔。它指定了”目标”是否重新构建的判断标准：<strong>只要有一个前置文件不存在，或者有过更新（前置文件的last-modification时间戳比目标的时间戳新），”目标”就需要重新构建</strong></p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">result.txt: source.txt</span><br><span class="line">    cp source.txt result.txt</span><br></pre></td></tr></table></figure>
+
+<p>上面代码中，构建 result.txt 的前置条件是 source.txt 。如果当前目录中，source.txt 已经存在，那么<code>make result.txt</code>可以正常运行，否则必须再写一条规则，来生成 source.txt：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">source.txt:</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;this is the source&quot;</span> &gt; source.txt</span><br></pre></td></tr></table></figure>
+
+<p>上面代码中，source.txt后面没有前置条件，就意味着它跟其他文件都无关，只要这个文件还不存在，每次调用<code>make source.txt</code>，它都会生成</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ make result.txt</span><br><span class="line">$ make result.txt</span><br></pre></td></tr></table></figure>
+
+<p>上面命令连续执行两次<code>make result.txt</code></p>
+<p>第一次执行会先新建 source.txt，然后再新建 result.txt</p>
+<p>第二次执行，Make发现 source.txt 没有变动（时间戳晚于 result.txt），就不会执行任何操作，result.txt 也不会重新生成</p>
+<p><strong>生成多个文件的写法：</strong>使用伪目标</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">source</span>: file1 file2 file3</span><br></pre></td></tr></table></figure>
+
+<p>上面代码中，source 是一个伪目标，只有三个前置文件，没有任何对应的命令</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ make <span class="built_in">source</span></span><br></pre></td></tr></table></figure>
+
+<p>执行<code>make source</code>命令后，就会一次性生成 file1，file2，file3 三个文件。这比下面的写法要方便很多</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ make file1</span><br><span class="line">$ make file2</span><br><span class="line">$ make file3</span><br></pre></td></tr></table></figure>
+
+<h3 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h3><p>命令（commands）表示如何更新目标文件，由一行或多行的Shell命令组成。它是构建”目标”的具体指令，它的运行结果通常就是生成目标文件</p>
+<p>需要注意的是，每行命令在一个单独的shell中执行。这些Shell之间没有继承关系</p>
+<p>解决方案：</p>
+<ol>
+<li>将两行命令写在一行，中间用分号分隔</li>
+</ol>
+<figure class="highlight makefile"><table><tr><td class="code"><pre><span class="line"><span class="section">var-kept:</span></span><br><span class="line">    <span class="keyword">export</span> foo=bar; echo <span class="string">&quot;foo=[$$foo]&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>在换行符前加反斜杠转义</li>
+</ol>
+<figure class="highlight makefile"><table><tr><td class="code"><pre><span class="line"><span class="section">var-kept:</span></span><br><span class="line">    <span class="keyword">export</span> foo=bar; \</span><br><span class="line">    echo <span class="string">&quot;foo=[$$foo]&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>加上<code>.ONESHELL:</code>命令</li>
+</ol>
+<figure class="highlight makefile"><table><tr><td class="code"><pre><span class="line"><span class="section">.ONESHELL:</span></span><br><span class="line"><span class="section">var-kept:</span></span><br><span class="line">    <span class="keyword">export</span> foo=bar; </span><br><span class="line">    echo <span class="string">&quot;foo=[$$foo]&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="文件语法"><a href="#文件语法" class="headerlink" title="文件语法"></a>文件语法</h2><h3 id="回声"><a href="#回声" class="headerlink" title="回声"></a>回声</h3><p>正常情况下，make会打印每条命令，然后再执行，这就叫做回声（echoing）</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">test</span>:</span><br><span class="line">    <span class="comment"># 这是测试</span></span><br></pre></td></tr></table></figure>
+
+<p>执行上面的规则，会得到下面的结果。</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ make <span class="built_in">test</span></span><br><span class="line"><span class="comment"># 这是测试</span></span><br></pre></td></tr></table></figure>
+
+<p>在命令的前面加上@，就可以关闭回声。</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">test</span>:</span><br><span class="line">    @<span class="comment"># 这是测试</span></span><br></pre></td></tr></table></figure>
+
+<p>现在再执行<code>make test</code>，就不会有任何输出。</p>
+<p>由于在构建过程中，需要了解当前在执行哪条命令，所以通常只在注释和纯显示的echo命令前面加上@。</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">test</span>:</span><br><span class="line">    @<span class="comment"># 这是测试</span></span><br><span class="line">    @<span class="built_in">echo</span> TODO</span><br></pre></td></tr></table></figure>
+
+<h3 id="通配符"><a href="#通配符" class="headerlink" title="通配符"></a>通配符</h3><p>通配符（wildcard）用来指定一组符合条件的文件名。Makefile 的通配符与 Bash 一致，主要有星号（*）、问号（？）和 […] 。比如， *.o 表示所有后缀名为o的文件</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">clean:</span><br><span class="line">        rm -f *.o</span><br></pre></td></tr></table></figure>
+
+<h3 id="模式匹配"><a href="#模式匹配" class="headerlink" title="模式匹配"></a>模式匹配</h3><p>Make命令允许对文件名，进行类似正则运算的匹配，主要用到的匹配符是%。比如，假定当前目录下有 f1.c 和 f2.c 两个源码文件，需要将它们编译为对应的对象文件</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">%.o: %.c</span><br></pre></td></tr></table></figure>
+
+<p>等同于下面的写法。</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">f1.o: f1.c</span><br><span class="line">f2.o: f2.c</span><br></pre></td></tr></table></figure>
+
+<p>使用匹配符%，可以将大量同类型的文件，只用一条规则就完成构建</p>
+<h3 id="变量和赋值符"><a href="#变量和赋值符" class="headerlink" title="变量和赋值符"></a>变量和赋值符</h3><p>Makefile 允许使用等号自定义变量</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">txt = Hello World</span><br><span class="line"><span class="built_in">test</span>:</span><br><span class="line">    @<span class="built_in">echo</span> $(txt)</span><br></pre></td></tr></table></figure>
+
+<p>调用时，变量需要放在 $( ) 之中</p>
+<p><strong>调用Shell变量，需要在美元符号前，再加一个美元符号</strong>，因为Make命令会对美元符号转义</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">test</span>:</span><br><span class="line">    @<span class="built_in">echo</span> $<span class="variable">$HOME</span></span><br></pre></td></tr></table></figure>
+
+<p>有时，变量的值可能指向另一个变量。</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">v1 = $(v2)</span><br></pre></td></tr></table></figure>
+
+<p>Makefile一共提供了四个赋值运算符 （=、:=、？=、+=），它们的区别请看<a href="https://stackoverflow.com/questions/448910/makefile-variable-assignment">StackOverflow</a>。</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">VARIABLE = value</span><br><span class="line"><span class="comment"># 在执行时扩展，允许递归扩展（动态）</span></span><br><span class="line"></span><br><span class="line">VARIABLE := value</span><br><span class="line"><span class="comment"># 在定义时扩展（静态）</span></span><br><span class="line"></span><br><span class="line">VARIABLE ?= value</span><br><span class="line"><span class="comment"># 只有在该变量为空时才设置值</span></span><br><span class="line"></span><br><span class="line">VARIABLE += value</span><br><span class="line"><span class="comment"># 将值追加到变量的尾端</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="内置变量"><a href="#内置变量" class="headerlink" title="内置变量"></a>内置变量</h3><p>Make命令提供一系列内置变量（Implicit Variables），比如：</p>
+<p>$(CC) 指向当前使用的编译器，$​(MAKE) 指向当前使用的Make工具</p>
+<p>这主要是为了跨平台的兼容性，详细的内置变量清单见<a href="https://www.gnu.org/software/make/manual/html_node/Implicit-Variables.html">手册</a></p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">output:</span><br><span class="line">    $(CC) -o output input.c</span><br></pre></td></tr></table></figure>
+
+<h3 id="自动变量"><a href="#自动变量" class="headerlink" title="自动变量"></a>自动变量</h3><p>Make命令还提供一些自动变量（Automatic Variables），它们的值与当前规则有关。主要有以下几个</p>
+<ol>
+<li>$@</li>
+</ol>
+<p>指代当前目标，就是Make命令当前构建的那个目标。比如，<code>make foo</code>的 $​​@ 就指代foo</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">a.txt b.txt: </span><br><span class="line">    touch <span class="variable">$@</span></span><br></pre></td></tr></table></figure>
+
+<p>等同于下面的写法。</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">a.txt:</span><br><span class="line">    touch a.txt</span><br><span class="line">b.txt:</span><br><span class="line">    touch b.txt</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>$&lt;</li>
+</ol>
+<p>指代第一个前置条件。比如，规则为 t: p1 p2，那么$​&lt; 就指代p1</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">a.txt: b.txt c.txt</span><br><span class="line">    cp $&lt; <span class="variable">$@</span> </span><br></pre></td></tr></table></figure>
+
+<p>等同于下面的写法</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">a.txt: b.txt c.txt</span><br><span class="line">    cp b.txt a.txt </span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>$?</li>
+</ol>
+<p>指代比目标更新的所有前置条件，之间以空格分隔。比如，规则为 t: p1 p2，其中 p2 的时间戳比 t 新，$​?就指代p2</p>
+<ol start="4">
+<li>$^</li>
+</ol>
+<p>指代所有前置条件，之间以空格分隔。比如，规则为 t: p1 p2，那么 $​^ 就指代 p1 p2 </p>
+<ol start="5">
+<li>$*</li>
+</ol>
+<p>指代匹配符 % 匹配的部分， 比如% 匹配 f1.txt 中的f1 ，$​* 就表示 f1</p>
+<ol start="6">
+<li>$(@D) 和 $​(@F)</li>
+</ol>
+<p>分别指向 $@ 的目录名和文件名。比如，$@是 src/input.c，那么$(@D) 的值为 src ，$​​​(@F) 的值为 input.c</p>
+<ol start="7">
+<li>$(&lt;D) 和 $​(&lt;F)</li>
+</ol>
+<p>分别指向 $​&lt; 的目录名和文件名</p>
+<p>所有的自动变量清单，请看<a href="https://www.gnu.org/software/make/manual/html_node/Automatic-Variables.html">手册</a>。下面是自动变量的一个例子</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">dest/%.txt: src/%.txt</span><br><span class="line">    @[ -d dest ] || mkdir dest</span><br><span class="line">    cp $&lt; <span class="variable">$@</span></span><br></pre></td></tr></table></figure>
+
+<p>$&lt; 指代前置文件（src/%.txt）， $​@ 指代目标文件</p>
+<p>上面代码将 src 目录下的 txt 文件，拷贝到 dest 目录下</p>
+<p>首先判断 dest 目录是否存在，如果不存在就新建  </p>
+<p>（暂时不懂@[ -d dest ]的意思）</p>
+<h3 id="判断和循环"><a href="#判断和循环" class="headerlink" title="判断和循环"></a>判断和循环</h3><p>Makefile使用 Bash 语法，完成判断和循环</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ifeq ($(CC),gcc)</span><br><span class="line">  libs=$(libs_for_gcc)</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  libs=$(normal_libs)</span><br><span class="line">endif</span><br></pre></td></tr></table></figure>
+
+<p>上面代码判断当前编译器是否 gcc ，然后指定不同的库文件</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">LIST = one two three</span><br><span class="line">all:</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> $(LIST); <span class="keyword">do</span> \</span><br><span class="line">        <span class="built_in">echo</span> $<span class="variable">$i</span>; \</span><br><span class="line">    <span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 等同于</span></span><br><span class="line"></span><br><span class="line">all:</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> one two three; <span class="keyword">do</span> \</span><br><span class="line">        <span class="built_in">echo</span> <span class="variable">$i</span>; \</span><br><span class="line">    <span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+
+<p>上面代码的运行结果。</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">one</span><br><span class="line">two</span><br><span class="line">three</span><br></pre></td></tr></table></figure>
+
+<h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><p>Makefile 还可以使用函数，格式如下</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$(<span class="keyword">function</span> arguments)</span><br><span class="line"><span class="comment"># 或者</span></span><br><span class="line"><span class="variable">$&#123;function arguments&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>Makefile提供了许多<a href="https://www.gnu.org/software/make/manual/html_node/Functions.html">内置函数</a>，可供调用。下面是几个常用的内置函数</p>
+<p><strong>（1）shell 函数</strong></p>
+<p>shell 函数用来执行 shell 命令</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">srcfiles := $(shell <span class="built_in">echo</span> src/&#123;00..99&#125;.txt)</span><br></pre></td></tr></table></figure>
+
+<p><strong>（2）wildcard 函数</strong></p>
+<p>wildcard 函数用来在 Makefile 中，替换 Bash 的通配符</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">srcfiles := $(wildcard src/*.txt)</span><br></pre></td></tr></table></figure>
+
+<p><strong>（3）subst 函数</strong></p>
+<p>subst 函数用来文本替换，格式如下</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$(subst from,to,text)</span><br></pre></td></tr></table></figure>
+
+<p>下面的例子将字符串”feet on the street”替换成”fEEt on the strEEt”</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$(subst ee,EE,feet on the street)</span><br></pre></td></tr></table></figure>
+
+<p>下面是一个稍微复杂的例子</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">comma:= ,</span><br><span class="line">empty:=</span><br><span class="line"><span class="comment"># space变量用两个空变量作为标识符，当中是一个空格</span></span><br><span class="line">space:= $(empty) $(empty)</span><br><span class="line">foo:= a b c</span><br><span class="line">bar:= $(subst $(space),$(comma),$(foo))</span><br><span class="line"><span class="comment"># bar is now `a,b,c&#x27;.</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>（4）patsubst函数</strong></p>
+<p>patsubst 函数用于模式匹配的替换，格式如下。</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$(patsubst pattern,replacement,text)</span><br></pre></td></tr></table></figure>
+
+<p>下面的例子将文件名”x.c.c bar.c”，替换成”x.c.o bar.o”</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$(patsubst %.c,%.o,x.c.c bar.c)</span><br></pre></td></tr></table></figure>
+
+<p><strong>（5）替换后缀名</strong></p>
+<p>替换后缀名函数的写法是：变量名 + 冒号 + 后缀名替换规则。它实际上patsubst函数的一种简写形式。</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">min: $(OUTPUT:.js=.min.js)</span><br></pre></td></tr></table></figure>
+
+<p>上面代码的意思是，将变量OUTPUT中的后缀名.js 全部替换成 .min.js 。</p>
+]]></content>
+      <categories>
+        <category>linux</category>
+      </categories>
+      <tags>
+        <tag>linux</tag>
+        <tag>makefile</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>CSAPP —— datalab</title>
     <url>/2021/09/19/47.datalab/</url>
     <content><![CDATA[<p>参考资料：</p>
 <p><a href="https://zhuanlan.zhihu.com/p/59534845">https://zhuanlan.zhihu.com/p/59534845</a></p>
 <p><a href="https://www.bilibili.com/read/cv8637507">https://www.bilibili.com/read/cv8637507</a></p>
 <p><a href="https://wdxtub.com/csapp/thick-csapp-lab-1/2016/04/16/">https://wdxtub.com/csapp/thick-csapp-lab-1/2016/04/16/</a></p>
-<p>部分代码借鉴于此，我添加了一些注解以便理解</p>
+<p>代码借鉴于此↑，添加了一些注解以便理解</p>
 <hr>
-<ol>
-<li>bitXor：~和&amp;运算符实现异或</li>
-</ol>
+<h1 id="Problems"><a href="#Problems" class="headerlink" title="Problems"></a>Problems</h1><h2 id="bitXor"><a href="#bitXor" class="headerlink" title="bitXor"></a>bitXor</h2><p>~和&amp;运算符实现异或</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* </span></span><br><span class="line"><span class="comment"> * bitXor - x^y using only ~ and &amp; </span></span><br><span class="line"><span class="comment"> *   Example: bitXor(4, 5) = 1</span></span><br><span class="line"><span class="comment"> *   Legal ops: ~ &amp;</span></span><br><span class="line"><span class="comment"> *   Max ops: 14</span></span><br><span class="line"><span class="comment"> *   Rating: 1</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">bitXor</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> ~(~x&amp;~y)&amp;~(x&amp;y);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>~的优先级高于&amp;</p>
@@ -75,16 +282,12 @@
 <p>~x&amp;~y ==&gt; 某一位都为0，~(~x&amp;~y) ==&gt; 某一位都为1，或者某一位不相同</p>
 <p>将上边两个式子再按位与，即可得到仅满足“某一位不相同”的01串，即按位异或的结果</p>
 <hr>
-<ol start="2">
-<li>tmin：使用位运算获取对2补码的最小int值</li>
-</ol>
+<h2 id="tmin"><a href="#tmin" class="headerlink" title="tmin"></a>tmin</h2><p>使用位运算获取对2补码的最小int值</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* </span></span><br><span class="line"><span class="comment"> * tmin - return minimum two&#x27;s complement integer </span></span><br><span class="line"><span class="comment"> *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;</span></span><br><span class="line"><span class="comment"> *   Max ops: 4</span></span><br><span class="line"><span class="comment"> *   Rating: 1</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">tmin</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0x1</span>&lt;&lt;<span class="number">31</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>补码最小int值即：只有第一位为1，后边的所有位为0</p>
 <hr>
-<ol start="3">
-<li>isTmax：通过位运算计算是否是补码最大值</li>
-</ol>
+<h2 id="isTmax"><a href="#isTmax" class="headerlink" title="isTmax"></a>isTmax</h2><p>通过位运算计算是否是补码最大值</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * isTmax - returns 1 if x is the maximum, two&#x27;s complement number,</span></span><br><span class="line"><span class="comment"> *     and 0 otherwise </span></span><br><span class="line"><span class="comment"> *   Legal ops: ! ~ &amp; ^ | +</span></span><br><span class="line"><span class="comment"> *   Max ops: 10</span></span><br><span class="line"><span class="comment"> *   Rating: 1</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">isTmax</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> i = x+<span class="number">1</span>;  <span class="comment">// Tmin,10...00</span></span><br><span class="line">  x=x+i;        <span class="comment">// 11...11</span></span><br><span class="line">  x=~x;         <span class="comment">// 00...00</span></span><br><span class="line">  i=!i;         <span class="comment">// exclude x=0xffff...</span></span><br><span class="line">  x=x+i;        <span class="comment">// exclude x=0xffff...</span></span><br><span class="line">  <span class="keyword">return</span> !x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>基本思路是将判断补码最大值转化为<strong>判断全0</strong></p>
@@ -92,31 +295,93 @@
 <p>不过要注意的是，当x是-1（即11…11），通过前三行也可以得到全0，所以四五行用于排除这种情况</p>
 <p>注意第四行是!，而非按位取反，当x是补码最大值时，!i为0，0加0还是0，最后return 1；当x是-1时，i为0，则!i为1，x加i后得1，最后return 0</p>
 <hr>
-<ol start="4">
-<li>allOldBits：判断所有奇数位是否都为1</li>
-</ol>
+<h2 id="allOldBits"><a href="#allOldBits" class="headerlink" title="allOldBits"></a>allOldBits</h2><p>判断所有奇数位是否都为1</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* </span></span><br><span class="line"><span class="comment"> * allOddBits - return 1 if all odd-numbered bits in word set to 1</span></span><br><span class="line"><span class="comment"> *   where bits are numbered from 0 (least significant) to 31 (most significant)</span></span><br><span class="line"><span class="comment"> *   Examples allOddBits(0xFFFFFFFD) = 0, allOddBits(0xAAAAAAAA) = 1</span></span><br><span class="line"><span class="comment"> *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;</span></span><br><span class="line"><span class="comment"> *   Max ops: 12</span></span><br><span class="line"><span class="comment"> *   Rating: 2</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">allOddBits</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> mask = <span class="number">0xAA</span>+(<span class="number">0xAA</span>&lt;&lt;<span class="number">8</span>);</span><br><span class="line">  mask=mask+(mask&lt;&lt;<span class="number">16</span>);</span><br><span class="line">  <span class="comment">// 前两行也可以写成：int mask = 0xAA+(0xAA&lt;&lt;8)+(0xAA&lt;&lt;16)+(0xAA&lt;&lt;24);</span></span><br><span class="line">  <span class="keyword">return</span> !((mask&amp;x)^mask);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>先理解题意，要使奇数位为1，则像10101010…或者11111010这样的数满足题意，而11011101这样的不满足</p>
 <p>先<strong>构造掩码</strong>，前两行得到的mask是10101010…（共32位）</p>
 <p>先将x和mask按位与， 如果x满足题意，则得到的结果和mask相同，之后再异或，则结果为0，取反后结果为1；如果x不满足题意，则异或结果不为0，取反后结果不为1</p>
 <hr>
-<ol start="5">
-<li>negate：不使用 - 操作符，求 -x 值</li>
-</ol>
+<h2 id="negate"><a href="#negate" class="headerlink" title="negate"></a>negate</h2><p>不使用 - 操作符，求 -x 值</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* </span></span><br><span class="line"><span class="comment"> * negate - return -x </span></span><br><span class="line"><span class="comment"> *   Example: negate(1) = -1.</span></span><br><span class="line"><span class="comment"> *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;</span></span><br><span class="line"><span class="comment"> *   Max ops: 5</span></span><br><span class="line"><span class="comment"> *   Rating: 2</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">negate</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> ~x+<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>常识：补码求相反数只需<strong>按位取反再加1</strong></p>
 <hr>
-<ol start="6">
-<li>isAsciiDigit(x)：计算输入值是否是数字 0-9 的 ASCII 值</li>
-</ol>
+<h2 id="isAsciiDigit"><a href="#isAsciiDigit" class="headerlink" title="isAsciiDigit"></a>isAsciiDigit</h2><p>计算输入值是否是数字 0-9 的 ASCII 值</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* </span></span><br><span class="line"><span class="comment"> * isAsciiDigit - return 1 if 0x30 &lt;= x &lt;= 0x39 (ASCII codes for characters &#x27;0&#x27; to &#x27;9&#x27;)</span></span><br><span class="line"><span class="comment"> *   Example: isAsciiDigit(0x35) = 1.</span></span><br><span class="line"><span class="comment"> *            isAsciiDigit(0x3a) = 0.</span></span><br><span class="line"><span class="comment"> *            isAsciiDigit(0x05) = 0.</span></span><br><span class="line"><span class="comment"> *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;</span></span><br><span class="line"><span class="comment"> *   Max ops: 15</span></span><br><span class="line"><span class="comment"> *   Rating: 3</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">isAsciiDigit</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> sign = <span class="number">0x1</span>&lt;&lt;<span class="number">31</span>;</span><br><span class="line">  <span class="keyword">int</span> upperBound = ~(sign|<span class="number">0x39</span>);</span><br><span class="line">  <span class="keyword">int</span> lowerBound = ~<span class="number">0x30</span>;</span><br><span class="line">  upperBound = sign&amp;(upperBound+x)&gt;&gt;<span class="number">31</span>;</span><br><span class="line">  lowerBound = sign&amp;(lowerBound+<span class="number">1</span>+x)&gt;&gt;<span class="number">31</span>;  <span class="comment">// 如果x=30，加上lowerBound后恰好为全1，所以还要多加1</span></span><br><span class="line">  <span class="keyword">return</span> !(upperBound|lowerBound);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>设置上下界，当一个大于0x39的数与upperBound相加时会溢出，符号位变为1；当一个小于0x30的数与lowerBound相加时，符号位为1，否则符号位变为0</p>
 <p>这里的上下界设置得很巧妙，但其实也不难，值得多多揣摩</p>
 <p>sign是掩码，用于确认相加后结果的符号位，只有两者的符号位都为0，才说明数在30到39之间，此时返回1</p>
 <hr>
+<h2 id="conditional"><a href="#conditional" class="headerlink" title="conditional"></a>conditional</h2><p>使用位级运算实现<code>x?y:z</code>三目运算符</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* </span></span><br><span class="line"><span class="comment"> * conditional - same as x ? y : z </span></span><br><span class="line"><span class="comment"> *   Example: conditional(3,4,5) = 4</span></span><br><span class="line"><span class="comment"> *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;</span></span><br><span class="line"><span class="comment"> *   Max ops: 16</span></span><br><span class="line"><span class="comment"> *   Rating: 3</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">conditional</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y, <span class="keyword">int</span> z)</span> </span>&#123;</span><br><span class="line">  x = !!x;</span><br><span class="line">  x = ~x+<span class="number">1</span>;</span><br><span class="line">  <span class="keyword">return</span> (x&amp;y)|(~x&amp;z);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>基本思路是将x转化为全0或全1</p>
+<p>当x为0时，经过前两行的处理，x变为全0的串；当x为1，x变为全1的串；当x!=0且x!=1时，经过第一行的处理，会转化为等于1的情况</p>
+<p>当x为全1串时，~x为全0串；反之同理，return的内容不必多言</p>
+<hr>
+<h2 id="isLessOrEqual"><a href="#isLessOrEqual" class="headerlink" title="isLessOrEqual"></a>isLessOrEqual</h2><p>使用位级运算符实现&lt;=</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* </span></span><br><span class="line"><span class="comment"> * isLessOrEqual - if x &lt;= y  then return 1, else return 0 </span></span><br><span class="line"><span class="comment"> *   Example: isLessOrEqual(4,5) = 1.</span></span><br><span class="line"><span class="comment"> *   Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;</span></span><br><span class="line"><span class="comment"> *   Max ops: 24</span></span><br><span class="line"><span class="comment"> *   Rating: 3</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">isLessOrEqual</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> negX=~x+<span class="number">1</span>;              <span class="comment">// -x</span></span><br><span class="line">  <span class="keyword">int</span> addX=negX+y;            <span class="comment">// y-x</span></span><br><span class="line">  <span class="keyword">int</span> checkSign = addX&gt;&gt;<span class="number">31</span>&amp;<span class="number">1</span>; <span class="comment">// y-x的符号</span></span><br><span class="line">  <span class="keyword">int</span> leftBit = <span class="number">1</span>&lt;&lt;<span class="number">31</span>;        <span class="comment">// 最大位为1的32位有符号数</span></span><br><span class="line">  <span class="keyword">int</span> xLeft = x&amp;leftBit;      <span class="comment">// x的符号</span></span><br><span class="line">  <span class="keyword">int</span> yLeft = y&amp;leftBit;      <span class="comment">// y的符号</span></span><br><span class="line">  <span class="keyword">int</span> bitXor = xLeft ^ yLeft; <span class="comment">// x和y符号相同标志位，相同为0不同为1</span></span><br><span class="line">  bitXor = (bitXor&gt;&gt;<span class="number">31</span>)&amp;<span class="number">1</span>;    <span class="comment">// 符号相同标志位格式化为0或1</span></span><br><span class="line">  <span class="comment">// 返回1有两种情况：符号相同标志位为0（相同）位与 y-x 的符号为0（y-x&gt;=0）结果为1；符号相同标志位为1（不同）位与x的符号位为1（x&lt;0）</span></span><br><span class="line">  <span class="keyword">return</span> ((!bitXor)&amp;(!checkSign))|(bitXor&amp;(xLeft&gt;&gt;<span class="number">31</span>));  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>判断符号，如果符号相同则比较大小，如果不同则要求x的符号位为1（负）</p>
+<hr>
+<h2 id="logicalNeg"><a href="#logicalNeg" class="headerlink" title="logicalNeg"></a>logicalNeg</h2><p>使用位级运算求逻辑非 <code>!</code></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* </span></span><br><span class="line"><span class="comment"> * logicalNeg - implement the ! operator, using all of </span></span><br><span class="line"><span class="comment"> *              the legal operators except !</span></span><br><span class="line"><span class="comment"> *   Examples: logicalNeg(3) = 0, logicalNeg(0) = 1</span></span><br><span class="line"><span class="comment"> *   Legal ops: ~ &amp; ^ | + &lt;&lt; &gt;&gt;</span></span><br><span class="line"><span class="comment"> *   Max ops: 12</span></span><br><span class="line"><span class="comment"> *   Rating: 4 </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">logicalNeg</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> ((x|(~x+<span class="number">1</span>))&gt;&gt;<span class="number">31</span>)+<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于0和最小数(100…000)之外的数，取反加1可以得到相反数，按位或之后，符号位一定为1</p>
+<p>对于0和最小数，取反加1后得到本身，按位或之后，前者的符号位为0，后者的符号位为1</p>
+<p>注意右移用的是算数移位，所以分别会变为00…00（值为0）和11…11(值为-1)</p>
+<p>如此一来，0的return值为1，其余的return值为0</p>
+<p>还有一种思路：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">logicalNeg</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> temp=x|x&gt;&gt;<span class="number">16</span>;</span><br><span class="line">  temp=temp|temp&gt;&gt;<span class="number">8</span>;</span><br><span class="line">  temp=temp|temp&gt;&gt;<span class="number">4</span>;</span><br><span class="line">  temp=temp|temp&gt;&gt;<span class="number">2</span>;</span><br><span class="line">  temp=temp|temp&gt;&gt;<span class="number">1</span>;</span><br><span class="line">  <span class="keyword">return</span> ~temp&amp;<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>除了0之外，其余的数都有1，只要有1，通过一系列按位或运算，最后得到的结果一定为1，否则为0</p>
+<p>按位取反，再和00…1按位与，将这个结果return即可</p>
+<hr>
+<h2 id="howManyBits"><a href="#howManyBits" class="headerlink" title="howManyBits"></a>howManyBits</h2><p>求值：一个数用补码表示最少需要几位？</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* howManyBits - return the minimum number of bits required to represent x in</span></span><br><span class="line"><span class="comment"> *             two&#x27;s complement</span></span><br><span class="line"><span class="comment"> *  Examples: howManyBits(12) = 5</span></span><br><span class="line"><span class="comment"> *            howManyBits(298) = 10</span></span><br><span class="line"><span class="comment"> *            howManyBits(-5) = 4</span></span><br><span class="line"><span class="comment"> *            howManyBits(0)  = 1</span></span><br><span class="line"><span class="comment"> *            howManyBits(-1) = 1</span></span><br><span class="line"><span class="comment"> *            howManyBits(0x80000000) = 32</span></span><br><span class="line"><span class="comment"> *  Legal ops: ! ~ &amp; ^ | + &lt;&lt; &gt;&gt;</span></span><br><span class="line"><span class="comment"> *  Max ops: 90</span></span><br><span class="line"><span class="comment"> *  Rating: 4</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">howManyBits</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> b16,b8,b4,b2,b1,b0;</span><br><span class="line">  <span class="keyword">int</span> sign=x&gt;&gt;<span class="number">31</span>;</span><br><span class="line">  x = (sign&amp;~x)|(~sign&amp;x); <span class="comment">// 如果x为正则不变，否则按位取反</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 不断缩小范围</span></span><br><span class="line">  b16 = !!(x&gt;&gt;<span class="number">16</span>)&lt;&lt;<span class="number">4</span>;      <span class="comment">// 高十六位是否有1</span></span><br><span class="line">  x = x&gt;&gt;b16;              <span class="comment">// 如果有（至少需要16位），则将原数右移16位</span></span><br><span class="line">  b8 = !!(x&gt;&gt;<span class="number">8</span>)&lt;&lt;<span class="number">3</span>;        <span class="comment">// 剩余位高8位是否有1</span></span><br><span class="line">  x = x&gt;&gt;b8;               <span class="comment">// 如果有（至少需要16+8=24位），则右移8位</span></span><br><span class="line">  b4 = !!(x&gt;&gt;<span class="number">4</span>)&lt;&lt;<span class="number">2</span>;</span><br><span class="line">  x = x&gt;&gt;b4;</span><br><span class="line">  b2 = !!(x&gt;&gt;<span class="number">2</span>)&lt;&lt;<span class="number">1</span>;</span><br><span class="line">  x = x&gt;&gt;b2;</span><br><span class="line">  b1 = !!(x&gt;&gt;<span class="number">1</span>);</span><br><span class="line">  x = x&gt;&gt;b1;</span><br><span class="line">  b0 = x;</span><br><span class="line">  <span class="keyword">return</span> b16+b8+b4+b2+b1+b0+<span class="number">1</span>;  <span class="comment">// +1表示加上符号位</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>总体思路：当x为正数时，找到1第一次出现的位置；当x为负数时，找到0第一次出现的位置。再加上符号位</p>
+<p>由于下边需要统一起来，找1相对容易，所以判断一下，当x为负数时按位取反</p>
+<p>之后缩小范围，以第一行为例：</p>
+<p><code>!!(x&gt;&gt;16)</code>可以得到1或0，左移4位得到10000(16)或00000(0)，在下一行中，x可以右移16位或0位，巧妙地实现了if的功能</p>
+<p>现解读一下<strong>“剩余位”</strong>：当x向右移动了16位时，剩余位即原数从左往右的1~8位（从1开始计数）；当x没有移位时，剩余位即17~24位</p>
+<p>这样一直执行下去，最后就能判断出一个数用补码表示的最小位数</p>
+<hr>
+<h2 id="floatScale2"><a href="#floatScale2" class="headerlink" title="floatScale2"></a>floatScale2</h2><p>求2乘一个浮点数</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* </span></span><br><span class="line"><span class="comment"> * floatScale2 - Return bit-level equivalent of expression 2*f for</span></span><br><span class="line"><span class="comment"> *   floating point argument f.</span></span><br><span class="line"><span class="comment"> *   Both the argument and result are passed as unsigned int&#x27;s, but</span></span><br><span class="line"><span class="comment"> *   they are to be interpreted as the bit-level representation of</span></span><br><span class="line"><span class="comment"> *   single-precision floating point values.</span></span><br><span class="line"><span class="comment"> *   When argument is NaN, return argument</span></span><br><span class="line"><span class="comment"> *   Legal ops: Any integer/unsigned operations incl. ||, &amp;&amp;. also if, while</span></span><br><span class="line"><span class="comment"> *   Max ops: 30</span></span><br><span class="line"><span class="comment"> *   Rating: 4</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="title">floatScale2</span><span class="params">(<span class="keyword">unsigned</span> uf)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> <span class="built_in">exp</span> = (uf&amp;<span class="number">0x7f800000</span>)&gt;&gt;<span class="number">23</span>;       <span class="comment">// 获得阶码位</span></span><br><span class="line">  <span class="keyword">int</span> sign = uf&amp;(<span class="number">1</span>&lt;&lt;<span class="number">31</span>);               <span class="comment">// 获得符号位</span></span><br><span class="line">  <span class="keyword">if</span>(<span class="built_in">exp</span>==<span class="number">0</span>) <span class="keyword">return</span> uf&lt;&lt;<span class="number">1</span>|sign;        <span class="comment">// 阶码位为全0，为非规格化数，左移1位再添加符号位</span></span><br><span class="line">  <span class="keyword">if</span>(<span class="built_in">exp</span>==<span class="number">255</span>) <span class="keyword">return</span> uf;              <span class="comment">// 阶码位为全1，视作NaN、正无穷或负无穷，返回参数本身即可</span></span><br><span class="line">  <span class="built_in">exp</span>++;                               <span class="comment">// 阶码位加1</span></span><br><span class="line">  <span class="keyword">if</span>(<span class="built_in">exp</span>==<span class="number">255</span>) <span class="keyword">return</span> <span class="number">0x7f800000</span>|sign; <span class="comment">// 如果阶码位变为全1，转化为正无穷或负无穷的情况</span></span><br><span class="line">  <span class="keyword">return</span> (<span class="built_in">exp</span>&lt;&lt;<span class="number">23</span>)|(uf&amp;<span class="number">0x807fffff</span>);    <span class="comment">// 否则，返回指数加1后的原符号数</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>0x7f800000</code>的符号位为0，阶码位全1，尾数位全0</p>
+<p><code>0x807fffff</code>除阶码位，其余位全为1,<code>uf&amp;0x807fffff</code>意在清除它的阶码位，让阶码位由exp来控制</p>
+<hr>
+<h2 id="floatFloat2Int"><a href="#floatFloat2Int" class="headerlink" title="floatFloat2Int"></a>floatFloat2Int</h2><p>将浮点数转换为整数</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* </span></span><br><span class="line"><span class="comment"> * floatFloat2Int - Return bit-level equivalent of expression (int) f</span></span><br><span class="line"><span class="comment"> *   for floating point argument f.</span></span><br><span class="line"><span class="comment"> *   Argument is passed as unsigned int, but</span></span><br><span class="line"><span class="comment"> *   it is to be interpreted as the bit-level representation of a</span></span><br><span class="line"><span class="comment"> *   single-precision floating point value.</span></span><br><span class="line"><span class="comment"> *   Anything out of range (including NaN and infinity) should return</span></span><br><span class="line"><span class="comment"> *   0x80000000u.</span></span><br><span class="line"><span class="comment"> *   Legal ops: Any integer/unsigned operations incl. ||, &amp;&amp;. also if, while</span></span><br><span class="line"><span class="comment"> *   Max ops: 30</span></span><br><span class="line"><span class="comment"> *   Rating: 4</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">floatFloat2Int</span><span class="params">(<span class="keyword">unsigned</span> uf)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> s_    = uf&gt;&gt;<span class="number">31</span>;   <span class="comment">// 符号</span></span><br><span class="line">  <span class="keyword">int</span> exp_  = ((uf&amp;<span class="number">0x7f800000</span>)&gt;&gt;<span class="number">23</span>)<span class="number">-127</span>;   <span class="comment">// 指数</span></span><br><span class="line">  <span class="keyword">int</span> frac_ = (uf&amp;<span class="number">0x007fffff</span>)|<span class="number">0x00800000</span>;  <span class="comment">// 小数</span></span><br><span class="line">  <span class="keyword">if</span>(!(uf&amp;<span class="number">0x7fffffff</span>)) <span class="keyword">return</span> <span class="number">0</span>;           <span class="comment">// 除符号位全0，则返回0</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(exp_ &gt; <span class="number">31</span>) <span class="keyword">return</span> <span class="number">0x80000000</span>;         <span class="comment">// 超过2^31，无法用整数表示，故溢出</span></span><br><span class="line">  <span class="keyword">if</span>(exp_ &lt; <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(exp_ &gt; <span class="number">23</span>) frac_ &lt;&lt;= (exp_<span class="number">-23</span>);       <span class="comment">// 之前相当于左移了23位的frac_移得还不够，需要继续左移</span></span><br><span class="line">  <span class="keyword">else</span> frac_ &gt;&gt;= (<span class="number">23</span>-exp_);                <span class="comment">// 之前移多了，所以向右移</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(!((frac_&gt;&gt;<span class="number">31</span>)^s_)) <span class="keyword">return</span> frac_;      <span class="comment">// 符号是否和原来相同，直接将frac_返回</span></span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">return</span> ~frac_+<span class="number">1</span>;                    <span class="comment">// 不相同，原来符号为负，现在符号为正，返回其补码（相反数）</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>总体思路：把浮点数转化为整数，要做的就是把小数部分向左移，用int表示的frac_已自带左移了23位，接下来只需要做一定调整即可。再多加几次溢出的判断</p>
+<p>frac在float中，本身是一个1到2的数，而frac_已经用int表示了，它的结果是frac本身再乘2^23，相当于已经左移过23位</p>
+<p>所以当指数大于23时，它应当继续左移；当指数小于23时，它相应地应该向右移</p>
+<p>最后需要注意符号问题，因为考虑小数部分的时候没有考虑符号，有可能符号原来为负，此时需要取其补码</p>
+<hr>
+<h2 id="floatPower2"><a href="#floatPower2" class="headerlink" title="floatPower2"></a>floatPower2</h2><p>求2^x</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* </span></span><br><span class="line"><span class="comment"> * floatPower2 - Return bit-level equivalent of the expression 2.0^x</span></span><br><span class="line"><span class="comment"> *   (2.0 raised to the power x) for any 32-bit integer x.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> *   The unsigned value that is returned should have the identical bit</span></span><br><span class="line"><span class="comment"> *   representation as the single-precision floating-point number 2.0^x.</span></span><br><span class="line"><span class="comment"> *   If the result is too small to be represented as a denorm, return</span></span><br><span class="line"><span class="comment"> *   0. If too large, return +INF.</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> *   Legal ops: Any integer/unsigned operations incl. ||, &amp;&amp;. Also if, while </span></span><br><span class="line"><span class="comment"> *   Max ops: 31 </span></span><br><span class="line"><span class="comment"> *   Rating: 4</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="title">floatPower2</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> INF = <span class="number">0xff</span>&lt;&lt;<span class="number">23</span>;        <span class="comment">// 0111111110000... 即为无穷</span></span><br><span class="line">  <span class="keyword">int</span> <span class="built_in">exp</span> = x + <span class="number">127</span>;         <span class="comment">// 指数</span></span><br><span class="line">  <span class="keyword">if</span>(<span class="built_in">exp</span> &lt;= <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;     <span class="comment">// 指数太小，则return 0</span></span><br><span class="line">  <span class="keyword">if</span>(<span class="built_in">exp</span> &gt;= <span class="number">255</span>) <span class="keyword">return</span> INF; <span class="comment">// 指数太大，则return 无穷</span></span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">exp</span> &lt;&lt; <span class="number">23</span>;          <span class="comment">// 将处理完的指数左移即可</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这题比较简单，看注释完全可以理解</p>
+<hr>
+<h1 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h1><p><img src="https://z3.ax1x.com/2021/09/22/4U7veH.png"></p>
+<p>Methods：</p>
+<ul>
+<li><p>设置掩码，按位与/或（只取特定位，比如<strong>符号位</strong>）</p>
+</li>
+<li><p>取相反数，只需要求其补码，除了0和最小的数(100…00)，其余数按位取反再加1；0和最小数的补码为其本身</p>
+</li>
+<li><p>两次取逻辑非，使数字化为0或1</p>
+</li>
+<li><p>浮点数中的几个特殊的数：常用于获取指数位和小数位</p>
+<ul>
+<li><code>0x7f800000</code>：指数为全1，其余为全0</li>
+<li><code>0x007fffff</code>：小数为全1，其余为全0</li>
+</ul>
+</li>
+</ul>
 ]]></content>
       <categories>
         <category>计算机基础</category>
@@ -1156,7 +1421,8 @@
 <li>linux下，隐藏文件以 . 开头</li>
 <li>指令的选项可以组合使用，如ls -al和ls -la /root</li>
 </ul>
-<h2 id="文本处理"><a href="#文本处理" class="headerlink" title="文本处理"></a>文本处理</h2><h3 id="目录增删"><a href="#目录增删" class="headerlink" title="目录增删"></a>目录增删</h3><ul>
+<h2 id="文本处理"><a href="#文本处理" class="headerlink" title="文本处理"></a>文本处理</h2><h3 id="通配符"><a href="#通配符" class="headerlink" title="通配符"></a>通配符</h3><p><a href="https://www.ruanyifeng.com/blog/2018/09/bash-wildcards.html">https://www.ruanyifeng.com/blog/2018/09/bash-wildcards.html</a></p>
+<h3 id="目录增删"><a href="#目录增删" class="headerlink" title="目录增删"></a>目录增删</h3><ul>
 <li><code>ls -h</code>：将文件大小以人类可以读懂的方式显示，如433M（不开-h，默认显示字节数）</li>
 <li><code>ls -R</code>：递归显示整个目录的内容</li>
 <li><code>ll</code>：相当于<code>ls -l</code>，显示详细信息。因此也可以写ll -ah</li>
@@ -1229,6 +1495,12 @@
 <li><code>history 10</code>：显示最近使用过的10个指令</li>
 <li><code>!5</code>：执行历史编号为5的指令</li>
 </ul>
+<h3 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h3><ul>
+<li>批量创建文件：<code>touch file&#123;0..9&#125;.txt</code></li>
+<li>批量删除文件：<code>rm -f file&#123;0..9&#125;.txt</code></li>
+<li>批量创建文件夹：<code>mkdir dir&#123;0..9&#125;</code></li>
+<li>批量删除文件夹：<code>rmdir dir&#123;0..9&#125;</code>或者<code>rm -rf dir&#123;0..9&#125;</code></li>
+</ul>
 <h2 id="时间日期"><a href="#时间日期" class="headerlink" title="时间日期"></a>时间日期</h2><p>字母注意大小写：</p>
 <ul>
 <li><p><code>date</code>：显示当前时间</p>
@@ -1249,6 +1521,7 @@
 <li>-name 按指定文件名查找</li>
 <li>-user 查找属于某一用户名的所有文件</li>
 <li>-size 按照大小查找，+n大于，-n小于，n等于，如<code>find / -size +200M</code></li>
+<li>查找一类文件，使用通配符，如查找某一目录下全部.txt文件：<code>find *.txt</code></li>
 </ul>
 <p>可以组合使用 | less，避免显示内容过长不便于阅读</p>
 </li>
