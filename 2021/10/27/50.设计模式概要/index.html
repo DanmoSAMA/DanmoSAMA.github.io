@@ -1,0 +1,283 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>JavaScript 设计模式概要 | DanmoSAMAの博客</title><meta name="keywords" content="设计模式"><meta name="author" content="Danmoits"><meta name="copyright" content="Danmoits"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="设计模式概要">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript 设计模式概要">
+<meta property="og:url" content="https://danmosama.github.io/2021/10/27/50.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%A6%82%E8%A6%81/index.html">
+<meta property="og:site_name" content="DanmoSAMAの博客">
+<meta property="og:description" content="设计模式概要">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://z3.ax1x.com/2021/08/17/fIut8s.png">
+<meta property="article:published_time" content="2021-10-27T11:32:57.336Z">
+<meta property="article:modified_time" content="2021-11-14T13:30:27.396Z">
+<meta property="article:author" content="Danmoits">
+<meta property="article:tag" content="设计模式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://z3.ax1x.com/2021/08/17/fIut8s.png"><link rel="shortcut icon" href="/img/avatar.jpg"><link rel="canonical" href="https://danmosama.github.io/2021/10/27/50.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%A6%82%E8%A6%81/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":false,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'JavaScript 设计模式概要',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2021-11-14 21:30:27'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const fontSizeVal = saveToLocal.get('global-font-size')
+    if (fontSizeVal !== undefined) {
+      document.documentElement.style.setProperty('--global-font-size', fontSizeVal + 'px')
+    }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Zfour/Butterfly-card-history/baiduhistory/css/main.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Zfour/hexo-electric-clock@1.0.6/clock.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Zfour/Butterfly-double-row-display@1.00/cardlistpost.min.css"/>
+<style>#recent-posts > .recent-post-item >.recent-post-info > .article-meta-wrap > .tags:before {content:"\A";
+  white-space: pre;}#recent-posts > .recent-post-item >.recent-post-info > .article-meta-wrap > .tags > .article-meta__separator{display:none}</style>
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.4.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "https://z3.ax1x.com/2021/08/18/fIcAZ6.gif" data-lazy-src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">40</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">32</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">33</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/message/"><i class="fa-fw fa fa-comment"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://z3.ax1x.com/2021/08/17/fIut8s.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">DanmoSAMAの博客</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/message/"><i class="fa-fw fa fa-comment"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">JavaScript 设计模式概要</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-10-27T11:32:57.336Z" title="发表于 2021-10-27 19:32:57">2021-10-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-11-14T13:30:27.396Z" title="更新于 2021-11-14 21:30:27">2021-11-14</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/web%E5%BC%80%E5%8F%91/">web开发</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/web%E5%BC%80%E5%8F%91/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></span></div><div class="meta-secondline"></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>参考博客：<a target="_blank" rel="noopener" href="https://juejin.cn/post/6844904032826294286">https://juejin.cn/post/6844904032826294286</a></p>
+<p>最少知识原则：</p>
+<blockquote>
+<p>迪米特法则（Law of Demeter）又叫作最少知识原则（The Least Knowledge Principle），一个类对于其他类知道的越少越好，就是说一个对象应当对其他对象有尽可能少的了解,只和朋友通信，不和陌生人说话。 英文简写为: LOD。</p>
+</blockquote>
+<p>简要概括每种设计模式的含义：</p>
+<ul>
+<li><p>工厂模式：<strong>定义一个用于创建对象的接口，子类通过该接口决定实例化哪一个类。</strong>现有类A，它有工厂子类B，调用B的 create 方法会创建A的一个实例对象。实例：jQuery的<code>$</code></p>
+</li>
+<li><p>单例模式：<strong>一个类只有一个实例，并提供一个访问它的全局访问点。</strong>实例：登录框</p>
+</li>
+<li><p>适配器模式：<strong>将一个类的接口转化为另外一个接口，从而满足需求。</strong>形象地理解，就是提供一个不同版本的插头。比如类A中有方法 method，B中定义同名方法，该方法内执行A的 method 并做额外的适配。实例：Vue 的<code>computed</code></p>
+</li>
+<li><p>装饰者模式：<strong>在不改变原对象的基础上，动态地给某个对象添加一些额外的职责（拓展功能）</strong>，是一种实现继承的替代方案。比如A对象可以创建一个手机，B是A的装饰者，则B对象在创建手机的时候同时创建一个手机壳</p>
+</li>
+<li><p>代理模式：<strong>为一个对象提供一个代理，以便控制对它的访问。</strong>A请求代理，代理做一些事后请求B</p>
+</li>
+<li><p>外观模式：<strong>定义了一个高层接口，为子系统的一组接口提供一个一致的界面</strong>，比如兼容浏览器事件绑定（if-else 为不同的浏览器提高不同的方法）、封装接口（把众多接口集中在一起），不符合开闭原则</p>
+</li>
+<li><p>观察者模式：<strong>多个观察者对象同时监听某一个主题对象，主题对象的状态发生变化时就会通知所有的观察者对象，使它们能够自动更新自己。</strong>实例：DOM 事件、Vue 响应式</p>
+<blockquote>
+<p>观察者模式 和 发布/订阅模式 的区别：</p>
+<p>观察者模式：观察者观察目标（监听目标）=&gt; 目标发生变化 =&gt; 目标主动通知观察者。观察者对应订阅者，目标对应发布者，二者直接关联，耦合在一起，灵活性降低</p>
+<p>发布/订阅模式：订阅者和发布者之间还存在事件中心，它可以是一个消息管道（事件队列），发布者将消息加入管道，管道再把这些消息推向订阅者。观察者和订阅者之间不直接关联，无耦合，但由于事件队列的存在，内存消耗较大</p>
+</blockquote>
+</li>
+<li><p>状态模式：<strong>定义多个状态类，允许一个对象在其内部状态改变的时候改变它的行为。</strong>比如 Context 类是一盏灯，状态类 Weak、Strong、Off 分别可以改变它的状态，这样就可以在状态类中定义一些行为，即修改状态的同时就会执行这些行为</p>
+</li>
+<li><p>迭代器模式：<strong>提供一种方法顺序一个聚合对象中各个元素，而又不暴露该对象的内部表示。</strong>实例：forEach，$.each()，Iterator</p>
+</li>
+<li><p>桥接模式：<strong>将抽象部分与它的实现部分分离，使它们都可以独立地变化。</strong>比如现有 Color 类和 Shape 类，Shape 类提供 draw 方法，但 draw 方法访问了 Color 类中的属性（即由 Color 类来实现），即 Shape 类中的抽象部分在 Color 类中实现，相当于把 Color 类桥接到了 Shape 类中</p>
+</li>
+<li><p>组合模式：<strong>将对象分为”整体”和”部分”，在”部分”中实现逻辑，在”总体”中把它们组合起来，并且使得对单个对象和组合对象的使用具有一致性（提供同名接口）。</strong>比如可以买车票（train 类），可以订房间（hotel 类），也可以买车票同时订房间（total 类，由前两者组合而来），它们都拥有 create方法，其中total 的 create 方法可以分别调用 train 和 hotel 的 create 方法</p>
+</li>
+<li><p>原型模式：<strong>用原型实例指向创建对象的种类，并且通过拷贝这些原型创建新的对象。</strong>用继承实现，表现在 ES6 上，就是在子类的构造函数中调用 super() 方法，没有特别之处</p>
+</li>
+<li><p>策略模式：<strong>提供多种策略对象，将算法的使用与算法的实现分离开来。</strong>它由策略类和环境类组成，环境类接收请求，并委托给某一个策略类</p>
+</li>
+<li><p>享元模式：<strong>将目标对象的状态区分为内部状态和外部状态，内部状态相同的对象可以被共享出来指向同一个内部状态。</strong>内部状态如考场和考试用车，外部状态如考生信息。考场和考试用车由于有共同特点，可以引用已经创建好的考场对象和车对象（这些对象称作细粒度对象，可以改进成资源池），从而节约资源</p>
+<p>参考：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/79819642">https://zhuanlan.zhihu.com/p/79819642</a></p>
+</li>
+</ul>
+<img src= "https://z3.ax1x.com/2021/08/18/fIcAZ6.gif" data-lazy-src="https://pic1.zhimg.com/80/v2-b77f736d5d042fd9da6deb06229e9008_720w.jpg" style="zoom: 80%;">
+
+
+
+<ul>
+<li><p>模板方法模式：<strong>由抽象父类 + 实现子类组成，父类中实现公共方法和封装子类中方法的执行顺序，子类实现这些方法，也可以重写父类的方法</strong></p>
+</li>
+<li><p>职责链模式：<strong>将多个对象连成一条链，并沿着这条链传递请求，使多个对象都有机会处理请求，从而避免请求的发送者和接受者之间的耦合关系。</strong>比如请假审批，需要组长审批、经理审批、总监审批，就需要沿着这条职责链执行</p>
+</li>
+<li><p>命令模式：<strong>封装接收类、命令类（和触发类），命令类收到请求后，通知接收类执行相关的功能</strong>，这样做的好处是命令发出者和接受者解耦</p>
+</li>
+<li><p>备忘录模式：<strong>提供了一种可以恢复状态的机制，方便地回到某个历史的状态。</strong>设置备忘类、备忘列表，备忘列表中存放备忘类实例对象，提供方法存放存储和恢复历史状态</p>
+</li>
+<li><p>中介者模式：<strong>增加一个中介者对象，所有的相关对象都通过中介者对象来通信，而不是互相引用</strong>，使得多对多关系简化为一对多关系</p>
+</li>
+</ul>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></div><div class="post_share"><div class="social-share" data-image="https://z3.ax1x.com/2021/08/17/fIut8s.png" data-sites="wechat,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/10/31/51.%E8%AE%A1%E7%BD%91%E7%AC%94%E8%AE%B0/"><img class="prev-cover" src= "https://z3.ax1x.com/2021/08/18/fIcAZ6.gif" data-lazy-src="https://z3.ax1x.com/2021/08/17/fIut8s.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">《自顶向下方法》读书笔记</div></div></a></div><div class="next-post pull-right"><a href="/2021/10/24/49.Talk%20with%20rabbit/"><img class="next-cover" src= "https://z3.ax1x.com/2021/08/18/fIcAZ6.gif" data-lazy-src="https://z3.ax1x.com/2021/08/17/fIut8s.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Talk with rabbit</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "https://z3.ax1x.com/2021/08/18/fIcAZ6.gif" data-lazy-src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Danmoits</div><div class="author-info__description">HUST-CS-20</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">40</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">32</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">33</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/DanmoSAMA"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="sticky_layout"></div></div></main><footer id="footer" style="background-image: url('/img/index.png')"><div id="footer-wrap"><div class="copyright">&copy;2021 By Danmoits</div><div class="footer_custom_text"><span>天気はいから，散歩しましよ。</span><br><a href="http://beian.miit.gov.cn/"  style="color:#f72b07" target="_blank">鄂ICP备2021014938号</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="font-plus" type="button" title="放大字体"><i class="fas fa-plus"></i></button><button id="font-minus" type="button" title="缩小字体"><i class="fas fa-minus"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>function addGitalkSource () {
+  const ele = document.createElement('link')
+  ele.rel = 'stylesheet'
+  ele.href= 'https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css'
+  document.getElementsByTagName('head')[0].appendChild(ele)
+}
+
+function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk(Object.assign({
+      clientID: '38f3004c23ea76e7b591',
+      clientSecret: '7f26b7a58a9d40bacc884c008e5329b6bf1365e8',
+      repo: 'DanmoSAMA.github.io',
+      owner: 'DanmoSAMA',
+      admin: ['DanmoSAMA'],
+      id: 'a6d4876b934626d41db0b88786663606',
+      updateCountCallback: commentCount
+    },))
+
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    addGitalkSource()
+    getScript('https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js').then(initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.innerHTML= n
+  }
+}
+
+if ('Gitalk' === 'Gitalk' || !true) {
+  if (true) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script></div><link rel="stylesheet" href="https://butterfly.lete114.top/css/Lete.css"><script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script><script src="/js/custom.js"></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/gh/metowolf/MetingJS@1.2/dist/Meting.min.js"></script></div><!-- hexo injector body_end start --> <script data-pjax>if(document.getElementById('recent-posts') && (location.pathname ==='all'|| 'all' ==='all')){
+    var parent = document.getElementById('recent-posts');
+    var child = '<div class="recent-post-item" style="width:100%;height: auto"><div id="catalog_magnet"><div class="magnet_item"><a class="magnet_link" href="https://danmosama.github.io/categories/web开发/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">📚 web开发笔记 (26)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://danmosama.github.io/categories/环境配置/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">📒 编程环境相关 (1)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://danmosama.github.io/categories/生活/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🐱‍👓 生活琐记 (3)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://danmosama.github.io/categories/视频制作/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">👩‍💻 视频制作 (1)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><a class="magnet_link_more"  href="https://danmosama.github.io/categories" style="flex:1;text-align: center;margin-bottom: 10px;">查看更多...</a></div></div>';
+    console.log('已挂载magnet')
+    parent.insertAdjacentHTML("afterbegin",child)}
+     </script><style>#catalog_magnet{flex-wrap: wrap;display: flex;width:100%;justify-content:space-between;padding: 10px 10px 0 10px;align-content: flex-start;}.magnet_item{flex-basis: calc(50% - 5px);background: #f2f2f2;margin-bottom: 10px;border-radius: 8px;transition: all 0.2s ease-in-out;}.magnet_item:hover{background: #b30070}.magnet_link_more{color:#555}.magnet_link{color:black}.magnet_link:hover{color:white}@media screen and (max-width: 600px) {.magnet_item {flex-basis: 100%;}}.magnet_link_context{display:flex;padding: 10px;font-size:16px;transition: all 0.2s ease-in-out;}.magnet_link_context:hover{padding: 10px 20px;}</style>
+    <style></style><script data-pjax>function history_calendar_injector_config(){
+                var parent_div_git = document.getElementsByClassName('sticky_layout')[0];
+                var item_html = '<div class="card-widget card-history"><div class="card-content"><div class="item-headline"><i class="fas fa-clock fa-spin"></i><span>那年今日</span></div><div id="history-baidu" style="height: 100px;overflow: hidden"><div class="history_swiper-container" id="history-container" style="width: 100%;height: 100%"><div class="swiper-wrapper" id="history_container_wrapper" style="height:20px"></div></div></div></div>';
+                console.log('已挂载history_calendar')
+                // parent_div_git.innerHTML=item_html+parent_div_git.innerHTML // 无报错，但不影响使用(支持pjax跳转)
+                parent_div_git.insertAdjacentHTML("afterbegin",item_html) // 有报错，但不影响使用(支持pjax跳转)
+            }if( document.getElementsByClassName('sticky_layout')[0] && (location.pathname ==='/'|| '/' ==='all')){
+
+            history_calendar_injector_config()
+        } </script><script data-pjax  src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script><script data-pjax src="https://cdn.jsdelivr.net/gh/Zfour/Butterfly-card-history/baiduhistory/js/main.js"></script><script data-pjax>function electric_clock_injector_config(){
+                var parent_div_git = document.getElementsByClassName('sticky_layout')[0];
+                var item_html = '<div class="card-widget card-clock"><div class="card-glass"><div class="card-background"><div class="card-content"><div id="hexo_electric_clock"><img id="card-clock-loading" src= "https://z3.ax1x.com/2021/08/18/fIcAZ6.gif" data-lazy-src="https://cdn.jsdelivr.net/gh/Zfour/Butterfly-clock/clock/images/weather/loading.gif" style="height: 120px; width: 100%;" data-ll-status="loading" class="entered loading"></div></div></div></div></div>';
+                console.log('已挂载electric_clock')
+                // parent_div_git.innerHTML=item_html+parent_div_git.innerHTML // 无报错，但不影响使用(支持pjax跳转)
+                parent_div_git.insertAdjacentHTML("afterbegin",item_html) // 有报错，但不影响使用(支持pjax跳转)
+            }if( document.getElementsByClassName('sticky_layout')[0] && (location.pathname ==='/'|| '/' ==='all')){
+
+            electric_clock_injector_config()
+        } </script><script src="https://pv.sohu.com/cityjson?ie=utf-8"></script><script data-pjax  src="https://cdn.jsdelivr.net/gh/Zfour/hexo-electric-clock@1.0.6/clock.js"></script><!-- hexo injector body_end end --></body></html>
