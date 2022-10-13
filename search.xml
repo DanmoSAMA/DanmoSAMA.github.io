@@ -1,6 +1,912 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>SQL Murder Mystery</title>
+    <url>/2022/10/13/sql/</url>
+    <content><![CDATA[<p><a href="https://mystery.knightlab.com/">SQL Murder Mystery</a></p>
+<h1 id="Select-Star-Sql"><a href="#Select-Star-Sql" class="headerlink" title="Select Star Sql"></a>Select Star Sql</h1><h2 id="Beazley’s-Last-Statement"><a href="#Beazley’s-Last-Statement" class="headerlink" title="Beazley’s Last Statement"></a>Beazley’s Last Statement</h2><p>查找此人的遗言：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> first_name, last_name, last_statement</span><br><span class="line"><span class="keyword">FROM</span> executions</span><br><span class="line"><span class="keyword">WHERE</span> first_name <span class="keyword">LIKE</span> <span class="string">&#x27;_apoleon&#x27;</span></span><br><span class="line">  <span class="keyword">AND</span> last_name <span class="keyword">LIKE</span> <span class="string">&#x27;%ley&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Claims-of-Innocence"><a href="#Claims-of-Innocence" class="headerlink" title="Claims of Innocence"></a>Claims of Innocence</h2><p>查找所有拒绝遗言的人：（第二种写法可以查询符合该条件的数量，但需要遍历全表）</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- WHERE --</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="built_in">COUNT</span>(<span class="operator">*</span>)</span><br><span class="line"><span class="keyword">FROM</span> executions</span><br><span class="line"><span class="keyword">WHERE</span> last_statement <span class="keyword">IS</span> <span class="keyword">NULL</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- COUNT CASE WHEN --</span></span><br><span class="line"><span class="keyword">SELECT</span> </span><br><span class="line">  <span class="built_in">COUNT</span>(<span class="keyword">CASE</span> <span class="keyword">WHEN</span> last_statement <span class="keyword">IS</span> <span class="keyword">NULL</span> <span class="keyword">THEN</span> <span class="number">1</span></span><br><span class="line">     <span class="keyword">ELSE</span> <span class="keyword">NULL</span> <span class="keyword">END</span>)</span><br><span class="line"><span class="keyword">FROM</span> executions</span><br><span class="line"></span><br><span class="line"><span class="comment">-- COUNT functions --</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="built_in">COUNT</span>(<span class="operator">*</span>) <span class="operator">-</span> <span class="built_in">COUNT</span>(last_statement) <span class="keyword">FROM</span> executions</span><br></pre></td></tr></table></figure>
+
+<p>平均遗言长度：<strong>LENGTH</strong> 统计字符串长度</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="built_in">AVG</span>(LENGTH(last_statement))</span><br><span class="line"><span class="keyword">FROM</span> executions</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>去重：DISTINCT</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">DISTINCT</span> county</span><br><span class="line"><span class="keyword">FROM</span> executions</span><br></pre></td></tr></table></figure>
+
+<p>也可以用 GROUP BY：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> county</span><br><span class="line"><span class="keyword">FROM</span> executions</span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> county</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>查询喊冤的人数比：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line"><span class="number">1.0</span> <span class="operator">*</span> <span class="built_in">COUNT</span>(<span class="keyword">CASE</span> <span class="keyword">WHEN</span> last_statement <span class="keyword">LIKE</span> <span class="string">&#x27;%innocent%&#x27;</span></span><br><span class="line">    <span class="keyword">THEN</span> <span class="number">1</span> <span class="keyword">ELSE</span> <span class="keyword">NULL</span> <span class="keyword">END</span>) <span class="operator">/</span> <span class="built_in">COUNT</span>(<span class="operator">*</span>)</span><br><span class="line"><span class="keyword">FROM</span> executions</span><br></pre></td></tr></table></figure>
+
+<h2 id="The-long-tail"><a href="#The-long-tail" class="headerlink" title="The long tail"></a>The long tail</h2><h3 id="Strange-Query"><a href="#Strange-Query" class="headerlink" title="Strange Query"></a>Strange Query</h3><p>如果查找的其中一列是聚合，<strong>另一列既不是聚合，又不是 GROUP BY 的列</strong>，这种现象称作“Strange Query”。比如第一列是 Count，第二列是 first_name，那么查询得到的表格中，first_name 列对应最后一个表项的值。</p>
+<blockquote>
+<p>In this case, our database picks the first name <strong>from the last entry in our table.</strong></p>
+</blockquote>
+<hr>
+<p>WHERE 在聚合前执行，而 HAVING 可以看作拿到了聚合的结果，在聚合后执行。</p>
+<p>查找 年龄大于50岁被处刑的人数大于2 的县：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> county, <span class="built_in">COUNT</span>(<span class="operator">*</span>) <span class="keyword">AS</span> number_over_50</span><br><span class="line"><span class="keyword">FROM</span> executions</span><br><span class="line"><span class="keyword">WHERE</span> ex_age <span class="operator">&gt;</span> <span class="number">50</span></span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> county</span><br><span class="line"><span class="keyword">HAVING</span> number_over_50 <span class="operator">&gt;</span> <span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="Nest-select"><a href="#Nest-select" class="headerlink" title="Nest select"></a>Nest select</h3><p>查找遗言最长的人：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> first_name, last_name</span><br><span class="line"><span class="keyword">FROM</span> executions</span><br><span class="line"><span class="keyword">WHERE</span> LENGTH(last_statement) <span class="operator">=</span></span><br><span class="line">    (<span class="keyword">SELECT</span> <span class="built_in">MAX</span>(LENGTH(last_statement))</span><br><span class="line">   <span class="keyword">FROM</span> executions)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>查找各县被处决人数占比：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">  county,</span><br><span class="line">  <span class="number">100.0</span> <span class="operator">*</span> <span class="built_in">COUNT</span>(<span class="operator">*</span>) <span class="operator">/</span> <span class="keyword">SELECT</span> <span class="built_in">COUNT</span>(<span class="operator">*</span>) <span class="keyword">FROM</span> executions</span><br><span class="line">    <span class="keyword">AS</span> percentage</span><br><span class="line"><span class="keyword">FROM</span> executions</span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> county</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> percentage <span class="keyword">DESC</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Execution-Hiatuses"><a href="#Execution-Hiatuses" class="headerlink" title="Execution Hiatuses"></a>Execution Hiatuses</h2><p>计算经过了多少天：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> JULIANDAY(<span class="string">&#x27;1993-08-10&#x27;</span>) <span class="operator">-</span> JULIANDAY(<span class="string">&#x27;1989-07-07&#x27;</span>) <span class="keyword">AS</span> day_difference</span><br></pre></td></tr></table></figure>
+
+<p>计算每次处决人的天数间隔：</p>
+<blockquote>
+<p><code>previous</code> is derived from <code>executions</code>, so we’re effectively joining <code>executions</code> to itself. This is called a “self join” and is a powerful technique for <strong>allowing rows to get information from other parts of the same table.</strong></p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">  last_ex_date <span class="keyword">AS</span> <span class="keyword">start</span>,</span><br><span class="line">  ex_date <span class="keyword">AS</span> <span class="keyword">end</span>,</span><br><span class="line">  <span class="comment">-- 计算天数间隔 --</span></span><br><span class="line">  JULIANDAY(ex_date) <span class="operator">-</span> JULIANDAY(last_ex_date) </span><br><span class="line">    <span class="keyword">AS</span> day_difference</span><br><span class="line"><span class="keyword">FROM</span> executions</span><br><span class="line"><span class="keyword">JOIN</span> (</span><br><span class="line">  <span class="comment">-- self join --</span></span><br><span class="line">  <span class="keyword">SELECT</span> </span><br><span class="line">    <span class="comment">-- 相邻 ex_number 间的天数间隔，因此是 ex_number + 1 --</span></span><br><span class="line">    ex_number <span class="operator">+</span> <span class="number">1</span> <span class="keyword">AS</span> ex_number,</span><br><span class="line">    ex_date <span class="keyword">as</span> last_ex_date</span><br><span class="line">  <span class="keyword">FROM</span> executions</span><br><span class="line">  <span class="keyword">WHERE</span> ex_number <span class="operator">&lt;</span> <span class="number">553</span> </span><br><span class="line">) previous</span><br><span class="line">  <span class="keyword">ON</span> executions.ex_number <span class="operator">=</span> previous.ex_number</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> day_difference <span class="keyword">DESC</span></span><br></pre></td></tr></table></figure>
+
+<p>更加优雅的写法：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">  previous.ex_date <span class="keyword">AS</span> <span class="keyword">start</span>,</span><br><span class="line">  executions.ex_date <span class="keyword">AS</span> <span class="keyword">end</span>,</span><br><span class="line">  JULIANDAY(executions.ex_date) <span class="operator">-</span> JULIANDAY(previous.ex_date)</span><br><span class="line">    <span class="keyword">AS</span> day_difference</span><br><span class="line"><span class="keyword">FROM</span> executions</span><br><span class="line"><span class="comment">-- alias --</span></span><br><span class="line"><span class="keyword">JOIN</span> executions previous</span><br><span class="line">  <span class="keyword">ON</span> executions.ex_number <span class="operator">=</span> previous.ex_number <span class="operator">+</span> <span class="number">1</span></span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> day_difference <span class="keyword">DESC</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="Sql-murder-mystery"><a href="#Sql-murder-mystery" class="headerlink" title="Sql murder mystery"></a>Sql murder mystery</h1><h2 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h2><p>查找案件信息：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">FROM</span> crime_scene_report</span><br><span class="line"><span class="keyword">WHERE</span> <span class="type">date</span> <span class="operator">=</span> <span class="number">20180115</span></span><br><span class="line">  <span class="keyword">AND</span> type <span class="operator">=</span> <span class="string">&#x27;murder&#x27;</span> </span><br><span class="line">  <span class="keyword">AND</span> city <span class="operator">=</span> <span class="string">&#x27;SQL City&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>date</th>
+<th>type</th>
+<th>description</th>
+<th>city</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>20180115</td>
+<td>murder</td>
+<td>Security footage shows that there were 2 witnesses. The first witness lives at the last house on “Northwestern Dr”. The second witness, named Annabel, lives somewhere on “Franklin Ave”.</td>
+<td>SQL City</td>
+</tr>
+</tbody></table>
+<p>第一个目击者：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> </span><br><span class="line"><span class="keyword">FROM</span> person</span><br><span class="line"><span class="keyword">WHERE</span> address_street_name <span class="operator">=</span> <span class="string">&#x27;Northwestern Dr&#x27;</span></span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> address_number <span class="keyword">DESC</span></span><br><span class="line">LIMIT <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>name</th>
+<th>license_id</th>
+<th>address_number</th>
+<th>address_street_name</th>
+<th>ssn</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>14887</td>
+<td>Morty Schapiro</td>
+<td>118009</td>
+<td>4919</td>
+<td>Northwestern Dr</td>
+<td>111564949</td>
+</tr>
+</tbody></table>
+<p>第二个目击者：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> </span><br><span class="line"><span class="keyword">FROM</span> person</span><br><span class="line"><span class="keyword">WHERE</span> name <span class="keyword">LIKE</span> <span class="string">&#x27;%Annabel%&#x27;</span></span><br><span class="line"><span class="keyword">AND</span> address_street_name <span class="operator">=</span> <span class="string">&#x27;Franklin Ave&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>name</th>
+<th>license_id</th>
+<th>address_number</th>
+<th>address_street_name</th>
+<th>ssn</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>16371</td>
+<td>Annabel Miller</td>
+<td>490173</td>
+<td>103</td>
+<td>Franklin Ave</td>
+<td>318771143</td>
+</tr>
+</tbody></table>
+<p>拿到 id 后，可以去 interviews 中查找：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">FROM</span> interview</span><br><span class="line"><span class="keyword">WHERE</span> person_id <span class="operator">=</span> <span class="number">14887</span></span><br><span class="line"><span class="keyword">OR</span> person_id <span class="operator">=</span> <span class="number">16371</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>person_id</th>
+<th>transcript</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>14887</td>
+<td>I heard a gunshot and then saw a man run out. He had a “Get Fit Now Gym” bag. The membership number on the bag started with “48Z”. Only gold members have those bags. The man got into a car with a plate that included “H42W”.</td>
+</tr>
+<tr>
+<td>16371</td>
+<td>I saw the murder happen, and I recognized the killer from my gym when I was working out last week on January the 9th.</td>
+</tr>
+</tbody></table>
+<p>由此处信息可知，凶手有以下特征：</p>
+<ul>
+<li>拥有 “Get Fit Now Gym” 包，进出 Gym，并且有一次是 1 月 9 日。</li>
+<li>包号码以”48Z”开头。</li>
+<li>车牌号包含 “H42W”。</li>
+</ul>
+<p>先从 “48Z” 入手：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">FROM</span> get_fit_now_member</span><br><span class="line"><span class="keyword">WHERE</span> id <span class="keyword">LIKE</span> <span class="string">&#x27;48Z%&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>person_id</th>
+<th>name</th>
+<th>membership_start_date</th>
+<th>membership_status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>48Z38</td>
+<td>49550</td>
+<td>Tomas Baisley</td>
+<td>20170203</td>
+<td>silver</td>
+</tr>
+<tr>
+<td>48Z7A</td>
+<td>28819</td>
+<td>Joe Germuska</td>
+<td>20160305</td>
+<td>gold</td>
+</tr>
+<tr>
+<td>48Z55</td>
+<td>67318</td>
+<td>Jeremy Bowers</td>
+<td>20160101</td>
+<td>gold</td>
+</tr>
+</tbody></table>
+<p>再查找车牌号：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">FROM</span> drivers_license</span><br><span class="line"><span class="keyword">WHERE</span> plate_number <span class="keyword">LIKE</span> <span class="string">&#x27;%H42W%&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>age</th>
+<th>height</th>
+<th>eye_color</th>
+<th>hair_color</th>
+<th>gender</th>
+<th>plate_number</th>
+<th>car_make</th>
+<th>car_model</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>183779</td>
+<td>21</td>
+<td>65</td>
+<td>blue</td>
+<td>blonde</td>
+<td>female</td>
+<td>H42W0X</td>
+<td>Toyota</td>
+<td>Prius</td>
+</tr>
+<tr>
+<td><strong>423327</strong></td>
+<td>30</td>
+<td>70</td>
+<td>brown</td>
+<td>brown</td>
+<td>male</td>
+<td>0H42W2</td>
+<td>Chevrolet</td>
+<td>Spark LS</td>
+</tr>
+<tr>
+<td>664760</td>
+<td>21</td>
+<td>71</td>
+<td>black</td>
+<td>black</td>
+<td>male</td>
+<td>4H42WR</td>
+<td>Nissan</td>
+<td>Altima</td>
+</tr>
+</tbody></table>
+<p>最后看看进出日期：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">FROM</span> get_fit_now_check_in</span><br><span class="line"><span class="keyword">WHERE</span> check_in_date <span class="operator">=</span> <span class="number">20180109</span></span><br><span class="line"><span class="keyword">AND</span> membership_id <span class="keyword">LIKE</span> <span class="string">&#x27;48Z%&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>membership_id</th>
+<th>check_in_date</th>
+<th>check_in_time</th>
+<th>check_out_time</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>48Z7A</td>
+<td>20180109</td>
+<td>1600</td>
+<td>1730</td>
+</tr>
+<tr>
+<td>48Z55</td>
+<td>20180109</td>
+<td>1530</td>
+<td>1700</td>
+</tr>
+</tbody></table>
+<p>这样直接把凶手范围缩小到两个人了。</p>
+<p>看一下这两个人的个人信息：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">FROM</span> person </span><br><span class="line"><span class="keyword">WHERE</span> id <span class="operator">=</span> <span class="number">28819</span></span><br><span class="line"><span class="keyword">OR</span> id <span class="operator">=</span> <span class="number">67318</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>name</th>
+<th>license_id</th>
+<th>address_number</th>
+<th>address_street_name</th>
+<th>ssn</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>28819</td>
+<td>Joe Germuska</td>
+<td>173289</td>
+<td>111</td>
+<td>Fisk Rd</td>
+<td>138909730</td>
+</tr>
+<tr>
+<td>67318</td>
+<td>Jeremy Bowers</td>
+<td><strong>423327</strong></td>
+<td>530</td>
+<td>Washington Pl, Apt 3A</td>
+<td>871539279</td>
+</tr>
+</tbody></table>
+<p>第二个人的 license_id 和前面对上了，说明凶手是他！</p>
+<blockquote>
+<p>Congrats, you found the murderer! But wait, there’s more… If you think you’re up for a challenge, try querying the interview transcript of the murderer to find the real villain behind this crime. If you feel especially confident in your SQL skills, try to complete this final step with no more than 2 queries. Use this same INSERT statement with your new suspect to check your answer.</p>
+</blockquote>
+<p>案件还有幕后黑手，查找凶手的 interview，挑战是使用两次以内的查询。</p>
+<h2 id="第二步（多步查询）"><a href="#第二步（多步查询）" class="headerlink" title="第二步（多步查询）"></a>第二步（多步查询）</h2><p>先用笨办法查一查：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">FROM</span> interview</span><br><span class="line"><span class="keyword">WHERE</span> person_id <span class="operator">=</span> <span class="number">67318</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>person_id</th>
+<th>transcript</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>67318</td>
+<td>I was hired by a woman with a lot of money. I don’t know her name but I know she’s around 5’5” (65”) or 5’7” (67”). She has red hair and she drives a Tesla Model S. I know that she attended the SQL Symphony Concert 3 times in December 2017.</td>
+</tr>
+</tbody></table>
+<p>查找 drivers_license 表：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">FROM</span> drivers_license</span><br><span class="line"><span class="keyword">WHERE</span> car_make <span class="operator">=</span> <span class="string">&#x27;Tesla&#x27;</span></span><br><span class="line"><span class="keyword">AND</span> car_model <span class="operator">=</span> <span class="string">&#x27;Model S&#x27;</span></span><br><span class="line"><span class="keyword">AND</span> hair_color <span class="operator">=</span> <span class="string">&#x27;red&#x27;</span></span><br><span class="line"><span class="keyword">AND</span> gender <span class="operator">=</span> <span class="string">&#x27;female&#x27;</span></span><br><span class="line"><span class="keyword">AND</span> age <span class="operator">&gt;=</span> <span class="number">60</span></span><br><span class="line"><span class="keyword">AND</span> age <span class="operator">&lt;=</span> <span class="number">70</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>age</th>
+<th>height</th>
+<th>eye_color</th>
+<th>hair_color</th>
+<th>gender</th>
+<th>plate_number</th>
+<th>car_make</th>
+<th>car_model</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>202298</td>
+<td>68</td>
+<td>66</td>
+<td>green</td>
+<td>red</td>
+<td>female</td>
+<td>500123</td>
+<td>Tesla</td>
+<td>Model S</td>
+</tr>
+<tr>
+<td>291182</td>
+<td>65</td>
+<td>66</td>
+<td>blue</td>
+<td>red</td>
+<td>female</td>
+<td>08CM64</td>
+<td>Tesla</td>
+<td>Model S</td>
+</tr>
+</tbody></table>
+<p>从 license_id 得到人的 id：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> <span class="string">&#x27;person&#x27;</span></span><br><span class="line"><span class="keyword">WHERE</span> license_id <span class="operator">=</span> <span class="number">202298</span></span><br><span class="line">   <span class="keyword">OR</span> license_id <span class="operator">=</span> <span class="number">291182</span> </span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>name</th>
+<th>license_id</th>
+<th>address_number</th>
+<th>address_street_name</th>
+<th>ssn</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>90700</td>
+<td>Regina George</td>
+<td>291182</td>
+<td>332</td>
+<td>Maple Ave</td>
+<td>337169072</td>
+</tr>
+<tr>
+<td>99716</td>
+<td>Miranda Priestly</td>
+<td>202298</td>
+<td>1883</td>
+<td>Golden Ave</td>
+<td>987756388</td>
+</tr>
+</tbody></table>
+<p>最后使用”参加音乐会”的条件：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">FROM</span> facebook_event_checkin</span><br><span class="line"><span class="keyword">WHERE</span> <span class="type">date</span> <span class="operator">&gt;=</span> <span class="number">20171201</span></span><br><span class="line">  <span class="keyword">AND</span> <span class="type">date</span> <span class="operator">&lt;=</span> <span class="number">20171231</span></span><br><span class="line">  <span class="keyword">AND</span> event_name <span class="operator">=</span> <span class="string">&#x27;SQL Symphony Concert&#x27;</span></span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> person_id</span><br><span class="line"><span class="keyword">HAVING</span> <span class="built_in">COUNT</span>(person_id) <span class="operator">=</span> <span class="number">3</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>person_id</th>
+<th>event_id</th>
+<th>event_name</th>
+<th>date</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>24556</td>
+<td>1143</td>
+<td>SQL Symphony Concert</td>
+<td>20171224</td>
+</tr>
+<tr>
+<td>99716</td>
+<td>1143</td>
+<td>SQL Symphony Concert</td>
+<td>20171229</td>
+</tr>
+</tbody></table>
+<p>对比可知幕后黑手是 Miranda Priestly。</p>
+<h2 id="第二步（两步查询）"><a href="#第二步（两步查询）" class="headerlink" title="第二步（两步查询）"></a>第二步（两步查询）</h2><p>先查找 interview，因为信息蕴含在他的话语中，这一步没法被合并。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">FROM</span> interview</span><br><span class="line"><span class="keyword">WHERE</span> person_id <span class="operator">=</span> <span class="number">67318</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>person_id</th>
+<th>transcript</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>67318</td>
+<td>I was hired by a woman with a lot of money. I don’t know her name but I know she’s around 5’5” (65”) or 5’7” (67”). She has red hair and she drives a Tesla Model S. I know that she attended the SQL Symphony Concert 3 times in December 2017.</td>
+</tr>
+</tbody></table>
+<p>接下来的查询用一次完成：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> name</span><br><span class="line"><span class="keyword">FROM</span> drivers_license l</span><br><span class="line"><span class="comment">-- 连接写在 WHERE 前面 --</span></span><br><span class="line"><span class="keyword">INNER</span> <span class="keyword">JOIN</span> person p	</span><br><span class="line"><span class="keyword">ON</span> p.license_id <span class="operator">=</span> l.id</span><br><span class="line"><span class="keyword">INNER</span> <span class="keyword">JOIN</span> (</span><br><span class="line">  <span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line">  <span class="keyword">FROM</span> facebook_event_checkin</span><br><span class="line">  <span class="keyword">WHERE</span> <span class="type">date</span> <span class="operator">&gt;=</span> <span class="number">20171201</span></span><br><span class="line">    <span class="keyword">AND</span> <span class="type">date</span> <span class="operator">&lt;=</span> <span class="number">20171231</span></span><br><span class="line">    <span class="keyword">AND</span> event_name <span class="operator">=</span> <span class="string">&#x27;SQL Symphony Concert&#x27;</span></span><br><span class="line">  <span class="keyword">GROUP</span> <span class="keyword">BY</span> person_id</span><br><span class="line">  <span class="keyword">HAVING</span> <span class="built_in">COUNT</span>(person_id) <span class="operator">=</span> <span class="number">3</span></span><br><span class="line">) f </span><br><span class="line"><span class="keyword">ON</span> p.id <span class="operator">=</span> f.person_id</span><br><span class="line"></span><br><span class="line"><span class="keyword">WHERE</span> car_make <span class="operator">=</span> <span class="string">&#x27;Tesla&#x27;</span></span><br><span class="line"><span class="keyword">AND</span> car_model <span class="operator">=</span> <span class="string">&#x27;Model S&#x27;</span></span><br><span class="line"><span class="keyword">AND</span> hair_color <span class="operator">=</span> <span class="string">&#x27;red&#x27;</span></span><br><span class="line"><span class="keyword">AND</span> gender <span class="operator">=</span> <span class="string">&#x27;female&#x27;</span></span><br><span class="line"><span class="keyword">AND</span> age <span class="operator">&gt;=</span> <span class="number">60</span></span><br><span class="line"><span class="keyword">AND</span> age <span class="operator">&lt;=</span> <span class="number">70</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>name</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Miranda Priestly</td>
+</tr>
+</tbody></table>
+]]></content>
+      <categories>
+        <category>hybrid</category>
+      </categories>
+      <tags>
+        <tag>js</tag>
+        <tag>hrbrid</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>JSBridge</title>
+    <url>/2022/10/13/jsb/</url>
+    <content><![CDATA[<h1 id="JSBridge"><a href="#JSBridge" class="headerlink" title="JSBridge"></a>JSBridge</h1><h2 id="JSONP"><a href="#JSONP" class="headerlink" title="JSONP"></a>JSONP</h2><p>在讲JSBridge前，先回顾一下JSONP的知识，因为它们的思想有共通之处：</p>
+<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>JSONP是<code>JSON with Padding</code>的略称，前端定义好回调函数，函数名放在url中传给后端，后端拿到函数名，构造出执行函数的字符串返回给前端，前端收到后便会执行该回调，回调函数中可以拿到后端传过来的数据。</p>
+<p>原理：src属性不受同源策略的限制，<code>img</code>、<code>script</code>等标签都不受同源策略的影响。</p>
+<p>缺点：由于JSONP只支持get请求，且具有一定安全漏洞，一般不在实际场景中使用。</p>
+<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>以最简单的场景为例：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span></span><br><span class="line"><span class="xml">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span> /&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">&quot;X-UA-Compatible&quot;</span> <span class="attr">content</span>=<span class="string">&quot;IE=edge&quot;</span> /&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span> /&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span></span><br><span class="line"><span class="xml">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span></span><br><span class="line"><span class="xml">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;amount&quot;</span>&gt;</span>100<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">button</span> <span class="attr">class</span>=<span class="string">&quot;btn&quot;</span>&gt;</span>Btn<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"></span></span></span><br><span class="line"><span class="javascript"><span class="xml">      <span class="keyword">const</span> button = <span class="built_in">document</span>.querySelector(<span class="string">&#x27;.btn&#x27;</span>)</span></span></span><br><span class="line"><span class="javascript"><span class="xml">      <span class="keyword">const</span> amount = <span class="built_in">document</span>.querySelector(<span class="string">&#x27;.amount&#x27;</span>)</span></span></span><br><span class="line"><span class="javascript"><span class="xml"></span></span></span><br><span class="line"><span class="javascript"><span class="xml">      button.addEventListener(<span class="string">&#x27;click&#x27;</span>, <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span></span></span><br><span class="line"><span class="javascript"><span class="xml">        <span class="comment">// 创建script标签</span></span></span></span><br><span class="line"><span class="javascript"><span class="xml">        <span class="keyword">let</span> script = <span class="built_in">document</span>.createElement(<span class="string">&#x27;script&#x27;</span>)</span></span></span><br><span class="line"><span class="javascript"><span class="xml">        <span class="comment">// 随机生成回调函数名</span></span></span></span><br><span class="line"><span class="javascript"><span class="xml">        <span class="keyword">let</span> functionName = <span class="string">&#x27;func&#x27;</span> + <span class="built_in">parseInt</span>(<span class="built_in">Math</span>.random() * <span class="number">10000</span>, <span class="number">10</span>)</span></span></span><br><span class="line"><span class="javascript"><span class="xml">        <span class="comment">// 将回调函数绑在window对象上</span></span></span></span><br><span class="line"><span class="javascript"><span class="xml">        <span class="built_in">window</span>[functionName] = <span class="function"><span class="keyword">function</span> (<span class="params">result</span>) </span>&#123;</span></span></span><br><span class="line"><span class="javascript"><span class="xml">          <span class="built_in">console</span>.log(result)</span></span></span><br><span class="line"><span class="javascript"><span class="xml">          <span class="keyword">if</span> (result.name === <span class="string">&#x27;success&#x27;</span>) &#123;</span></span></span><br><span class="line"><span class="javascript"><span class="xml">            amount.innerText = amount.innerText - <span class="number">1</span></span></span></span><br><span class="line"><span class="javascript"><span class="xml">          &#125;</span></span></span><br><span class="line"><span class="javascript"><span class="xml">        &#125;</span></span></span><br><span class="line"><span class="javascript"><span class="xml">        <span class="comment">// 设置src，请求的url带上回调函数名</span></span></span></span><br><span class="line"><span class="javascript"><span class="xml">        script.src = <span class="string">`http://127.0.0.1:3000?callback=<span class="subst">$&#123;functionName&#125;</span>`</span></span></span></span><br><span class="line"><span class="javascript"><span class="xml">        <span class="comment">// 发送请求</span></span></span></span><br><span class="line"><span class="javascript"><span class="xml">        <span class="built_in">document</span>.body.appendChild(script)</span></span></span><br><span class="line"><span class="javascript"><span class="xml">        <span class="comment">// 请求结束，从window上移除绑定的回调函数</span></span></span></span><br><span class="line"><span class="javascript"><span class="xml">        script.onload = <span class="function"><span class="keyword">function</span> (<span class="params">e</span>) </span>&#123;</span></span></span><br><span class="line"><span class="javascript"><span class="xml">          e.currentTarget.remove()</span></span></span><br><span class="line"><span class="javascript"><span class="xml">          <span class="keyword">delete</span> <span class="built_in">window</span>[functionName]</span></span></span><br><span class="line"><span class="javascript"><span class="xml">        &#125;</span></span></span><br><span class="line"><span class="javascript"><span class="xml">        script.onerror = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span></span></span><br><span class="line"><span class="javascript"><span class="xml">          alert(<span class="string">&#x27;Fail&#x27;</span>)</span></span></span><br><span class="line"><span class="javascript"><span class="xml">          e.currentTarget.remove()</span></span></span><br><span class="line"><span class="javascript"><span class="xml">          <span class="keyword">delete</span> <span class="built_in">window</span>[functionName]</span></span></span><br><span class="line"><span class="javascript"><span class="xml">        &#125;</span></span></span><br><span class="line"><span class="javascript"><span class="xml">      &#125;)</span></span></span><br><span class="line"><span class="javascript"><span class="xml">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br><span class="line"><span class="xml">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> http <span class="keyword">from</span> <span class="string">&#x27;http&#x27;</span></span><br><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> url <span class="keyword">from</span> <span class="string">&#x27;url&#x27;</span></span><br><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> qs <span class="keyword">from</span> <span class="string">&#x27;qs&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> server = http.createServer(<span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// 解析得到params</span></span><br><span class="line">  <span class="keyword">const</span> &#123; query &#125; = url.parse(req.url)</span><br><span class="line">  <span class="keyword">const</span> params = qs.parse(query)</span><br><span class="line">  <span class="comment">// 后端要传的数据</span></span><br><span class="line">  <span class="keyword">const</span> data = &#123; <span class="attr">name</span>: <span class="string">&#x27;success&#x27;</span> &#125;</span><br><span class="line">  <span class="keyword">let</span> str = <span class="string">&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (params.callback) &#123;</span><br><span class="line">    <span class="comment">// 构造出执行函数的字符串</span></span><br><span class="line">    str = <span class="string">`<span class="subst">$&#123;params.callback&#125;</span>(<span class="subst">$&#123;<span class="built_in">JSON</span>.stringify(data)&#125;</span>)`</span></span><br><span class="line">    <span class="comment">// 返回给前端</span></span><br><span class="line">    res.end(str)</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    res.end()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">server.listen(<span class="number">3000</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;Server is running on port 3000...&#x27;</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>前端发送请求的url可以是：<code>http://127.0.0.1:3000?callback=func1234</code></p>
+<p>后端获取回调函数名<code>func1234</code>，构造好字符串<code>func1234(&#123; name: &#39;success&#39; &#125;)</code></p>
+<p>前端拿到该字符串后，就会调用回调函数，拿到后端传的数据。</p>
+<p>可见，JSONP的模式大概是：<strong>前端随机生成了回调函数名，把函数名告诉后端，后端从url中解析出函数名，完成自身的逻辑后，将构造好的字符串返回给前端，前端执行回调。</strong></p>
+<h2 id="JSB"><a href="#JSB" class="headerlink" title="JSB"></a>JSB</h2><blockquote>
+<p>H5 -&gt; 前端，Native/原生 -&gt; 客户端</p>
+<p>安卓 -&gt; Java/Kotlin，IOS -&gt; OC/Swift</p>
+<p>webview 是一个基于 webkit 的引擎，可以解析 DOM 元素，展示 html 页面的控件。</p>
+<ul>
+<li>显示和渲染Web页面</li>
+<li>直接使用html文件（网络上或本地assets中）作布局</li>
+<li>可和JavaScript交互调用</li>
+</ul>
+<p>—— <a href="https://www.jianshu.com/p/3c94ae673e2a">Carson带你学Android：最全面、易懂的Webview使用教程</a></p>
+</blockquote>
+<p>现在市面上的 App，基本上不是纯 Native 实现，客户端内置 webview，不少页面都嵌入了 H5，这种称作<code>Hybrid App</code>，那么 H5 和 Native 必然要进行通信。</p>
+<p>JSBridge，是沟通 JS 和 Native 的桥梁，为<strong>双向信道</strong>，使 JS 可以调 Native 的 Api，从而拥有部分原生的能力。这样，页面中的 H5 部分就可以使用地址位置、摄像头等原生才有的功能。同时，Native 也可以调用JS。</p>
+<p>我们要实现的 JSB，功能大致为：前端向客户端发送请求，意在调用客户端的某方法，达到前端使用客户端能力的效果，前端也定义了回调函数，并且把回调函数名告知客户端。客户端拦截请求，执行对应的方法，然后通过<strong>特定 API</strong>（如下），调用前端的回调函数。</p>
+<h3 id="Native-调用-JS"><a href="#Native-调用-JS" class="headerlink" title="Native 调用 JS"></a>Native 调用 JS</h3><p>安卓和IOS都提供了调用JS的方法，<strong>被调用的方法需要在 JS 全局上下文上</strong>。</p>
+<p>其中安卓有两种方法可供选择：</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><span class="line"><span class="comment">// loadUrl</span></span><br><span class="line">webview.loadUrl(<span class="string">&quot;javascript: func()&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// evaluateJavascript</span></span><br><span class="line">webView.evaluateJavascript(</span><br><span class="line">  <span class="string">&quot;javascript:func()&quot;</span>,</span><br><span class="line">  <span class="comment">// @函数名 可以确定从哪个函数体中返回</span></span><br><span class="line">  <span class="comment">// 如果函数写成嵌套形式，内层的函数想要返回上一层，必须加@函数名</span></span><br><span class="line">  ValueCallback &#123; <span class="keyword">return</span><span class="symbol">@ValueCallback</span> &#125;)</span><br></pre></td></tr></table></figure>
+
+<p>可见，客户端想调用前端只需要直接调用这些方法，把JS代码字符串传入即可。</p>
+<table>
+<thead>
+<tr>
+<th>方式</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>loadUrl</td>
+<td>兼容性好</td>
+<td>1. 会刷新页面 2. 无法获取 js 方法执行结果</td>
+</tr>
+<tr>
+<td>evaluateJavascript</td>
+<td>1. 性能好 2. 可获取 js 执行后的返回值</td>
+<td>仅在安卓 4.4 以上可用</td>
+</tr>
+</tbody></table>
+<p>由于现在98%以上的手机安卓版本&gt;=5，所以采用 evaluateJavascript。</p>
+<h3 id="JS-调用-Native"><a href="#JS-调用-Native" class="headerlink" title="JS 调用 Native"></a>JS 调用 Native</h3><p>JS 调用 Native 的实现方式一般至少有两种，分别是：拦截 URL Schema、注入 JS 上下文，本文介绍拦截 URL Schema的安卓实现。</p>
+<p><strong>拦截 URL SCHEME 的主要流程是：前端通过某种方式（例如 iframe.src）发送 URL Scheme 请求，之后 Native 拦截到请求并根据 URL SCHEME（包括所带的参数）进行相关操作。</strong></p>
+<h4 id="URL-SCHEME"><a href="#URL-SCHEME" class="headerlink" title="URL SCHEME"></a>URL SCHEME</h4><p>URL SCHEME 是一种类似于url的链接，是为了方便app直接互相调用设计的，形式和普通的 url 近似，主要区别是 protocol 和 host 一般是自定义的，例如: <code>jsbridge://showToast?msg=hello</code>，protocol 是 jsbridge，host 是 showToast。</p>
+<p>jsbridge:// 只是一种规则，可以<strong>根据业务进行制定，使其具有含义</strong>。</p>
+<p>在下面实现的时候，参数使用了JSON的形式，如<code>jsbridge://showToast?&#123;&quot;data&quot;: &#123;&quot;msg&quot;: &quot;hello&quot;&#125;, &quot;callbackName&quot;: &quot;callback1234&quot;&#125;</code></p>
+<h4 id="前端实现"><a href="#前端实现" class="headerlink" title="前端实现"></a>前端实现</h4><p>接下来分别看看前端和客户端应该如何配合，实现相互通信：</p>
+<p>规定 protocol 为 jsbridge，即 URL SCHEME 以 jsbridge:// 开头，客户端拿到 url 后进行解析，如果以 jsbridge 开头，则执行对应逻辑。</p>
+<p>前端和 JSONP 一样，随机生成一个回调函数名，把回调函数绑定在 window 上，URL SCHEME 作为请求的 url，URL SCHEME 中包含了数据、以及回调函数名，然后使用 iframe 发送请求。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">JSBridge</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 要请求Native的方法名，参数，回调</span></span><br><span class="line">  <span class="keyword">static</span> <span class="function"><span class="title">call</span>(<span class="params">methodName, arg, callback</span>)</span> &#123;</span><br><span class="line">    <span class="comment">// &#123; data: &#123;msg: &quot;hello&quot;&#125;&#125;</span></span><br><span class="line">    <span class="keyword">const</span> args = &#123;</span><br><span class="line">      <span class="attr">data</span>: arg === <span class="literal">undefined</span> ? <span class="literal">null</span> : <span class="built_in">JSON</span>.stringify(arg),</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> callback === <span class="string">&#x27;function&#x27;</span>) &#123;</span><br><span class="line">      <span class="comment">// 生成回调函数名</span></span><br><span class="line">      <span class="keyword">const</span> callbackName = <span class="string">&#x27;CALLBACK&#x27;</span> + <span class="built_in">parseInt</span>(<span class="built_in">Math</span>.random() * <span class="number">10000</span>)</span><br><span class="line">      <span class="comment">// 被调用的方法需要在 JS 全局上下文上</span></span><br><span class="line">      <span class="built_in">window</span>[callbackName] = callback</span><br><span class="line">      <span class="comment">// &#123; data: &#123;msg: &quot;hello&quot;&#125;, callbackName: &quot;CALLBACK1234&quot;&#125;</span></span><br><span class="line">      args[<span class="string">&#x27;callbackName&#x27;</span>] = callbackName</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// URL SCHEME，协议为jsbridge，方法名作为host</span></span><br><span class="line">    <span class="keyword">const</span> url = <span class="string">&#x27;jsbridge://&#x27;</span> + methodName + <span class="string">&#x27;?&#x27;</span> + <span class="built_in">JSON</span>.stringify(args)</span><br><span class="line">    <span class="comment">// 使用iframe发送请求，不要使用window.location.href，据说是因为多次请求会被合并为一次</span></span><br><span class="line">    <span class="keyword">const</span> iframe = <span class="built_in">document</span>.createElement(<span class="string">&#x27;iframe&#x27;</span>)</span><br><span class="line">    iframe.src = url</span><br><span class="line">    iframe.style.display = <span class="string">&#x27;none&#x27;</span></span><br><span class="line">    <span class="built_in">document</span>.body.appendChild(iframe)</span><br><span class="line">    <span class="built_in">window</span>.setTimeout(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">        <span class="built_in">document</span>.body.removeChild(iframe)</span><br><span class="line">    &#125;, <span class="number">1000</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> arg = &#123;</span><br><span class="line">  <span class="attr">msg</span>: <span class="string">&quot;The message is from JS!&quot;</span>,</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 请求Native的showToast方法</span></span><br><span class="line">JSBridge.call(<span class="string">&#x27;showToast&#x27;</span>, arg, <span class="function">(<span class="params">res</span>) =&gt;</span> &#123;</span><br><span class="line">  alert(res.msg);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="安卓实现"><a href="#安卓实现" class="headerlink" title="安卓实现"></a>安卓实现</h4><h5 id="NativeMethods"><a href="#NativeMethods" class="headerlink" title="NativeMethods"></a>NativeMethods</h5><p>既然前端请求了客户端的 showToast 方法，先来实现该方法：</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NativeMethods</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">showToast</span><span class="params">(view: <span class="type">WebView</span>, arg: <span class="type">JSONObject</span>, callBack: <span class="type">CallBack</span>)</span></span> &#123;</span><br><span class="line">        <span class="comment">// 拿到h5传过来的msg，展示在Toast中</span></span><br><span class="line">        <span class="keyword">val</span> message = arg.optString(<span class="string">&quot;msg&quot;</span>)</span><br><span class="line">        Toast.makeText(view.context, message, Toast.LENGTH_SHORT).show()</span><br><span class="line">        <span class="comment">// 执行h5的回调</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 创建hashMap，作为res data返回给h5</span></span><br><span class="line">            <span class="comment">// &#123; msg: &quot;js 调用 native 成功！&quot;&#125;</span></span><br><span class="line">            <span class="keyword">val</span> result = JSONObject()</span><br><span class="line">            result.put(<span class="string">&quot;msg&quot;</span>, <span class="string">&quot;js 调用 native 成功！&quot;</span>)</span><br><span class="line">            <span class="comment">// 执行回调，h5弹出alert</span></span><br><span class="line">            callBack.apply(result)</span><br><span class="line">        &#125; <span class="keyword">catch</span> (e: Exception) &#123;</span><br><span class="line">            e.printStackTrace()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>原理很简单，拿到前端传过来的 msg，展示在 Toast 里，然后调用 JS 的回调函数，此处使用了 callBack.apply 方法，来看看该方法：</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CallBack</span></span>(<span class="keyword">private</span> <span class="keyword">val</span> mWebView: WebView?, <span class="keyword">private</span> <span class="keyword">val</span> callbackName: String) &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">apply</span><span class="params">(jsonObject: <span class="type">JSONObject</span>)</span></span> &#123;</span><br><span class="line">        <span class="comment">// native调用js</span></span><br><span class="line">        mWebView?.evaluateJavascript(</span><br><span class="line">          <span class="comment">// 此处 $变量名 类似于js的$&#123;&#125;</span></span><br><span class="line">            <span class="string">&quot;javascript:<span class="variable">$callbackName</span>(<span class="variable">$jsonObject</span>)&quot;</span>,</span><br><span class="line">            ValueCallback &#123; <span class="keyword">return</span><span class="symbol">@ValueCallback</span> &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>CallBack 类仅仅是作了一层封装，唯一做的事就是调了 evaluateJavascript 方法，即 Native 调 JS。</p>
+<p>callbackName 是在别的地方传给 CallBack 类的，见下文。</p>
+<h5 id="JSBridge-register"><a href="#JSBridge-register" class="headerlink" title="JSBridge.register"></a>JSBridge.register</h5><p>然后看看客户端的 JSBridge 类，其主要有 register 和 call 两个方法。</p>
+<p>register 用于将客户端暴露出来的方法塞到 hashmap 中，为一个双层的 map 结构，里层 map 的 key 为方法名，val 为 method 的反射。</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><span class="line"><span class="comment">// exposeMethods 数据结构如下，JSBridge是类名，下边有 showToast 等方法</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="comment">// 为什么这里不叫NativeMthods，而要注册成JSBridge呢，个人理解是，可能和业务有关</span></span><br><span class="line">  <span class="comment">// 可能多个类下的方法，在业务上属于JSBridge，所以把这些类的方法都打包进来</span></span><br><span class="line">  JSBridge: &#123;</span><br><span class="line">    showToast: (showToast方法的反射)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// object 声明单例，同时该类下的所有方法成为静态方法</span></span><br><span class="line"><span class="keyword">object</span> JSBridge &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> exposeMethods: MutableMap&lt;String, HashMap&lt;String?, Method&gt;&gt; = HashMap()</span><br><span class="line">    <span class="comment">// 这个map是为了查出方法所属类的类名，原因之后讲</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> classAndMethods: MutableMap&lt;String, HashMap&lt;String?, Method&gt;&gt; = HashMap()</span><br><span class="line">  </span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">register</span><span class="params">(exposeName: <span class="type">String</span>, classz: <span class="type">Class</span>&lt;*&gt;, className: <span class="type">String</span>)</span></span> &#123;</span><br><span class="line">        <span class="keyword">val</span> allMethods = getAllMethod(classz)</span><br><span class="line">        <span class="keyword">if</span> (!exposeMethods.containsKey(exposeName)) &#123;</span><br><span class="line">            exposeMethods[exposeName] = allMethods</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (!classAndMethods.containsKey((className))) &#123;</span><br><span class="line">            classAndMethods[className] = allMethods</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// register的辅助方法，收集一个类下符合条件的方法，打包成一个hashmap返回</span></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">getAllMethod</span><span class="params">(injectedCls: <span class="type">Class</span>&lt;*&gt;)</span></span>: HashMap&lt;String?, Method&gt; &#123;</span><br><span class="line">        <span class="keyword">val</span> methodHashMap = HashMap&lt;String?, Method&gt;()</span><br><span class="line">        <span class="comment">// 该类下声明的全部方法的反射</span></span><br><span class="line">        <span class="keyword">val</span> methods = injectedCls.declaredMethods</span><br><span class="line">        <span class="keyword">for</span> (method <span class="keyword">in</span> methods) &#123;</span><br><span class="line">            <span class="comment">// 判断是公有方法，如果是private，肯定不希望暴露出去被h5调用</span></span><br><span class="line">            <span class="keyword">val</span> modifiers = method.modifiers</span><br><span class="line">            <span class="keyword">if</span> (!Modifier.isPublic(modifiers)) &#123;</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 第一个参数为 Webview 类的实例</span></span><br><span class="line">            <span class="comment">// 第二个参数为 JSONObject 类的实例</span></span><br><span class="line">            <span class="comment">// 第三个参数为 CallBack 类的实例</span></span><br><span class="line">            <span class="keyword">val</span> parameters = method.parameterTypes</span><br><span class="line">            <span class="keyword">if</span> (parameters.size == <span class="number">3</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (parameters[<span class="number">0</span>] == WebView::<span class="keyword">class</span>.java &amp;&amp; parameters[<span class="number">1</span>] == JSONObject::<span class="keyword">class</span>.java &amp;&amp; parameters[<span class="number">2</span>] == CallBack::<span class="keyword">class</span>.java) &#123;</span><br><span class="line">                    <span class="comment">// 以上条件都满足，则加入 methodHashMap</span></span><br><span class="line">                    <span class="comment">// 该method为反射，需要用invoke调用</span></span><br><span class="line">                    methodHashMap[method.name] = method</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> methodHashMap</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">fun</span> <span class="title">call</span> <span class="params">()</span></span> &#123; ... &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="JSBridge-call"><a href="#JSBridge-call" class="headerlink" title="JSBridge.call"></a>JSBridge.call</h5><p>call 用来响应前端的请求，由上文可知，从 URL SCHEME 中可以拿到方法名，然后可以在 hashmap 中查找，拿到方法的反射，最后使用 <code>method.invoke()</code>来调用该方法。</p>
+<blockquote>
+<p>注意前面声明了变量 classAndMethods，这个数据结构和 exposeMethods 类似，只不过 key 就是类名，设立这个数据结构的原因是，method.invoke() 的第一个参数要求传<code>所调用方法所属类的实例对象</code>，此处 showToast 属于 NativeMethods 类，所以要传入它的实例对象，而我实在没搞懂如何根据方法的反射，获取该类的实例对象，因此使用了不优雅的实现，即先创建了 hashmap，然后用两层 for 循环去查出类名，最后获取实例对象，当作 invoke 的第一个参数传入。</p>
+</blockquote>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">call</span><span class="params">(webView: <span class="type">WebView</span>?, urlString: <span class="type">String</span>?)</span></span>: String? &#123;</span><br><span class="line">        <span class="comment">// 判断字符串是否以 jsbridge 开头</span></span><br><span class="line">        <span class="keyword">if</span> (urlString != <span class="string">&quot;&quot;</span> &amp;&amp; urlString != <span class="literal">null</span> &amp;&amp; urlString.startsWith(<span class="string">&quot;jsbridge&quot;</span>)) &#123;</span><br><span class="line">            <span class="comment">// 将该字符串转成 Uri 格式</span></span><br><span class="line">            <span class="keyword">val</span> uri = Uri.parse(urlString)</span><br><span class="line">            <span class="comment">// 获取其中的 host名，即方法名</span></span><br><span class="line">            <span class="keyword">val</span> methodName = uri.host</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">// 获取 query，即方法参数和 js 回调函数名组合的对象</span></span><br><span class="line">                <span class="keyword">val</span> args = JSONObject(uri.query)</span><br><span class="line">                <span class="comment">// 方法参数，加工后的arg是对象的形式，arg.msg就能拿到属性</span></span><br><span class="line">                <span class="keyword">val</span> arg = JSONObject(args.getString(<span class="string">&quot;data&quot;</span>))</span><br><span class="line">                <span class="comment">// 回调函数名</span></span><br><span class="line">                <span class="keyword">val</span> callbackName = args.getString(<span class="string">&quot;callbackName&quot;</span>)</span><br><span class="line">                <span class="comment">// 查找 exposeMethods 的映射，找到对应的方法并执行该方法</span></span><br><span class="line">                <span class="keyword">if</span> (exposeMethods.containsKey(<span class="string">&quot;JSBridge&quot;</span>)) &#123;</span><br><span class="line">                    <span class="comment">// 此处我们假设所有jsb相关方法都定义在JSBridge这个类中</span></span><br><span class="line">                    <span class="comment">// 当协议不同时，则去别的类中找方法</span></span><br><span class="line">                    <span class="keyword">val</span> methodHashMap = exposeMethods[<span class="string">&quot;JSBridge&quot;</span>]</span><br><span class="line">                    <span class="keyword">if</span> (methodHashMap != <span class="literal">null</span> &amp;&amp; methodHashMap.size != <span class="number">0</span> &amp;&amp; methodHashMap.containsKey(</span><br><span class="line">                            methodName</span><br><span class="line">                        )</span><br><span class="line">                    ) &#123;</span><br><span class="line">                        <span class="keyword">val</span> method = methodHashMap[methodName]</span><br><span class="line">                        <span class="keyword">var</span> className = <span class="string">&quot;&quot;</span></span><br><span class="line">                        <span class="keyword">for</span> ((_className, methods) <span class="keyword">in</span> classAndMethods)&#123;</span><br><span class="line">                            <span class="keyword">for</span> ((_, methodReflection) <span class="keyword">in</span> methods) &#123;</span><br><span class="line">                                <span class="keyword">if</span> (methodReflection == method) &#123;</span><br><span class="line">                                    className = _className</span><br><span class="line">                                &#125;</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="keyword">val</span> instance = Class.forName(className).newInstance()</span><br><span class="line">                        <span class="comment">// NativeMethods 下的方法都注册到了JSBridge中，这里调用的是showToast</span></span><br><span class="line">                        <span class="comment">// 第一个参数传null会遇到 null receiver 异常，因此又弄了一个map</span></span><br><span class="line">                        <span class="comment">// 该map的最外层key是类的名字，这样可以把类名查出来，然后构造一个实例对象，传入第一个参数</span></span><br><span class="line">                        <span class="comment">// Java中应该没有这个问题，直接传null就行了</span></span><br><span class="line">                        method?.invoke(instance, webView, arg, CallBack(webView, callbackName))</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">catch</span> (e: Exception) &#123;</span><br><span class="line">                e.printStackTrace()</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>到这一步，还有一个问题，就是如何在哪里执行 call 方法。</p>
+<p>webview 当收到跳转请求时，会经过 WebViewClient 类的 shouldOverrideUrlLoading 方法，因此我们需要覆写该方法。假设我们请求的 url 为<code>https://www.baidu.com</code> 如果 return false，webview 会继续加载百度的页面，如果 return true，则会拦截该请求，停止加载，这里应该将请求拦截，调用 JSBridge.call 方法。</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> com.example.urlschema.JSBridge.call</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">JSBridgeViewClient</span> : <span class="type">WebViewClient</span></span>() &#123;</span><br><span class="line">    <span class="comment">// 通过覆盖 WebViewClient 类的 shouldOverrideUrlLoading 方法进行拦截</span></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">shouldOverrideUrlLoading</span><span class="params">(view: <span class="type">WebView</span>, url: <span class="type">String</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        call(view, url)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这一切都完成后，JSBridge 就可以正常工作了，如图：</p>
+<img src="https://s1.ax1x.com/2022/09/01/v5G0EV.jpg" style="zoom: 50%;">
+
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>JSONP 和 JSB 还是有一定相似之处的，都是由前端发起请求，构造url，告诉了对方回调函数的名称，经过 客户端/后端 的处理，再执行前端的回调函数。</p>
+<p>由于笔者对安卓只是初步入门的水平，Java/Kotlin 也只是了解的程度，不准确的地方希望大家谅解。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://github.com/mcuking/JSBridge">mcuking/JSBridge</a></p>
+<p><a href="https://github.com/SDBridge/SDBridgeKotlin">SDBridge/SDBridgeKotlin</a></p>
+<p><a href="https://juejin.cn/post/6844903640520474637">Hybrid App技术解析 – 原理篇</a></p>
+<h2 id="Demo"><a href="#Demo" class="headerlink" title="Demo"></a>Demo</h2><p><a href="https://github.com/DanmoSAMA/kotlin-jsb">Demo，需要使用Android Studio运行</a></p>
+]]></content>
+      <categories>
+        <category>hybrid</category>
+      </categories>
+      <tags>
+        <tag>js</tag>
+        <tag>hrbrid</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>git 笔记</title>
+    <url>/2022/10/13/git%20%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<h1 id="Basic"><a href="#Basic" class="headerlink" title="Basic"></a>Basic</h1><h2 id="status"><a href="#status" class="headerlink" title="status"></a>status</h2><p><code>git status -s</code> 或者 –short 可以查看简略状态信息：</p>
+<p>左侧的状态一共有两列。</p>
+<ul>
+<li><p>?? 表示还没有被追踪的文件。</p>
+</li>
+<li><p>左侧的M，或者说绿色的M，表示该文件有修改被添加到暂存区 。</p>
+</li>
+<li><p>右侧的M，或者说红色的M，表示该文件在工作区有修改，未添加到暂存区。</p>
+<p>综上，MM 表示文件先修改了一部分，add，再修改了一部分。</p>
+</li>
+<li><p>D 表示文件被删除。</p>
+</li>
+</ul>
+<h2 id="diff"><a href="#diff" class="headerlink" title="diff"></a>diff</h2><p><code>git diff</code> 直接使用，可以查看工作区具体有哪些修改。</p>
+<p><code>git diff --staged</code> 可以对比暂存区和最近的一次修改，–cached 选项用法与此相同。</p>
+<p>我们想知道 B 相对 A 多了哪些提交，如果 A 是 B 的祖先，直接 diff 即可。如果 A 和 B 分叉过，diff 会同时显示 A 中新增的内容“已删除”。为了避免这个现象，需要先找到 A 和 B 的公共祖先，再进行 diff。</p>
+<p><code>git merge-base B A </code> 会输出两个分支最近公共祖先的 Hash，目测交换顺序也可以，然后 diff，或者合并为一步。</p>
+<p><code>git diff $(git merge-base B A)</code></p>
+<p><code>git diff A...B</code> 上边的语法糖，也会找最近公共祖先，不能交换 A B 的顺序。</p>
+<h2 id="commit"><a href="#commit" class="headerlink" title="commit"></a>commit</h2><p><code>git commit -v</code> 会在编辑 message 界面时，列举出当前的 diff 信息，表明当前要提交哪些修改。</p>
+<h2 id="rm"><a href="#rm" class="headerlink" title="rm"></a>rm</h2><p><code>git rm</code> 会直接从硬盘删除文件，如果文件在工作区或暂存区有修改，需要加 -f 强制删除。</p>
+<p>如果想在硬盘中保留，但不想让 git 继续追踪，可以加 –cached，这样文件会变为 untracked file。</p>
+<h2 id="mv"><a href="#mv" class="headerlink" title="mv"></a>mv</h2><p><code>git mv &lt;old_name&gt; &lt;new_name&gt;</code> 可以用于文件改名，修改会被直接添加到暂存区，git 会认为这是一个 renamed file。</p>
+<p>如果是直接在 vscode 对文件进行改名，则 git 认为原来的文件被删除，新的文件成为 untracked file。</p>
+<p>不过，mv 只是一个语法糖，修改的本质还是先删后增，如果先 mv，再 git restore –staged，能观察到和上一行一样的效果。</p>
+<h2 id="log"><a href="#log" class="headerlink" title="log"></a>log</h2><p>git log 选项：</p>
+<p><code>-p</code>：详细显示每次提交都有哪些修改。</p>
+<p><code>-&lt;n&gt;</code>：限制 log 的条数，只显示最新 n 次修改的 log。</p>
+<p><code>--stat</code>：显示每次提交都有哪些修改的缩略信息，只能看到每个文件的++–符号。</p>
+<p><code>--pretty</code>：指明格式，值可以是 oneline，如 –pretty=online。这里还可以使用 format。</p>
+<p><code>--oneline</code>：是上边的缩略写法，同时也包括了<code>--abbrev-commit</code> 的作用，即不显示完整哈希值。</p>
+<p><code>--graph</code>：显示分支和合并图。</p>
+<p><code>--since</code>：指定时间。值可以是：2.weeks，”2008-01-15”，”2 years 1 day 3 minutes ago”。</p>
+<p><code>--author</code>：指定作者。</p>
+<p><code>--grep</code>：在 message 中搜索关键词。</p>
+<p><code>-S</code>：提供一个字符串，只列举增删了该字符串的提交。比如我在 a.txt 里新增了 Danmo 后提交，然后 git log -S “Danmo”，就能找到我的这一次提交。</p>
+<p><code>--</code>：提供文件路径，查找和该文件相关的提交的 log。</p>
+<p><code>--all-match</code>：如果指定了多个筛选条件，需要加这个选项，拿多个 –grep 举例，如果不加，只有第一个生效。</p>
+<p><code>--decorate</code>：查看分支和 HEAD 指向哪次 commit。</p>
+<p>一般 git log 只显示该分支指向的 commit 及之前的记录，<code>git log &lt;branch_name&gt;</code>  查看特定分支的记录，–all 显示所有记录。</p>
+<p><code>git log --no-merges issue54..origin/master</code> 不显示合并记录，后面的参数表示 commit range，后者没有包含在前者中的记录。</p>
+<p><code>git log branchA --not branchB</code> 显示 branchA 中没有包括在 branchB 中的提交，用来查看他人新的提交。</p>
+<h2 id="amend"><a href="#amend" class="headerlink" title="amend"></a>amend</h2><p>如果刚刚完成了一次提交，发现有 forgotten_file 忘了提交，此时可以把它加入暂存区，然后 git commit –amend。</p>
+<p>这种方式同样适用于修改 commit message。</p>
+<p>–amend 会更改最后一次提交的 HASH，如果已经 push 就不要再更改。</p>
+<p>如果不想修改 commit message 还可以添加 <code>--no-edit</code> 选项。</p>
+<h1 id="remote"><a href="#remote" class="headerlink" title="remote"></a>remote</h1><p><code>git remote</code> 显示远程服务器 shortname，如果是 clone，默认名为 origin。</p>
+<p><code>git remote -v</code> 可以显示 shortname 和 URL，可见只是用 origin 指代远程服务器 URL。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git remote -v</span><br><span class="line"></span><br><span class="line">origin  https://github.com/DanmoSAMA/remote-sensing (fetch)</span><br><span class="line">origin  https://github.com/DanmoSAMA/remote-sensing (push)</span><br><span class="line"></span><br><span class="line">git push https://github.com/DanmoSAMA/remote-sensing == git push origin</span><br></pre></td></tr></table></figure>
+
+<p>origin/master 可以访问 shortname 为 origin 的仓库的 master 分支。</p>
+<p><code>git remote add &lt;shortname&gt; &lt;url&gt;</code> add 后面可以自定义 shortname。</p>
+<p><code>git remote show &lt;remote&gt;</code> 查看 remote 的详细信息。</p>
+<blockquote>
+<p>This command shows which branch is automatically pushed to when you run <code>git push</code> while on certain branches. It also shows you which remote branches on the server you don’t yet have, which remote branches you have that have been removed from the server, and multiple local branches that are able to merge automatically with their remote-tracking branch when you run <code>git pull</code>.</p>
+</blockquote>
+<p><code>git remote rename &lt;old_name&gt; &lt;new_name&gt;</code> 更改 shortname。</p>
+<p><code>git remote remove &lt;shortname&gt;</code> <code>git remote add &lt;shortname&gt; &lt;url&gt;</code></p>
+<h1 id="tag"><a href="#tag" class="headerlink" title="tag"></a>tag</h1><p><code>git tag -l &quot;v1.8.5*&quot;</code> 使用通配符来筛 tag 列表，-l 指定通配符。</p>
+<p><code>git tag -a v1.0 -m &lt;message&gt;</code> 创建 annotated tag，并附注信息。</p>
+<p>-d 选项可以删除 tag。</p>
+<p><code>git show &lt;tag_name&gt; </code>  可以连同对应的提交一起，查看某个 tag 信息。</p>
+<p>Lightweight tag 仅仅用于标记某次 commit，创建时无需添加任何选项，git show 也只能看到 commit 信息。</p>
+<p>如果想要对之前的 commit 打 tag，只需 <code>git tab -a v1.0 &lt;commit_hash&gt;</code>。</p>
+<p><code> git push &lt;remote&gt; tags</code> 可以将所有 tags 发送到 remote。</p>
+<p><code>git push &lt;remote&gt; --follow-tags</code> 仅发送 annotated tag。</p>
+<p><code>git push &lt;remote&gt; --delete &lt;tagname&gt;</code> 删除 remote tag。</p>
+<p>由于 tag 是指向 commit 的指针，因此可以应用于 detached HEAD 模式，<code>git checkout -b version2 v2.0.0</code> 从该 commit 分出了一个分支。</p>
+<h1 id="branch"><a href="#branch" class="headerlink" title="branch"></a>branch</h1><h2 id="basic"><a href="#basic" class="headerlink" title="basic"></a>basic</h2><p><code>git switch -</code> 回到上一次切换前的分支。</p>
+<p><code>git branch -v</code> 查看每个分支上的最后一次提交。</p>
+<p><code>git branch -vv</code> 在上方基础上，查看 tracking branch。</p>
+<p><code>git branch --merge</code> 查看哪些分支已经合并到了当前分支，–no-merge 查看没合并的分支。</p>
+<p>没合并的分支，用 git branch -d 无法删除，需要用 -D 强行删除。</p>
+<p><code>git branch --merge &lt;branch_name&gt;</code> 同上，但无需先切换到那个分支上。</p>
+<p><strong><code>git branch --move &lt;old_name&gt; &lt;new_name&gt;</code> 修改本地分支名。</strong></p>
+<p><code>git merge --abort</code> 终止 merge。</p>
+<h2 id="remote-1"><a href="#remote-1" class="headerlink" title="remote"></a>remote</h2><p><code>git push --set-upstream origin &lt;new_name&gt; </code> 将此修改推到远程。</p>
+<p><strong><code>git push origin --delete &lt;old_name&gt;</code> 删除远程的旧分支。</strong></p>
+<p><code>git ls-remote &lt;remote&gt;</code>  列举远程分支。</p>
+<p><code>git push origin 本地分支名:远程分支名</code>  push 时希望修改分支名称。</p>
+<p>git fetch 后，本地会新增 origin/xxx 分支，这个分支不能修改，可以把它合并到本地已有分支，也可以新建一个分支，拥有和它一样的指向：<code>git checkout -b xxx origin/xxx</code>。</p>
+<p><code>git switch -c &lt;branch&gt; --track &lt;remote&gt;/&lt;branch&gt;</code> 同理，<code>git switch --guess &lt;branch&gt;</code> 为其简写。</p>
+<p>上面的做法，新建的分支会成为 tracking branch，追踪远程的 origin/xxx 分支。</p>
+<p><code>git checkout --track origin/xxx</code> 是简写。</p>
+<p><code>git branch -u origin/xxx</code> 已有分支，更改上游。</p>
+<p>如果存在上游分支，在 merge 的时候可以用 <code>@&#123;u&#125;</code> 指代上游，如：git merge @{u}</p>
+<p><code>git fetch --all</code> 拉取所有分支的更新。</p>
+<p><code>git remote set-head origin &lt;origin_branch_name&gt;</code> 设置远程 HEAD 指向。</p>
+<h2 id="rebase"><a href="#rebase" class="headerlink" title="rebase"></a>rebase</h2><p><code>git rebase master server</code> 把 server 分支 rebase 到 master 上，这样的好处是不需要先切到 server 分支。</p>
+<p><code>git rebase --onto master server client</code>  先找到 client 分支，将 client 从 server 分叉之后的部分 rebase 到 master。</p>
+<h3 id="perils-of-rebase"><a href="#perils-of-rebase" class="headerlink" title="perils of rebase"></a>perils of rebase</h3><p>如果对已经提交的分支进行 rebase，并且 push -f 强行提交，会出现问题。结合 git book 里面的图更好理解。</p>
+<blockquote>
+<p>If you only ever rebase commits that have never left your own computer, you’ll be just fine. If you rebase commits that have been pushed, but that no one else has based commits from, you’ll also be fine. If you rebase commits that have already been pushed publicly, and people may have based work on those commits, then you may be in for some frustrating trouble, and the scorn of your teammates.</p>
+</blockquote>
+<p>别人可能 fetch 过这个分支，并且合并到了自己的分支上（相当于 pull），假设这个分支包含了 C1 的修改。</p>
+<p>此时，把 包含 C1 的分支 rebase，并且使用 push -f 提交。</p>
+<p>别人再用 pull 时，把 rebase 后的分支与本地合并，此时 git log 会看到有两个一模一样的 C1 的提交，造成困惑。</p>
+<p>如果团队中有成员进行过这样的操作，应该：You rebase, and I rebase.</p>
+<p>如果是分步进行，则先 fetch，再 <code>git rebase origin/xxx</code>，直接把当前分支 rebase 到远程分支的后面，git 会智能地帮我们处理好一切。</p>
+<p>如果是合并进行，则 <code>git pull --rebase</code>，可以设置 –rebase 为默认：<code>git config --global pull.rebase true</code>。</p>
+<h1 id="distributed-git"><a href="#distributed-git" class="headerlink" title="distributed git"></a>distributed git</h1><p><code>git diff --check</code> 在提交之前，检查是否存在 “whitespace issues”。</p>
+<blockquote>
+<p>The <code>--squash</code> option takes all the work on the merged branch and squashes it into one changeset producing the repository state as if a real merge happened, without actually making a merge commit. This means your future commit will have one parent only and allows you to introduce all the changes from another branch and then make more changes before recording the new commit. Also the <code>--no-commit</code> option can be useful to delay the merge commit in case of the default merge process.</p>
+</blockquote>
+<p>假设要把分支 B 合并到分支 A 上，–squash 可以把 B 的变化直接拿过来，放到 A 上，不产生新的 commit，需要人工进行 commit。此后在查看 log 时，只能看到一个 parent，即 A。</p>
+<h1 id="HEAD-“-”-vs-“-”-vs-“-”"><a href="#HEAD-“-”-vs-“-”-vs-“-”" class="headerlink" title="HEAD “^” vs “~” vs “@{}”"></a>HEAD “^” vs “~” vs “@{}”</h1><p>在空白目录下运行以下 shell 脚本：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 初始化</span></span><br><span class="line">git init</span><br><span class="line">git branch --move master main</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 构建分支</span></span><br><span class="line">echo 1 &gt;&gt; file</span><br><span class="line">git add file</span><br><span class="line">git commit -m &quot;main-commit-1&quot; -a</span><br><span class="line">echo 1 &gt;&gt; file</span><br><span class="line">git commit -m &quot;main-commit-2&quot; -a</span><br><span class="line">git checkout -b dev</span><br><span class="line">echo 1 &gt;&gt; dev</span><br><span class="line">git add dev</span><br><span class="line">git commit -m &quot;dev-commit-1&quot; -a</span><br><span class="line">git checkout -b prod</span><br><span class="line">echo 1 &gt;&gt; prod</span><br><span class="line">git add prod</span><br><span class="line">git commit -m &quot;prod-commit-1&quot; -a</span><br><span class="line">git switch main</span><br><span class="line">echo 1 &gt;&gt; file</span><br><span class="line">git commit -m &quot;main-commit-3&quot; -a</span><br><span class="line">git switch dev</span><br><span class="line">echo 1 &gt;&gt; dev</span><br><span class="line">git commit -m &quot;dev-commit-2&quot; -a</span><br><span class="line">git switch prod</span><br><span class="line">echo 1 &gt;&gt; prod</span><br><span class="line">git commit -m &quot;prod-commit-2&quot; -a</span><br><span class="line">git switch main</span><br><span class="line">git merge -m &quot;Merged dev&quot; dev</span><br><span class="line">echo 1 &gt;&gt; file</span><br><span class="line">git commit -m &quot;main-commit-4&quot; -a</span><br><span class="line">git merge -m &quot;Merged prod&quot; prod</span><br></pre></td></tr></table></figure>
+
+<p>备注：图片中用的是 master 分支，没有改名为 main，不影响。</p>
+<img src="https://s1.ax1x.com/2022/09/26/xVt1bt.jpg" style="zoom: 60%;">
+
+<p>上结论：</p>
+<ul>
+<li><p>HEAD^ HEAD^^… HEAD~ HEAD~~… HEAD<del>1 HEAD</del>2 <code>HEAD~&lt;n&gt;</code>… 都是在当前分支上找父结点，比如此时在 main 分支上 ，就只沿着 main 这条分支的父节点往前找。或者按 Git book 的说法来理解，<strong>每个 ^ 或 ~ 表示寻找其第一个父结点</strong>，多个叠加即寻找”第一个父结点的第一个父结点”。</p>
+<blockquote>
+<p>You can also specify a number after the <code>^</code> to identify <em>which</em> parent you want;</p>
+<p>This syntax is useful only for merge commits, which have more than one parent — the <em>first</em> parent of a merge commit is from the branch you were on when you merged (frequently <code>master</code>), while the <em>second</em> parent of a merge commit is from the branch that was merged (say, <code>topic</code>):</p>
+<p><code>HEAD~2</code> means “<strong>the first parent</strong> of <strong>the first parent</strong>,” or “the grandparent” — it traverses the first parents the number of times you specify.</p>
+</blockquote>
+</li>
+<li><p><code>HEAD^&lt;n&gt;</code> 针对有 merge 的情况，HEAD^1 表示第一个父结点，HEAD^2 表示第二个父结点。如果当前 HEAD 不是 merge 得到的结点，那么它只有 HEAD^1，试图找 HEAD^2 会报错：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">fatal: ambiguous argument &#x27;19588e4^2&#x27;: unknown revision or path not in the working tree.</span><br></pre></td></tr></table></figure></li>
+<li><p><code>HEAD@&#123;&lt;n&gt;&#125;</code> 针对 reflog，与操作的次序有关。以下是特殊用法：</p>
+<p><code>git log --no-walk HEAD^@</code> 可以列出当前结点的父结点，–no-walk 表示不显示祖先结点。比如 HEAD 在 merge-prod，该指令可以查看 merge 的两个父结点。如果不加 –no-walk，可以看到所有祖先结点。</p>
+<p><code>git show HEAD^@</code> 可以查看父结点的详细信息，不需要 –no-walk 也不显示祖先。</p>
+</li>
+</ul>
+<img src="https://s1.ax1x.com/2022/09/26/xVt8VP.jpg" style="zoom: 50%;">
+
+<ul>
+<li>^ 和 ~ 也可以打组合拳，明确了 ^ 和 ~ 的语义后不难理解，^ 是纵向的第几个 parent，~ 是横向的第几个 parent，HEAD^^^ 这种属于特殊情况，可以这样看待：由于 HEAD^1 和 HEAD^ 等价，可以做拆分：((HEAD^)^)^，而 HEAD^ 和 HEAD~ 等价，所以多个 ^ 也和 ~ 等价。</li>
+</ul>
+<img src="https://s1.ax1x.com/2022/09/26/xVN4Sg.jpg" style="zoom:42%;">
+
+<h1 id="tools"><a href="#tools" class="headerlink" title="tools"></a>tools</h1><p><code>git show &lt;commit&gt;</code> 具体查看某一次提交。</p>
+<p><code>git rev-parse &lt;branch&gt;</code> 查看分支指向结点的 Hash。</p>
+<h2 id="double-dot"><a href="#double-dot" class="headerlink" title="double dot"></a>double dot</h2><blockquote>
+<p>You can ask Git to show you a log of just those commits with <code>master..experiment</code> — **that means “all commits reachable from <code>experiment</code> that aren’t reachable from <code>master</code>.**”</p>
+</blockquote>
+<p><code>git log origin/master..HEAD</code> 可以查看 HEAD 拥有而 origin/master 没有的提交，从而确认本次 push 有哪些 commit。HEAD 可以省略。</p>
+<blockquote>
+<p>You can also leave off one side of the syntax to have Git assume <code>HEAD</code>. For example, you can get the same results as in the previous example by typing <code>git log origin/master..</code> — Git substitutes <code>HEAD</code> if one side is missing.</p>
+</blockquote>
+<h2 id="multiple-points"><a href="#multiple-points" class="headerlink" title="multiple points"></a>multiple points</h2><p>查看 B 有 A 没有的提交，有如下方法：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ git log refA..refB</span><br><span class="line">$ git log ^refA refB</span><br><span class="line">$ git log refB --not refA</span><br></pre></td></tr></table></figure>
+
+<p>第二、三行的语法可以对比更多分支，查找对应的提交：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ git log refA refB ^refC</span><br><span class="line">$ git log refA refB --not refC</span><br></pre></td></tr></table></figure>
+
+<h2 id="triple-dot"><a href="#triple-dot" class="headerlink" title="triple dot"></a>triple dot</h2><p>… 可以查看两个分支的“异或”，即只能被某一分之访问的提交。</p>
+<p>可以搭配 –left-right 选项使用，<code>git log --left-right A...B</code>： &lt; 表示只能被 A 访问，&gt; 表示只能被 B 访问。</p>
+<h2 id="patch-mode"><a href="#patch-mode" class="headerlink" title="patch mode"></a>patch mode</h2><p><code>add -p </code> 可以把一个文件分成多个 chunk，然后可将部分 chunk 添加到暂存区，如果 chunk 分得不够细，应用 s。</p>
+<figure class="highlight console"><table><tr><td class="code"><pre><span class="line">Stage this hunk [y,n,a,d,/,j,J,g,e,?]? ?</span><br><span class="line">y - stage this hunk</span><br><span class="line">n - do not stage this hunk</span><br><span class="line">a - stage this and all the remaining hunks in the file</span><br><span class="line">d - do not stage this hunk nor any of the remaining hunks in the file</span><br><span class="line">g - select a hunk to go to</span><br><span class="line">/ - search for a hunk matching the given regex</span><br><span class="line">j - leave this hunk undecided, see next undecided hunk</span><br><span class="line">J - leave this hunk undecided, see next hunk</span><br><span class="line">k - leave this hunk undecided, see previous undecided hunk</span><br><span class="line">K - leave this hunk undecided, see previous hunk</span><br><span class="line">s - split the current hunk into smaller hunks</span><br><span class="line">e - manually edit the current hunk</span><br><span class="line">? - print help</span><br></pre></td></tr></table></figure>
+
+<p>同样可以应用 patch mode 的还有 reset / checkout / stash，参考 7.2 节。</p>
+<h2 id="stash"><a href="#stash" class="headerlink" title="stash"></a>stash</h2><p><code>git stash list</code> 查看 stash 列表。</p>
+<p><code>git stash apply stash@&#123;&lt;n&gt;&#125;</code> 应用 stash，如果不指定，应用最新的 stash，应用后不会删除 stash。</p>
+<p>添加 –index 选项，可以恢复 stash 之前的暂存区。</p>
+<p><code>git stash drop stash@&#123;&lt;n&gt;&#125;</code> 删除 stash。</p>
+<p><code>git stash clear</code> 清除所有 stash。</p>
+<p><code>git stash pop stash@&#123;&lt;n&gt;&#125;</code>  是 apply 和 drop 的结合，需要注意的是，pop 也可以接 stash 名称，不只是可以 pop 最新的 stash。</p>
+<p>如果要连续应用两次 stash，并且存在冲突，需要先把第一次的 stash 添加到暂存区，再执行一次 pop，此时才能解决冲突。</p>
+<p>否则报错：error: Your local changes to the following files would be overwritten by merge.</p>
+<p><code>git stash --keep-index</code> 仅把工作区的修改添加到 stash，不影响暂存区。</p>
+<p>–include-untracked 或 -u 会把 untracked files 也加入 stash，但不会加入明确 ignored 的 file，如果要把它们也包含进来，用 -a 或 –all。</p>
+<p>如果 stash 后在该分支上继续工作，应用 stash 的时候可能会遇到很多冲突，最佳实践是切到一个新的分支上应用 stash，可以简写为：<code>git stash branch &lt;branchname&gt; [&lt;stash&gt;]</code>。</p>
+<h2 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h2><p><code>git grep &lt;content / regExp / wildcard&gt;</code>  查找。</p>
+<p>选项需要加在 grep 后面，-c 显示数量，-n 显示行号，–and 指定多个条件。</p>
+<h2 id="rebase-i"><a href="#rebase-i" class="headerlink" title="rebase -i"></a>rebase -i</h2><p><code>git rebase -i &lt;commit&gt;</code> 可以修改 commit 之前所有提交的记录。 </p>
+<h3 id="edit"><a href="#edit" class="headerlink" title="edit"></a>edit</h3><p>将动词修改为 e 或 edit，保存并退出。</p>
+<p>接下来，在需要 edit 的地方会停止，此时执行 git commit –amend 来修改，修改完后 git rebase –continue 继续。</p>
+<h3 id="reorder-remove"><a href="#reorder-remove" class="headerlink" title="reorder / remove"></a>reorder / remove</h3><p>remove 就是把对应 pick 行删除，reorder 就是改变 pick 行顺序。</p>
+<p>但我发现一个问题，先看看 shell：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">mkdir try-git</span><br><span class="line">cd try-git</span><br><span class="line">git init</span><br><span class="line">git branch --move master main</span><br><span class="line"></span><br><span class="line">echo 1 &gt;&gt; file</span><br><span class="line">git add .</span><br><span class="line">git commit -m &quot;commit-1&quot;</span><br><span class="line">echo 2 &gt;&gt; file</span><br><span class="line">git commit -m &quot;commit-2&quot; -a</span><br><span class="line">echo 3 &gt;&gt; file</span><br><span class="line">git commit -m &quot;commit-3&quot; -a</span><br><span class="line">echo 4 &gt;&gt; file</span><br><span class="line">git commit -m &quot;commit-4&quot; -a</span><br><span class="line">echo 5 &gt;&gt; file</span><br><span class="line">git commit -m &quot;commit-5&quot; -a</span><br><span class="line">echo 6 &gt;&gt; file</span><br><span class="line">git commit -m &quot;commit-6&quot; -a</span><br></pre></td></tr></table></figure>
+
+<p>使用 rebase -i 删除 commit-4，需要解决冲突，此时发现，即使 commit-4 删除了，所做的修改仍然保留着，并且<strong>在合 commit-5 的时候，把 commit-4 的修改也包含进来了</strong>，如果要丢弃此修改，需要细心甄别。</p>
+<p>使用 drop 和直接删除某一行的效果类似。</p>
+<h3 id="squash"><a href="#squash" class="headerlink" title="squash"></a>squash</h3><p>如果此时有三条 pick 记录，A B C，想要把 B C 合到 A，则保持 pick A 不变，修改 B、C 为 squash。</p>
+<p>之后编辑新的 commit message，保存即可。</p>
+<h3 id="split"><a href="#split" class="headerlink" title="split"></a>split</h3><p>把想要拆分的 commit，改成 edit。</p>
+<p>在这条 commit 处停下时，使用 <code>git reset HEAD^</code> 使修改进入工作区，然后 split 成多次提交，完成之后 rebase –continue 即可。</p>
+<h2 id="reset"><a href="#reset" class="headerlink" title="reset"></a>reset</h2><p>git reset 如果后接 commit，工作流程：</p>
+<ol>
+<li><strong>当前分支随 HEAD 一起</strong>指向新的 commit。&lt;= <code>--soft </code> 停在这里</li>
+<li>将版本库的内容复制到暂存区（index）。&lt;= <code>--mixed</code> 停在这里，默认选项</li>
+<li>将暂存区的内容复制到工作区。&lt;= <code>--hard</code> </li>
+</ol>
+<p>git status 的原理是对比 HEAD、暂存区、工作区。</p>
+<p>因此，使用 –soft 时，由于 HEAD 指向曾经的 commit，并且暂存区不变，因此暂存区和 HEAD 存在差异，新的暂存还未提交，所以 status 显示<strong>绿色</strong>。</p>
+<p>使用 –mixed 时，由于 HEAD 的内容复制到了暂存区，现在暂存区和 HEAD 相同，但是工作区没有修改，所以工作区和暂存区有差异，status 显示<strong>红色</strong>。</p>
+<p>使用 –hard 时，status 显示没有新的改变。</p>
+<p>如果先使用 –mixed 回退，再使用 –soft 恢复到之前的 commit，那么会出现版本库和工作区一致，暂存区落后的情况，status 又红又绿。</p>
+<p>git reset <strong>如果后接 path，那么不会发生上方第一步</strong>。</p>
+<p>git reset file 会执行第二步，相当于回退了暂存区，因此此时 reset 的功能相当于 restore。</p>
+<p><code>git reset &lt;commit&gt; &lt;file&gt;</code> 同样不会发生第一步，它会用该 commit 中的 file 去覆盖此时暂存区的 file，不影响工作区。此时只需要 提交即可。</p>
+<p>reset 也可以用于合并多次 commit，只需要先 reset –soft 回退到某一版本，由于此时暂存区不变，只需要提交一次，即可把后面多次提交的内容合并为本次提交。当然不加 –soft 也可以，需要多加一次暂存区。</p>
+<h2 id="rerere"><a href="#rerere" class="headerlink" title="rerere"></a>rerere</h2><p>revere 是 reuse / recorded / resolution 的缩写，意为”复用冲突解决的记录”。</p>
+<p>rerere 可以复用之前的 merge conflict resolution。</p>
+<p><code>git config --global rerere.enabled true</code> 打开 rerere。</p>
+<p>此后，第一次 merge 时，会被 rerere cache 记录，merge 后的信息多了一行：</p>
+<figure class="highlight console"><table><tr><td class="code"><pre><span class="line">Recorded preimage for &#x27;&lt;filename&gt;&#x27; </span><br></pre></td></tr></table></figure>
+
+<p><code>git rerere diff</code> 可以查看当前 resolution 的状态。</p>
+<p>然后解决冲突并提交，使用 <code>reset --hard HEAD~</code> 回退，再次 merge，发现之前的 resolution 会自动生效。</p>
+<p>如果需要恢复冲突状态，使用 <code>git checkout --conflict=merge &lt;filename&gt;</code>。</p>
+<p>在冲突状态下重新应用 rerere，使用 <code>git rerere</code>。</p>
+]]></content>
+      <categories>
+        <category>git</category>
+      </categories>
+      <tags>
+        <tag>git</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>正则表达式</title>
+    <url>/2022/10/13/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/</url>
+    <content><![CDATA[<h1 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h1><p>校验Account，要求：账号以字母开头，由小写英文字母和数字组成的4-16位字符。</p>
+<p>不知道怎么判断“由小写英文字母和数字组成”，<code>(/^[0-9a-z]+$/</code>不行，因为纯小写字母或数字也能通过。</p>
+<h1 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h1><p>策略：<a href="https://stackoverflow.com/questions/31761565/require-both-letters-and-numbers-regexp">Require both letters and numbers - regExp</a></p>
+<h2 id="Look-Ahead"><a href="#Look-Ahead" class="headerlink" title="Look Ahead"></a>Look Ahead</h2><p>Look Ahead 指形如<code>(?=)</code>的正则。</p>
+<p>Look Ahead：利用<strong>先行断言</strong>，当使用了这种技术后，可以有多个并列的正则如<code>(?=)()</code>，先校验第一个正则，Look Ahead的作用是，它不占据空间，到第二个正则时还可以从同样的位置开始校验。</p>
+<p>参考这里的第二篇回答：<a href="https://stackoverflow.com/questions/2973436/regex-lookahead-lookbehind-and-atomic-groups">Regex lookahead, lookbehind and atomic groups</a></p>
+<h2 id><a href="#" class="headerlink" title=".*?"></a>.*?</h2><p>一般情况下，.表示任意字符，*表示{0, }，?表示{0,1}。</p>
+<p>需要注意，<code>?</code>一般采取贪婪模式，即匹配尽可能多的字符（这些匹配上的字符的空间就被占据了）</p>
+<p>由mdn：</p>
+<blockquote>
+<p>如果<strong>紧跟在任何量词 *、 +、? 或 {} 的后面</strong>，将会使量词变为<strong>非贪婪</strong>（匹配尽量少的字符）</p>
+</blockquote>
+<p>所以<code>.*?</code>的意思是：甭管这里有什么字符，都匹配0次。</p>
+<p>光看这些可能还是无法理解其必要性，我们看看解决策略里的写法：<code>/^(?=.*?\d)(?=.*?[a-zA-Z])[a-zA-Z\d]+$/</code></p>
+<p>首先最前面有<code>^</code>，说明从头开始匹配，关注第一个Look Ahead，它的作用是从头开始检查，保证至少有一个数字。</p>
+<p>如果直接写成<code>(?=\d)</code>，开头有小写字母就会失效，不可行。</p>
+<p>如果写成<code>(?=.*\d)</code>，由于量词的贪心匹配原则，.*会把所有数字匹配走，而\d匹配不上。</p>
+<p>所以既要兼顾开头是字母的情况，又要破坏贪心匹配原则，使用<code>.*?</code>。</p>
+<h2 id="成功实践"><a href="#成功实践" class="headerlink" title="成功实践"></a>成功实践</h2><p>根据实践，我上边对.*?的必要性解释是错的，其实没有?也可以。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">^(?=.*[a-z])(?=.*\d)[a-z]&#123;<span class="number">1</span>&#125;[a-z\d]&#123;<span class="number">3</span>,<span class="number">15</span>&#125;$</span><br><span class="line"></span><br><span class="line"><span class="comment">// 注意&#123;3,15&#125;这里不能有空格！</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Regular_Expressions">正则表达式-MDN</a></p>
+<p><a href="https://www.regular-expressions.info/lookaround.html">Regular-Expressions.info</a></p>
+]]></content>
+      <categories>
+        <category>js</category>
+      </categories>
+      <tags>
+        <tag>js</tag>
+        <tag>预加载</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>预加载</title>
+    <url>/2022/10/13/%E9%A2%84%E5%8A%A0%E8%BD%BD/</url>
+    <content><![CDATA[<h1 id="什么是预加载"><a href="#什么是预加载" class="headerlink" title="什么是预加载"></a>什么是预加载</h1><p>提前请求图片等资源，等到真正要用的时候，直接从缓存拿，而不用发送请求，从而缩短图片显示的用时，优化用户体验</p>
+<h2 id="如何实现"><a href="#如何实现" class="headerlink" title="如何实现"></a>如何实现</h2><p>在React中实现预加载一般借助 useEffect，在初次渲染组件时进行预加载：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">useEffect(() =&gt; &#123;</span><br><span class="line">  const preloadImages = []</span><br><span class="line">  // 可以把 ProjectStore.imgs换成url数组...</span><br><span class="line">  for (let i = 0; i &lt; ProjectStore.imgs.length; i++) &#123;</span><br><span class="line">    const img = new Image()</span><br><span class="line">    // 将img从数组中移除，减少内存占用</span><br><span class="line">    img.onload = function () &#123;</span><br><span class="line">      const index = preloadImages.indexOf(this)</span><br><span class="line">      if (index !== 1) &#123;</span><br><span class="line">        preloadImages.splice(index, 1)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    img.src = ProjectStore.imgs[i].url</span><br><span class="line">    preloadImages.push(img)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;, [])</span><br></pre></td></tr></table></figure>
+
+<p>这样，之后在任意页面用到这些图片资源时，都可以直接从缓存拿取，从而大大提升用户体验</p>
+<h2 id="踩坑"><a href="#踩坑" class="headerlink" title="踩坑"></a>踩坑</h2><p><img src="https://s1.ax1x.com/2022/06/09/XsbqJ0.jpg"></p>
+<p>注意开发时不要勾选 <code>Disable cache</code>，一开始没注意被坑了…</p>
+]]></content>
+      <categories>
+        <category>js</category>
+      </categories>
+      <tags>
+        <tag>js</tag>
+        <tag>预加载</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>异步任务调度器</title>
+    <url>/2022/10/13/%E5%BC%82%E6%AD%A5%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6%E5%99%A8/</url>
+    <content><![CDATA[<p>JS 实现一个带并发限制的异步调度器Scheduler，保证同时运行的任务最多有两个。完善代码中Scheduler类，使得以下程序能正确输出</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Scheduler</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="title">add</span>(<span class="params">promiseCreator</span>)</span> &#123;</span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> timeout = <span class="function">(<span class="params">time</span>) =&gt;</span></span><br><span class="line">  <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">setTimeout</span>(resolve, time);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> scheduler = <span class="keyword">new</span> Scheduler();</span><br><span class="line"><span class="keyword">const</span> addTask = <span class="function">(<span class="params">time, order</span>) =&gt;</span> &#123;</span><br><span class="line">  scheduler.add(<span class="function">() =&gt;</span> timeout(time)).then(<span class="function">() =&gt;</span> <span class="built_in">console</span>.log(order));</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">addTask(<span class="number">1000</span>, <span class="string">&quot;1&quot;</span>);</span><br><span class="line">addTask(<span class="number">500</span>, <span class="string">&quot;2&quot;</span>);</span><br><span class="line">addTask(<span class="number">300</span>, <span class="string">&quot;3&quot;</span>);</span><br><span class="line">addTask(<span class="number">400</span>, <span class="string">&quot;4&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// output: 2 3 1 4</span></span><br><span class="line"><span class="comment">// 一开始，1、2两个任务进入队列</span></span><br><span class="line"><span class="comment">// 500ms时，2完成，输出2，任务3进队</span></span><br><span class="line"><span class="comment">// 800ms时，3完成，输出3，任务4进队</span></span><br><span class="line"><span class="comment">// 1000ms时，1完成，输出1</span></span><br><span class="line"><span class="comment">// 1200ms时，4完成，输出4</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>题解：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Scheduler</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="title">constructor</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.unwork = [];</span><br><span class="line">    <span class="built_in">this</span>.count = <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="title">add</span>(<span class="params">promiseCreator</span>)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve</span>) =&gt;</span> &#123;</span><br><span class="line">      promiseCreator.resolve = resolve;</span><br><span class="line">      <span class="keyword">if</span> (<span class="built_in">this</span>.count &lt; <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="built_in">this</span>.runTask(promiseCreator);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.unwork.push(promiseCreator);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="title">runTask</span>(<span class="params">promiseCreator</span>)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.count++;</span><br><span class="line">    promiseCreator().then(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">      promiseCreator.resolve();</span><br><span class="line">      <span class="built_in">this</span>.count--;</span><br><span class="line">      <span class="keyword">if</span> (<span class="built_in">this</span>.unwork.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">const</span> newTask = <span class="built_in">this</span>.unwork.shift();</span><br><span class="line">        <span class="built_in">this</span>.runTask(newTask);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>js</category>
+      </categories>
+      <tags>
+        <tag>js</tag>
+        <tag>formData</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>文件上传</title>
+    <url>/2022/10/13/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/</url>
+    <content><![CDATA[<p>最近项目中有上传图片文件的需求：</p>
+<h1 id="点击选择图片的按钮"><a href="#点击选择图片的按钮" class="headerlink" title="点击选择图片的按钮"></a>点击选择图片的按钮</h1><p>mui的实现是这样的：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;input</span><br><span class="line">  accept=&quot;image/*&quot;</span><br><span class="line">  id=&quot;contained-button-file&quot;</span><br><span class="line">  style=&#123;&#123; display: &#x27;none&#x27; &#125;&#125;</span><br><span class="line">  // 选多张图片</span><br><span class="line">  multiple</span><br><span class="line">  type=&quot;file&quot;</span><br><span class="line">  onChange=&#123;(e) =&gt; &#123;</span><br><span class="line">    // 下面讲</span><br><span class="line">    clickToUploadFile(e.target.files)</span><br><span class="line">  &#125;&#125;</span><br><span class="line">  /&gt;</span><br><span class="line">&lt;label</span><br><span class="line">  htmlFor=&quot;contained-button-file&quot;</span><br><span class="line">  &gt;</span><br><span class="line">  &lt;Button</span><br><span class="line">    variant=&quot;contained&quot;</span><br><span class="line">    // 必须加这一行</span><br><span class="line">    component=&quot;span&quot;</span><br><span class="line">    &gt;</span><br><span class="line">    导入图片</span><br><span class="line">  &lt;/Button&gt;</span><br><span class="line">&lt;/label&gt;</span><br></pre></td></tr></table></figure>
+
+<h1 id="formData"><a href="#formData" class="headerlink" title="formData"></a>formData</h1><p>后端要求使用formData，于是快速上手了formData，主要用到.append方法。</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="comment">// fileList =&gt; input onChange callback =&gt; e.target.files</span></span><br><span class="line"><span class="comment">// 是一个对象，&#123;1: file1, 2: file2, length: 2, ...&#125;</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">clickToUploadFile</span>(<span class="params">fileList</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> reqData = <span class="keyword">new</span> FormData()</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 项目id</span></span><br><span class="line">  reqData.append(<span class="string">&#x27;projectID&#x27;</span>, id)</span><br><span class="line">  <span class="comment">// 上传图片数量</span></span><br><span class="line">  reqData.append(<span class="string">&#x27;imgNum&#x27;</span>, <span class="string">`<span class="subst">$&#123;fileList.length&#125;</span>`</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">const</span> key <span class="keyword">in</span> fileList) &#123;</span><br><span class="line">    <span class="comment">// 图片</span></span><br><span class="line">    reqData.append(<span class="string">`img<span class="subst">$&#123;<span class="built_in">parseInt</span>(key) + <span class="number">1</span>&#125;</span>`</span>, fileList[key])</span><br><span class="line">    <span class="comment">// uuid(下边讲)</span></span><br><span class="line">    <span class="keyword">const</span> uuid = generateUUID(fileList[key])</span><br><span class="line">    reqData.append(<span class="string">`uuid<span class="subst">$&#123;<span class="built_in">parseInt</span>(key) + <span class="number">1</span>&#125;</span>`</span>, <span class="string">`<span class="subst">$&#123;uuid&#125;</span>`</span>)</span><br><span class="line">    <span class="comment">// 图片名</span></span><br><span class="line">    reqData.append(<span class="string">`name<span class="subst">$&#123;<span class="built_in">parseInt</span>(key) + <span class="number">1</span>&#125;</span>`</span>, fileList[key].name)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 只取file，不要length以及之后的属性</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">parseInt</span>(key) === fileList.length - <span class="number">1</span>) &#123;</span><br><span class="line">      <span class="keyword">break</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>formData的实例对象不能直接通过console.log查看，需要这样做：</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="comment">// FormData.entries：返回一个包含所有键值对的interator对象</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> pair <span class="keyword">of</span> reqData.entries()) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(pair[<span class="number">0</span>] + <span class="string">&#x27;, &#x27;</span> + pair[<span class="number">1</span>])</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="uuid的生成"><a href="#uuid的生成" class="headerlink" title="uuid的生成"></a>uuid的生成</h1><p>UUID (Universally unique identifier)，通用唯一识别码。</p>
+<p>前端需要为每个图片生成独一无二的uuid，并放在formData中传给后端，就像刚才做的那样。</p>
+<p>我直接采用<code>图片时间戳 * 图片大小 / 大质数</code>的方式，保证在低并发情况下，每个图片都拥有独一无二的uuid。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/FormData">MDN-formData</a></p>
+]]></content>
+      <categories>
+        <category>js</category>
+      </categories>
+      <tags>
+        <tag>js</tag>
+        <tag>formData</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>初探 nginx</title>
+    <url>/2022/10/13/%E5%88%9D%E6%8E%A2%20nginx/</url>
+    <content><![CDATA[<h1 id="速查"><a href="#速查" class="headerlink" title="速查"></a>速查</h1><p>配置文件路径：<code>/etc/nginx/nginx.conf</code></p>
+<p>日志路径：<code>/var/log/nginx/</code></p>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">user</span>  root;</span><br><span class="line"><span class="attribute">worker_processes</span>  <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 这里写成绝对路径，因为编译生成的 prefix 错误，如果写相对路径，会报错找不到日志文件</span></span><br><span class="line"><span class="attribute">error_log</span>  /var/log/nginx/error.log;</span><br><span class="line"><span class="attribute">error_log</span>  /var/log/nginx/error.log <span class="literal">notice</span>;</span><br><span class="line"><span class="attribute">error_log</span>  /var/log/nginx/error.log <span class="literal">info</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># pid logs/nginx.pid;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="section">events</span> &#123;</span><br><span class="line">    <span class="attribute">worker_connections</span>  <span class="number">1024</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="section">http</span> &#123;</span><br><span class="line">    <span class="attribute">include</span>       mime.types;</span><br><span class="line">    <span class="attribute">default_type</span>  application/octet-stream;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># $scheme 表示 access 时的协议</span></span><br><span class="line">    <span class="attribute">log_format</span>  main  <span class="string">&#x27;$scheme - &#x27;</span></span><br><span class="line">                      <span class="string">&#x27;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &#x27;</span></span><br><span class="line">                      <span class="string">&#x27;$status $body_bytes_sent &quot;$http_referer&quot; &#x27;</span></span><br><span class="line">                      <span class="string">&#x27;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&#x27;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">access_log</span>  /var/log/nginx/access.log  main;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">sendfile</span>        <span class="literal">on</span>;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">tcp_nopush</span>     <span class="literal">on</span>;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">keepalive_timeout</span>  <span class="number">65</span>;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">gzip</span>  <span class="literal">on</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 前端 nginx 只配了 http，然后配置 cdn + https，这样也可以用 https 来访问</span></span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span> <span class="number">80</span>;</span><br><span class="line">        <span class="attribute">server_name</span>  api.danmoits.com;</span><br><span class="line">        <span class="attribute">return</span> <span class="number">301</span> https://$host$request_uri;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span> [::]:<span class="number">443</span> ssl ipv6only=<span class="literal">on</span>;</span><br><span class="line">        <span class="attribute">listen</span> <span class="number">443</span> ssl;</span><br><span class="line">        <span class="attribute">server_name</span>  api.danmoits.com;</span><br><span class="line">        <span class="attribute">index</span> index.js;</span><br><span class="line">        <span class="attribute">root</span> /home/Milestone-be/be/src;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">location</span> /milestone/ &#123;</span><br><span class="line">          <span class="attribute">proxy_pass</span> http://127.0.0.1:8080/;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment"># 核心，证书配置</span></span><br><span class="line">        <span class="attribute">ssl_certificate</span>      /etc/nginx/cert/api.danmoits.com.pem;</span><br><span class="line">        <span class="attribute">ssl_certificate_key</span>  /etc/nginx/cert/api.danmoits.com.key;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">ssl_session_cache</span>    shared:SSL:<span class="number">1m</span>;</span><br><span class="line">        <span class="attribute">ssl_session_timeout</span> <span class="number">5m</span>;</span><br><span class="line">        <span class="attribute">ssl_ciphers</span> ECDHE-RSA-AES128-GCSHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4;</span><br><span class="line">        <span class="attribute">ssl_protocols</span> TLSv1.<span class="number">1</span> TLSv1.<span class="number">2</span> TLSv1.<span class="number">3</span>;</span><br><span class="line">        <span class="attribute">ssl_prefer_server_ciphers</span> <span class="literal">on</span>;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span> <span class="number">80</span>;</span><br><span class="line">        <span class="attribute">server_name</span> milestone.danmoits.com;</span><br><span class="line">        <span class="attribute">index</span> index.html;</span><br><span class="line">        <span class="attribute">root</span> /home/Milestone-fe;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">location</span> / &#123;</span><br><span class="line">          <span class="attribute">try_files</span> $uri $uri/ /index.html;</span><br><span class="line">          <span class="attribute">index</span> index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span> <span class="number">80</span>;</span><br><span class="line">        <span class="attribute">server_name</span> zichen.danmoits.com;</span><br><span class="line">        <span class="attribute">index</span> index.html;</span><br><span class="line">        <span class="attribute">root</span> /home/remote-sensing;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">location</span> / &#123;</span><br><span class="line">          <span class="attribute">try_files</span> $uri $uri/ /index.html;</span><br><span class="line">          <span class="attribute">index</span> index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="location路径替换"><a href="#location路径替换" class="headerlink" title="location路径替换"></a>location路径替换</h1><p>我只需要购买一个域名，创建很多二级域名，每个二级域名映射到服务器的一个端口上。实现起来，就是在<code>server_name</code>处写上域名，再在下面location中的<code>proxy_pass</code>指明代理到哪个端口。当然只有后端服务才需要这么做，前端只需要把静态资源放上去，指明 server_name 就行了，不需要配置反向代理。</p>
+<p>问题：当我请求 api/danmoits.com/milestone/post 时，我希望后端那边收到的请求不带 milestone。</p>
+<p>参考: <a href="https://blog.csdn.net/hongtaolong/article/details/103936173">nginx中proxy_pass的使用</a></p>
+<p>假设http的请求路径为：<a href="http://123.25.95.148:9998/nginx/hello?name=taolong">http://123.25.95.148:9998/nginx/hello?name=taolong</a></p>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="comment">#匹配规则</span></span><br><span class="line"><span class="attribute">location</span> /nginx &#123;</span><br><span class="line">  <span class="comment">#注意这里是“/”结尾，请求url中未匹配的内容：/hello?name=taolong</span></span><br><span class="line">  <span class="attribute">proxy_pass</span> http://123.25.95.148:10010/;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">#此时上面输出的结果：http://123.25.95.148:10010/hello?name=taolong</span></span><br></pre></td></tr></table></figure>
+
+<p>所以我只需要在 /nginx 处写成 /milestone/ （此处必须加 /，不然后端会多一个/，如 <code>//post</code>）</p>
+<p>proxy_pass 处写成 http:127.0.0.1/ （以 / 结尾）</p>
+<p>这样就会把未匹配内容加在 http:127.0.0.1/ 后面</p>
+<h1 id="try-files"><a href="#try-files" class="headerlink" title="try_files"></a>try_files</h1><p><strong>踩坑：刚进入页面时正常，刷新后显示404</strong></p>
+<p>由于nginx本质上还是一个托管静态资源的web服务器，当访问<code>domain/url</code>时，会去我指定的root目录下查找是否有资源。</p>
+<p>比如说，<code>milestone.danmoits.com/posts?page=0</code>，我指定的root是服务器的<code>/home/Milestone-fe</code>，那么会找<code>/home/Milestone-fe/posts?page=0</code>，很显然此时找不到，那么就会报404。</p>
+<p>为什么刚进入页面时不报404呢？因为我一开始访问的是根目录，请求会打到index.html上，随后前端把url重定向，而<code>/home/Milestone-fe/index.html</code>是真实存在的，所以没有404，这里的前端重定向，被学长称作’fake router’。</p>
+<p>因此，需要配置try_files：</p>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">try_files</span> $uri $uri/ /index.html;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>当用户请求 <code>http://localhost/example</code> 时，这里的 <code>$uri</code> 就是 <code>/example</code>，try_files 会到硬盘里尝试找这个文件；<br>如果存在名为 <code>/$root/example</code>（其中 <code>$root</code> 是项目代码安装目录）的文件，就直接把这个文件的内容发送给用户；</p>
+</blockquote>
+<p>如果这样写，其实try_files前面的<code>$uri</code>做的事和上边描述的一样，关键在于最后的参数。</p>
+<blockquote>
+<p>如果给出的file都没有匹配到，则会进行一个内部重定向到最后一个参数给定的uri，就是新的location匹配。</p>
+</blockquote>
+<p>即前面都没匹配到，就会去找<code>/index.html</code>，而它是能找到的，就不会报404了。</p>
+<h1 id="https"><a href="#https" class="headerlink" title="https"></a>https</h1><p>前端配置 https 借助来 cdn，而后端只能配 nginx.conf。</p>
+<p>前端需要明白 cdn 的原理，我们要访问的域名配置了 CNAME 解析，从而访问 cdn 域名，我们发送 https 请求是向 cdn 服务器发送 https 请求，cdn 可能会回源，此时我配置回源协议是 http，所以 nginx 这边就不用配 https 了，当然也可以配，这样的话回源协议需要设置为 https。</p>
+<p>以前用 certbot 生成的一份配置：</p>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">user</span>  root;</span><br><span class="line"><span class="attribute">worker_processes</span>  auto;</span><br><span class="line"></span><br><span class="line"><span class="comment"># error_log  logs/error.log;</span></span><br><span class="line"><span class="comment"># error_log  logs/error.log  notice;</span></span><br><span class="line"><span class="comment"># error_log  logs/error.log  info;</span></span><br><span class="line"></span><br><span class="line"><span class="section">events</span> &#123;</span><br><span class="line">    <span class="attribute">accept_mutex</span> <span class="literal">on</span>;</span><br><span class="line">    <span class="attribute">multi_accept</span> <span class="literal">on</span>;</span><br><span class="line">    <span class="attribute">worker_connections</span>  <span class="number">1024</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">http</span> &#123;</span><br><span class="line">    <span class="attribute">include</span>       mime.types;</span><br><span class="line">    <span class="attribute">default_type</span>  application/octet-stream;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">log_format</span>  main  <span class="string">&#x27;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &#x27;</span></span><br><span class="line">                      <span class="string">&#x27;$status $body_bytes_sent &quot;$http_referer&quot; &#x27;</span></span><br><span class="line">                      <span class="string">&#x27;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&#x27;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">access_log</span> /var/log/nginx/access.log main;</span><br><span class="line">    <span class="attribute">error_log</span> /var/log/nginx/error.log;</span><br><span class="line"></span><br><span class="line">    <span class="comment">##</span></span><br><span class="line">    <span class="comment"># SSL Settings</span></span><br><span class="line">    <span class="comment">##</span></span><br><span class="line">    <span class="attribute">ssl_protocols</span> TLSv1 TLSv1.<span class="number">1</span> TLSv1.<span class="number">2</span> TLSv1.<span class="number">3</span>; <span class="comment"># Dropping SSLv3, ref: POODLE</span></span><br><span class="line">    <span class="attribute">ssl_prefer_server_ciphers</span> <span class="literal">on</span>;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">sendfile</span>           <span class="literal">on</span>;</span><br><span class="line">    <span class="attribute">tcp_nopush</span>         <span class="literal">on</span>;</span><br><span class="line">    <span class="attribute">tcp_nodelay</span>        <span class="literal">on</span>;</span><br><span class="line">    <span class="attribute">keepalive_timeout</span>  <span class="number">65</span>;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">gzip</span>  <span class="literal">on</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">#################</span></span><br><span class="line">    <span class="comment"># milestone</span></span><br><span class="line">    <span class="comment">#################</span></span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span> [::]:<span class="number">443</span> ssl; <span class="comment"># managed by Certbot</span></span><br><span class="line">        <span class="attribute">listen</span> <span class="number">443</span> ssl; <span class="comment"># managed by Certbot</span></span><br><span class="line">        <span class="attribute">server_name</span> milestone.danmoits.com;</span><br><span class="line">        <span class="attribute">ssl_certificate</span> /etc/letsencrypt/live/milestone.danmoits.com/fullchain.pem; <span class="comment"># managed by Certbot</span></span><br><span class="line"></span><br><span class="line">        <span class="attribute">include</span> /etc/letsencrypt/options-ssl-nginx.conf; <span class="comment"># managed by Certbot</span></span><br><span class="line">        <span class="attribute">ssl_dhparam</span> /etc/letsencrypt/ssl-dhparams.pem; <span class="comment"># managed by Certbot</span></span><br><span class="line"></span><br><span class="line">        <span class="attribute">root</span> /home/Milestone-fe;</span><br><span class="line">        <span class="attribute">index</span> index.html index.htm;</span><br><span class="line">        <span class="attribute">location</span> / &#123;</span><br><span class="line">            <span class="attribute">try_files</span> $uri $uri/ /index.html;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span>  <span class="number">80</span>;</span><br><span class="line">        <span class="attribute">listen</span>  [::]:<span class="number">80</span>;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">server_name</span> milestone.danmoits.com;</span><br><span class="line">        <span class="attribute">if</span> ($host = milestone.danmoits.com) &#123;</span><br><span class="line">            <span class="attribute">return</span> <span class="number">301</span> https://$host$request_uri;</span><br><span class="line">        &#125; <span class="comment"># managed by Certbot</span></span><br><span class="line"></span><br><span class="line">        <span class="attribute">return</span> <span class="number">404</span>; <span class="comment"># managed by Certbot</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">#################</span></span><br><span class="line">    <span class="comment"># API</span></span><br><span class="line">    <span class="comment">#################</span></span><br><span class="line"></span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span> [::]:<span class="number">443</span> ssl ipv6only=<span class="literal">on</span>; <span class="comment"># managed by Certbot</span></span><br><span class="line">        <span class="attribute">listen</span> <span class="number">443</span> ssl; <span class="comment"># managed by Certbot</span></span><br><span class="line">        <span class="attribute">server_name</span>  api.danmoits.com;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">ssl_certificate</span> /etc/letsencrypt/live/api.danmoits.com/fullchain.pem; <span class="comment"># managed by Certbot</span></span><br><span class="line">        <span class="attribute">ssl_certificate_key</span> /etc/letsencrypt/live/api.danmoits.com/privkey.pem; <span class="comment"># managed by Certbot</span></span><br><span class="line">        <span class="attribute">include</span> /etc/letsencrypt/options-ssl-nginx.conf; <span class="comment"># managed by Certbot</span></span><br><span class="line">        <span class="attribute">ssl_dhparam</span> /etc/letsencrypt/ssl-dhparams.pem; <span class="comment"># managed by Certbot</span></span><br><span class="line"></span><br><span class="line">        <span class="attribute">index</span> index.js;</span><br><span class="line">        <span class="attribute">root</span> /home/Milestone-be/be/src;</span><br><span class="line">        <span class="attribute">location</span> /milestone/ &#123;</span><br><span class="line">            <span class="attribute">proxy_set_header</span> Host $host;</span><br><span class="line">            <span class="attribute">proxy_pass</span> http://127.0.0.1:8080/;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span>  <span class="number">80</span>;</span><br><span class="line">        <span class="attribute">listen</span>  [::]:<span class="number">80</span>;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">server_name</span>  api.danmoits.com;</span><br><span class="line">        <span class="attribute">if</span> ($host = api.danmoits.com) &#123;</span><br><span class="line">            <span class="attribute">return</span> <span class="number">301</span> https://$host$request_uri;</span><br><span class="line">        &#125; <span class="comment"># managed by Certbot</span></span><br><span class="line">        <span class="attribute">return</span> <span class="number">404</span>; <span class="comment"># managed by Certbot</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">#################</span></span><br><span class="line">    <span class="comment"># cmind</span></span><br><span class="line">    <span class="comment">#################</span></span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span> [::]:<span class="number">443</span> ssl; <span class="comment"># managed by Certbot</span></span><br><span class="line">        <span class="attribute">listen</span> <span class="number">443</span> ssl; <span class="comment"># managed by Certbot</span></span><br><span class="line">        <span class="attribute">server_name</span> cmind.danmoits.com;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">ssl_certificate</span> /etc/letsencrypt/live/cmind.danmoits.com/fullchain.pem; <span class="comment"># managed by Certbot</span></span><br><span class="line">        <span class="attribute">ssl_certificate_key</span> /etc/letsencrypt/live/cmind.danmoits.com/privkey.pem; <span class="comment"># managed by Certbot</span></span><br><span class="line">        <span class="attribute">include</span> /etc/letsencrypt/options-ssl-nginx.conf; <span class="comment"># managed by Certbot</span></span><br><span class="line">        <span class="attribute">ssl_dhparam</span> /etc/letsencrypt/ssl-dhparams.pem; <span class="comment"># managed by Certbot</span></span><br><span class="line"></span><br><span class="line">        <span class="attribute">root</span> /home/cMind;</span><br><span class="line">        <span class="attribute">location</span> / &#123;</span><br><span class="line">          <span class="attribute">try_files</span> $uri $uri/ /index.html;</span><br><span class="line">          <span class="attribute">index</span> index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span>  <span class="number">80</span>;</span><br><span class="line">        <span class="attribute">listen</span>  [::]:<span class="number">80</span>;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">server_name</span> cmind.danmoits.com;</span><br><span class="line">        <span class="attribute">if</span> ($host = cmind.danmoits.com) &#123;</span><br><span class="line">            <span class="attribute">return</span> <span class="number">301</span> https://$host$request_uri;</span><br><span class="line">        &#125; <span class="comment"># managed by Certbot</span></span><br><span class="line"></span><br><span class="line">        <span class="attribute">return</span> <span class="number">404</span>; <span class="comment"># managed by Certbot</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>后来自己尝试配 https，参考以下资料：</p>
+<p><a href="http://nginx.org/en/docs/http/configuring_https_servers.html">Configuring HTTPS servers</a></p>
+<p><a href="https://help.aliyun.com/document_detail/98728.html">在Nginx或Tengine服务器上安装证书</a></p>
+<p>然后就有了开头那份 nginx.conf。</p>
+]]></content>
+      <categories>
+        <category>nginx</category>
+      </categories>
+      <tags>
+        <tag>nginx</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>2021 ~ 2022</title>
     <url>/2022/06/10/2021~2022/</url>
     <content><![CDATA[<h1 id="步入联创"><a href="#步入联创" class="headerlink" title="步入联创"></a>步入联创</h1><p>开学的第二天我就来到了811，那时候在场的有 xylonx 和 zcy 学长，刚来的我非常拘谨，在忐忑中度过了刚开始的那段时期，然后就开始做新人任务，共三期。</p>
@@ -40,9 +946,9 @@
 <p>个人认为，这次实习的硬性提升不大，主要是软性的，首先是熟悉公司和互联网行业，体会作为社会人和学生有什么区别，还有就是对实习的一些感悟，如上所述。在公司，我发现自己解决问题的能力不怎么样，经常需要请教 L，后来我就告诫自己“工程师一定要提高自己解决问题的能力”。<strong>并且从这以后，我不希望自己逃避，要让精神变得更加强大，负起责任来，作为公司的一员，联创 web 的一员，思考“计算机是不是不适合自己”根本没有意义。</strong></p>
 <p>实习生在公司的地位很低，我 mentor 跟我商量一个开会的时间，到点了他也可以一拖再拖。并且面试和干的活，确实很不匹配。面试面那么多，分配的活就这？实习也没什么了不起的嘛。</p>
 <p>最后夸一夸字节，福利真的不错，免费伙食（外卖）下午茶健身房，各种礼包礼盒，甚至隔离还发$，吹爆好嘛。十月我回到了学校，正式开始了大三的生涯。</p>
+<p>其他想说的嘛，感觉人有稍微变自信一点，参加团队招新，在面试时也更加从容。</p>
 ]]></content>
       <categories>
-        <category>生活</category>
         <category>随笔</category>
       </categories>
       <tags>
@@ -107,7 +1013,6 @@
 <p>但是在联创呆久以后，也和同学聊过，贵创比较自由，学技术打比赛做产品都是随心所欲的，不用被锅束缚其实还是好事，而且不同团队的同学之间也大多认识，比如加入联创后，冰岩的 xiong35 学长仍然给了我很多帮助。</p>
 ]]></content>
       <categories>
-        <category>生活</category>
         <category>随笔</category>
       </categories>
       <tags>
@@ -343,7 +1248,6 @@
 </ul>
 ]]></content>
       <categories>
-        <category>web开发</category>
         <category>设计模式</category>
       </categories>
       <tags>
@@ -427,7 +1331,7 @@
   </entry>
   <entry>
     <title>Linux 笔记</title>
-    <url>/2021/08/26/Linux%E7%AC%94%E8%AE%B0/</url>
+    <url>/2021/08/26/Linux%20%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[<h1 id="基础篇"><a href="#基础篇" class="headerlink" title="基础篇"></a>基础篇</h1><h2 id="网络连接的三种方式"><a href="#网络连接的三种方式" class="headerlink" title="网络连接的三种方式"></a>网络连接的三种方式</h2><p>同一网段下（如在192.168.0下）的主机可以互相通信</p>
 <p>三种方式：</p>
 <ul>
@@ -1847,6 +2751,118 @@
       </tags>
   </entry>
   <entry>
+    <title>svg-sprite</title>
+    <url>/2021/08/26/svg-sprite/</url>
+    <content><![CDATA[<h1 id="何为-svg-sprite"><a href="#何为-svg-sprite" class="headerlink" title="何为 svg-sprite"></a>何为 svg-sprite</h1><h2 id="css-sprite"><a href="#css-sprite" class="headerlink" title="css-sprite"></a>css-sprite</h2><p>在说svg-sprite以前，先聊聊css-sprite，一般我们称之为“雪碧图”。</p>
+<p>雪碧图，就是把很多小的图标整合到一张图片中，可以减少向后端请求的次数。</p>
+<p><img src="https://i.stack.imgur.com/fu607.png"></p>
+<p>在使用这些图片时，比如让这些图片作背景，便可以调整 <code>background-position    </code>值，使之显示我们需要的部分。</p>
+<h2 id="svg-sprite"><a href="#svg-sprite" class="headerlink" title="svg-sprite"></a>svg-sprite</h2><p>因此，svg-sprite 同理，就是把很多svg合到一个.svg文件中，开发者使用图标时，每次只使用其中的一部分。</p>
+<p>首先，我们需要得到一些.svg文件，可以前往iconfont等网站下载：</p>
+<p><img src="https://s1.ax1x.com/2022/03/23/qlgFAA.png"></p>
+<p>之后，可以借助一些工具将这些.svg文件合并，产生svg-sprite.svg：</p>
+<p><a href="https://www.zhangxinxu.com/sp/svgo/">SVG在线压缩合并工具</a></p>
+<p><a href="https://icomoon.io/app/#/select">icomoon</a></p>
+<p>有了合并后的svg，还需要知道使用方法：</p>
+<p>SVG Sprite最佳实践是使用<code>symbol</code>元素，可以把SVG元素看成一个舞台，而<code>symbol</code>则是舞台上一个一个组装好的元件，这这些一个一个的元件就是我们即将使用的一个一个SVG图标，然后，使用use来调用它们。</p>
+<p>除了symbol，还可以使用<code>defs</code>。</p>
+<blockquote>
+<p>SVG的<defs>元素用于预定义一个元素使其能够在SVG图像中重复使用。</defs></p>
+<p>SVG <symbol>元素用于定义可重复使用的符号。能够创建自己的视窗，能够应用viewBox和preserveAspectRatio属性。</symbol></p>
+</blockquote>
+<p>它们的共同特点是，在其中的元素都不会直接显示出来，需要使用<code>use</code>调用。</p>
+<p>use具有<strong>可重复调用</strong>和<strong>跨SVG调用</strong>的特性，如：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">svg</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">defs</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">g</span> <span class="attr">id</span>=<span class="string">&quot;shape&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">rect</span> <span class="attr">x</span>=<span class="string">&quot;0&quot;</span> <span class="attr">y</span>=<span class="string">&quot;0&quot;</span> <span class="attr">width</span>=<span class="string">&quot;50&quot;</span> <span class="attr">height</span>=<span class="string">&quot;50&quot;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">circle</span> <span class="attr">cx</span>=<span class="string">&quot;0&quot;</span> <span class="attr">cy</span>=<span class="string">&quot;0&quot;</span> <span class="attr">r</span>=<span class="string">&quot;50&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">g</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">defs</span>&gt;</span></span><br><span class="line"> <span class="comment">&lt;!--可重复调用--&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">use</span> <span class="attr">xlink:href</span>=<span class="string">&quot;#shape&quot;</span> <span class="attr">x</span>=<span class="string">&quot;50&quot;</span> <span class="attr">y</span>=<span class="string">&quot;50&quot;</span> /&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">use</span> <span class="attr">xlink:href</span>=<span class="string">&quot;#shape&quot;</span> <span class="attr">x</span>=<span class="string">&quot;200&quot;</span> <span class="attr">y</span>=<span class="string">&quot;50&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">svg</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--跨svg调用--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">svg</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">use</span> <span class="attr">xlink:href</span>=<span class="string">&quot;#shape&quot;</span> <span class="attr">x</span>=<span class="string">&quot;50&quot;</span> <span class="attr">y</span>=<span class="string">&quot;50&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">svg</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>浏览器中的效果：</p>
+<p><img src="https://s1.ax1x.com/2022/03/23/qlg3hq.png"></p>
+<p>因此，当获得了合成后的svg文件，我们可以采用外链引入的方式，如：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">svg</span> <span class="attr">id</span>=<span class="string">&quot;svg-sprite&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">use</span> <span class="attr">xlink:href</span>=<span class="string">&quot;./svg/symbol-defs.svg#icon-game&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">svg</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>不过，根据浏览器的安全策略，页面会出现空白，控制台有一行报错信息。</p>
+<p>因此，此处的演示选择直接将合成svg代码复制进来：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">&quot;X-UA-Compatible&quot;</span> <span class="attr">content</span>=<span class="string">&quot;IE=edge&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="css"></span></span><br><span class="line"><span class="css">      svg &#123;</span></span><br><span class="line"><span class="css">        <span class="attribute">width</span>: <span class="number">30px</span>;</span></span><br><span class="line"><span class="css">        <span class="attribute">height</span>: <span class="number">30px</span>;</span></span><br><span class="line"><span class="css">      &#125;</span></span><br><span class="line"><span class="css"></span></span><br><span class="line"><span class="css">      <span class="selector-id">#game</span> &#123;</span></span><br><span class="line"><span class="css">        fill: red;</span></span><br><span class="line"><span class="css">      &#125;</span></span><br><span class="line"><span class="css">      </span></span><br><span class="line"><span class="css">      <span class="selector-id">#book1</span> &#123;</span></span><br><span class="line"><span class="css">        fill: green;</span></span><br><span class="line"><span class="css">      &#125;</span></span><br><span class="line"><span class="css"></span></span><br><span class="line"><span class="css">      <span class="selector-id">#book2</span> &#123;</span></span><br><span class="line"><span class="css">        fill: blue;</span></span><br><span class="line"><span class="css">      &#125;</span></span><br><span class="line"><span class="css">    </span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--合并的svg，其中包含三个图标--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">svg</span></span></span><br><span class="line"><span class="tag">      <span class="attr">aria-hidden</span>=<span class="string">&quot;true&quot;</span></span></span><br><span class="line"><span class="tag">      <span class="attr">style</span>=<span class="string">&quot;position: absolute; width: 0; height: 0; overflow: hidden&quot;</span></span></span><br><span class="line"><span class="tag">      <span class="attr">version</span>=<span class="string">&quot;1.1&quot;</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xmlns</span>=<span class="string">&quot;http://www.w3.org/2000/svg&quot;</span></span></span><br><span class="line"><span class="tag">      <span class="attr">xmlns:xlink</span>=<span class="string">&quot;http://www.w3.org/1999/xlink&quot;</span></span></span><br><span class="line"><span class="tag">    &gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">defs</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">symbol</span> <span class="attr">id</span>=<span class="string">&quot;icon-game&quot;</span> <span class="attr">viewBox</span>=<span class="string">&quot;0 0 32 32&quot;</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">path</span></span></span><br><span class="line"><span class="tag">            <span class="attr">d</span>=<span class="string">&quot;M32..&quot;</span></span></span><br><span class="line"><span class="tag">          &gt;</span><span class="tag">&lt;/<span class="name">path</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">symbol</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">symbol</span> <span class="attr">id</span>=<span class="string">&quot;icon-book1&quot;</span> <span class="attr">viewBox</span>=<span class="string">&quot;0 0 32 32&quot;</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">path</span></span></span><br><span class="line"><span class="tag">            <span class="attr">d</span>=<span class="string">&quot;M25...&quot;</span></span></span><br><span class="line"><span class="tag">          &gt;</span><span class="tag">&lt;/<span class="name">path</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">path</span></span></span><br><span class="line"><span class="tag">            <span class="attr">d</span>=<span class="string">&quot;M21...&quot;</span></span></span><br><span class="line"><span class="tag">          &gt;</span><span class="tag">&lt;/<span class="name">path</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">symbol</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">symbol</span> <span class="attr">id</span>=<span class="string">&quot;icon-book2&quot;</span> <span class="attr">viewBox</span>=<span class="string">&quot;0 0 32 32&quot;</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">path</span></span></span><br><span class="line"><span class="tag">            <span class="attr">d</span>=<span class="string">&quot;M27...&quot;</span></span></span><br><span class="line"><span class="tag">          &gt;</span><span class="tag">&lt;/<span class="name">path</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">symbol</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">defs</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">svg</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--利用use的跨svg调用特性，调用这些图标--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">svg</span> <span class="attr">id</span>=<span class="string">&quot;game&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">use</span> <span class="attr">xlink:href</span>=<span class="string">&quot;#icon-game&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">svg</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">svg</span> <span class="attr">id</span>=<span class="string">&quot;book1&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">use</span> <span class="attr">xlink:href</span>=<span class="string">&quot;#icon-book1&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">svg</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">svg</span> <span class="attr">id</span>=<span class="string">&quot;book2&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">use</span> <span class="attr">xlink:href</span>=<span class="string">&quot;#icon-book2&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">svg</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>效果如图：</p>
+<p><img src="https://s1.ax1x.com/2022/03/23/qlg1Nn.png"></p>
+<p>Svg-sprite 优点：</p>
+<ol>
+<li>修改ID就可以改变图标，使用方便。</li>
+<li>页面代码量小，维护成本低。</li>
+<li>图标可改变颜色大小，减少重复图片的加载</li>
+<li>减少图片请求量。</li>
+</ol>
+<h1 id="svg-sprite-在框架中的应用"><a href="#svg-sprite-在框架中的应用" class="headerlink" title="svg-sprite 在框架中的应用"></a>svg-sprite 在框架中的应用</h1><p>前端项目中常常有使用小图标的需求，以vue为例：</p>
+<p>我们需要解决的问题如下：</p>
+<ol>
+<li>自动打包svg，生成svg-sprite，并将打包好的内容插入html。</li>
+<li>创建组件，以后在使用图标时，只用传入图标的名称，便可以生成icon。</li>
+</ol>
+<h2 id="vue-cli"><a href="#vue-cli" class="headerlink" title="vue-cli"></a>vue-cli</h2><h3 id="配置loader"><a href="#配置loader" class="headerlink" title="配置loader"></a>配置loader</h3><p>首先，下载<code>svg-sprite-loader</code>。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm install svg-sprite-loader -D</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://github.com/JetBrains/svg-sprite-loader">svg-sprite-loader</a> 的作用是<strong>合并一组单个的svg图片为一个sprite，并把合成好的内容，插入到html内，形式是添加svg标签。</strong></p>
+<p>指定<code>@/src/icons</code>，在该目录下新建/svg目录，把svg图全部放在该目录下。</p>
+<p>vue-cli对svg文件有默认的<code>url-loader</code> 处理，所以要排除<code>url-loader</code>对<code>@/src/icons</code>的处理，指定<code>svg-sprite-loader</code>处理。</p>
+<p>修改<code>vue.config.js</code>如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">&#x27;path&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取绝对路径</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">resolve</span>(<span class="params">dir</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> path.join(__dirname, dir);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  <span class="comment">// 一个函数，会接收一个基于 webpack-chain 的 ChainableConfig 实例</span></span><br><span class="line">  <span class="comment">// 允许对内部的 webpack 配置进行更细粒度的修改</span></span><br><span class="line">  <span class="attr">chainWebpack</span>: <span class="function">(<span class="params">config</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 配置svg默认规则排除icons目录中svg文件处理</span></span><br><span class="line">    config.module.rule(<span class="string">&#x27;svg&#x27;</span>).exclude.add(resolve(<span class="string">&#x27;src/icons&#x27;</span>)).end();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 新增icons规则，设置svg-sprite-loader处理icons目录中svg文件</span></span><br><span class="line">    config.module</span><br><span class="line">      .rule(<span class="string">&#x27;icons&#x27;</span>)</span><br><span class="line">      .test(<span class="regexp">/\.svg$/</span>)</span><br><span class="line">      .include.add(resolve(<span class="string">&#x27;src/icons&#x27;</span>))</span><br><span class="line">      .end()</span><br><span class="line">      .use(<span class="string">&#x27;svg-sprite-loader&#x27;</span>)</span><br><span class="line">      .loader(<span class="string">&#x27;svg-sprite-loader&#x27;</span>)</span><br><span class="line">      .options(&#123; <span class="attr">symbolId</span>: <span class="string">&#x27;icon-[name]&#x27;</span> &#125;)</span><br><span class="line">      .end();</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>以上代码首先排除了默认svg的loader对<code>icons/</code>目录下svg文件的处理，然后新增了一个规则让<code>svg-sprite-loader</code>处理<code>icons/</code>文件夹下的svg文件，最后设置了<code>icon-</code>加上经过处理的svg文件名作为symbolId，也就是说在使用<code>book.svg</code>时可以直接在use标签使用<code>#icon-book</code>。</p>
+<p>此时，在main.js中引入一些svg，这些svg经过处理变为sprite，然后我们就可以使用这些图标了。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// main.js</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;@/icons/svg/book.svg&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--template中使用--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">svg</span> <span class="attr">:class</span>=<span class="string">&quot;svgClass&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">use</span> <span class="attr">xlink:href</span>=<span class="string">&quot;#icon-book&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">use</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">svg</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这样，sprite就只会把引入的这些图标打包，然后插入html：</p>
+<p><img src="https://s1.ax1x.com/2022/03/23/qlafKI.jpg"></p>
+<p>不过，一个一个引入组件是很麻烦的，我们希望可以将全部svg直接打包插入html，在icons/下创建index.js：</p>
+<p><img src="https://s1.ax1x.com/2022/03/23/qlwvNT.jpg"></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// index.js</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// icons图标自动加载</span></span><br><span class="line"><span class="keyword">const</span> req = <span class="built_in">require</span>.context(<span class="string">&quot;./svg&quot;</span>, <span class="literal">false</span>, <span class="regexp">/\.svg$/</span>);</span><br><span class="line">req.keys().map(req);</span><br></pre></td></tr></table></figure>
+
+<p>然后，在main.js中引入：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&#x27;@/icons/index.js&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这样，处于icons/svg下的所有svg文件都会被打包，在template中直接使用即可：</p>
+<p><img src="https://s1.ax1x.com/2022/03/23/ql0GUf.jpg"></p>
+<h3 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h3><h4 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h4><p>上边的方式还是不够优雅，我们在/components目录下创建<code>SvgIcon.vue</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;svg :class=&quot;svgClass&quot;&gt;</span><br><span class="line">    &lt;use :xlink:href=&quot;iconName&quot; /&gt;</span><br><span class="line">  &lt;/svg&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">import &#123; computed, toRefs &#125; from &#x27;vue&#x27;;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">  name: &#x27;SvgIcon&#x27;,</span><br><span class="line">  props: &#123;</span><br><span class="line">    iconClass: &#123;</span><br><span class="line">      type: String,</span><br><span class="line">      required: true,</span><br><span class="line">    &#125;,</span><br><span class="line">    className: &#123;</span><br><span class="line">      type: String,</span><br><span class="line">      default: &#x27;&#x27;,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">  setup(props) &#123;</span><br><span class="line">    // 如果不使用toRefs，可能丢掉效应式的特性</span><br><span class="line">    const &#123; className, iconClass &#125; = toRefs(props)</span><br><span class="line">  </span><br><span class="line">    const iconName = computed(() =&gt; `#icon-$&#123;iconClass.value&#125;`);</span><br><span class="line">    const svgClass = computed(() =&gt; &#123;</span><br><span class="line">      if (className.value) &#123;</span><br><span class="line">        return &#x27;svg-icon &#x27; + className.value;</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        return &#x27;svg-icon&#x27;;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    return &#123;</span><br><span class="line">      iconName,</span><br><span class="line">      svgClass,</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;style scoped&gt;</span><br><span class="line">.svg-icon &#123;</span><br><span class="line">  width: 2em;</span><br><span class="line">  height: 2em;</span><br><span class="line">  fill: currentColor;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="注册"><a href="#注册" class="headerlink" title="注册"></a>注册</h4><p>在main.js中，注册为全局组件：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">&#x27;./App.vue&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> SvgIcon <span class="keyword">from</span> <span class="string">&#x27;./components/Svg-icon.vue&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;@/icons/index.js&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 注册全局组件</span></span><br><span class="line">createApp(App).component(<span class="string">&#x27;svg-icon&#x27;</span>, SvgIcon).mount(<span class="string">&#x27;#app&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<h4 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;!--使用SvgIcon组件--&gt;</span><br><span class="line">    &lt;svg-icon :iconClass=&quot;&#x27;book&#x27;&quot; :className=&quot;&#x27;icon-book&#x27;&quot; /&gt;</span><br><span class="line">    &lt;svg-icon :iconClass=&quot;&#x27;game&#x27;&quot; :className=&quot;&#x27;icon-game&#x27;&quot; /&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">export default &#123;</span><br><span class="line">  name: &#x27;App&#x27;,</span><br><span class="line">&#125;;</span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line">&lt;style scoped&gt;</span><br><span class="line">/* 设置图标样式 */</span><br><span class="line">.icon-book &#123;</span><br><span class="line">  color: blue;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.icon-game &#123;</span><br><span class="line">  color: green;</span><br><span class="line">  transition: all .3s;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/* 还可以使用媒体查询 */</span><br><span class="line">@media only screen and (max-width: 800px) &#123;</span><br><span class="line">  .icon-game &#123;</span><br><span class="line">    color: red;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/style&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="vite"><a href="#vite" class="headerlink" title="vite"></a>vite</h2><p>（此处演示使用vite + vue3 + ts）</p>
+<p>到了 <code>Vite</code> 上，由于不再使用 <code>webpack</code>进行打包，配置方式有所变化。</p>
+<p>依然先安装依赖：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm install svg-sprite-loader</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p><img src="https://s1.ax1x.com/2022/03/23/qlc6mQ.jpg"></p>
+<p>在@/src/plugins下创建<code>svgBuilder.ts</code>：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; Plugin &#125; <span class="keyword">from</span> <span class="string">&#x27;vite&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; readFileSync, readdirSync &#125; <span class="keyword">from</span> <span class="string">&#x27;fs&#x27;</span>;</span><br><span class="line"><span class="keyword">let</span> idPerfix = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> svgTitle = <span class="regexp">/&lt;svg([^&gt;+].*?)&gt;/</span>;</span><br><span class="line"><span class="keyword">const</span> clearHeightWidth = <span class="regexp">/(width|height)=&quot;([^&gt;+].*?)&quot;/g</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> hasViewBox = <span class="regexp">/(viewBox=&quot;[^&gt;+].*?&quot;)/g</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> clearReturn = <span class="regexp">/(\r)|(\n)/g</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">findSvgFile</span>(<span class="params">dir</span>): <span class="title">string</span>[] </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> svgRes = [];</span><br><span class="line">  <span class="keyword">const</span> dirents = readdirSync(dir, &#123;</span><br><span class="line">    <span class="attr">withFileTypes</span>: <span class="literal">true</span>,</span><br><span class="line">  &#125;);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">const</span> dirent <span class="keyword">of</span> dirents) &#123;</span><br><span class="line">    <span class="keyword">if</span> (dirent.isDirectory()) &#123;</span><br><span class="line">      svgRes.push(...findSvgFile(dir + dirent.name + <span class="string">&#x27;/&#x27;</span>));</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">const</span> svg = readFileSync(dir + dirent.name)</span><br><span class="line">        .toString()</span><br><span class="line">        .replace(clearReturn, <span class="string">&#x27;&#x27;</span>)</span><br><span class="line">        .replace(svgTitle, <span class="function">(<span class="params">$<span class="number">1</span>, $<span class="number">2</span></span>) =&gt;</span> &#123;</span><br><span class="line">          <span class="keyword">let</span> width = <span class="number">0</span>;</span><br><span class="line">          <span class="keyword">let</span> height = <span class="number">0</span>;</span><br><span class="line">          <span class="keyword">let</span> content = $<span class="number">2.</span>replace(clearHeightWidth, <span class="function">(<span class="params">s1, s2, s3</span>) =&gt;</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (s2 === <span class="string">&#x27;width&#x27;</span>) &#123;</span><br><span class="line">              width = s3;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (s2 === <span class="string">&#x27;height&#x27;</span>) &#123;</span><br><span class="line">              height = s3;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">          &#125;);</span><br><span class="line">          <span class="keyword">if</span> (!hasViewBox.test($<span class="number">2</span>)) &#123;</span><br><span class="line">            content += <span class="string">`viewBox=&quot;0 0 <span class="subst">$&#123;width&#125;</span> <span class="subst">$&#123;height&#125;</span>&quot;`</span>;</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="keyword">return</span> <span class="string">`&lt;symbol id=&quot;<span class="subst">$&#123;idPerfix&#125;</span>-<span class="subst">$&#123;dirent.name.replace(</span></span></span><br><span class="line"><span class="subst"><span class="string">            <span class="string">&#x27;.svg&#x27;</span>,</span></span></span><br><span class="line"><span class="subst"><span class="string">            <span class="string">&#x27;&#x27;</span></span></span></span><br><span class="line"><span class="subst"><span class="string">          )&#125;</span>&quot; <span class="subst">$&#123;content&#125;</span>&gt;`</span>;</span><br><span class="line">        &#125;)</span><br><span class="line">        .replace(<span class="string">&#x27;&lt;/svg&gt;&#x27;</span>, <span class="string">&#x27;&lt;/symbol&gt;&#x27;</span>);</span><br><span class="line">      svgRes.push(svg);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> svgRes;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> svgBuilder = (path: string, perfix = <span class="string">&#x27;icon&#x27;</span>): <span class="function"><span class="params">Plugin</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (path === <span class="string">&#x27;&#x27;</span>) <span class="keyword">return</span>;</span><br><span class="line">  idPerfix = perfix;</span><br><span class="line">  <span class="keyword">const</span> res = findSvgFile(path);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&#x27;svg-transform&#x27;</span>,</span><br><span class="line">    transformIndexHtml(html): string &#123;</span><br><span class="line">      <span class="keyword">return</span> html.replace(</span><br><span class="line">        <span class="string">&#x27;&lt;body&gt;&#x27;</span>,</span><br><span class="line">        <span class="string">`</span></span><br><span class="line"><span class="string">          &lt;body&gt;</span></span><br><span class="line"><span class="string">            &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot; style=&quot;position: absolute; width: 0; height: 0&quot;&gt;</span></span><br><span class="line"><span class="string">              <span class="subst">$&#123;res.join(<span class="string">&#x27;&#x27;</span>)&#125;</span></span></span><br><span class="line"><span class="string">            &lt;/svg&gt;</span></span><br><span class="line"><span class="string">        `</span></span><br><span class="line">      );</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>配置<code>vite.config.ts</code></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; defineConfig &#125; <span class="keyword">from</span> <span class="string">&#x27;vite&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> vue <span class="keyword">from</span> <span class="string">&#x27;@vitejs/plugin-vue&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; svgBuilder &#125; <span class="keyword">from</span> <span class="string">&#x27;./src/plugins/svgBuilder&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> defineConfig(&#123;</span><br><span class="line">  <span class="comment">// 指定存放svg文件的目录为 src/assets/svg/</span></span><br><span class="line">  <span class="attr">plugins</span>: [vue(), svgBuilder(<span class="string">&#x27;./src/assets/svg/&#x27;</span>)],</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="组件-1"><a href="#组件-1" class="headerlink" title="组件"></a>组件</h3><p>注册和使用方式同 vue-cli，注意此时不再需要引入刚刚的 index.js。</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="comment">// main.ts</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">&#x27;./App.vue&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> SvgIcon <span class="keyword">from</span> <span class="string">&#x27;./components/Svg-icon.vue&#x27;</span>;</span><br><span class="line"></span><br><span class="line">createApp(App).component(<span class="string">&#x27;svg-icon&#x27;</span>, SvgIcon).mount(<span class="string">&#x27;#app&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="https://www.zhangxinxu.com/wordpress/2014/07/introduce-svg-sprite-technology/">未来必热：SVG Sprites技术介绍</a></p>
+<p><a href="https://juejin.cn/post/6844903998563024910#heading-18">Vue项目中优雅使用icon</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/468930912">vite中使用svg图标</a></p>
+]]></content>
+      <categories>
+        <category>svg</category>
+      </categories>
+      <tags>
+        <tag>svg</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>浏览器是如何工作的</title>
     <url>/2021/08/22/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/</url>
     <content><![CDATA[<p>参考视频：<a href="https://www.bilibili.com/video/BV1x54y1B7RE">浏览器是如何运作的</a></p>
@@ -1960,7 +2976,6 @@
 <p>用transform实现的动画由于不需要经过布局绘制，样式计算等操作，所以节省了很多运算时间</p>
 ]]></content>
       <categories>
-        <category>web开发</category>
         <category>浏览器</category>
       </categories>
       <tags>
@@ -3664,6 +4679,86 @@
       </categories>
       <tags>
         <tag>c++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>模块化</title>
+    <url>/2021/08/22/%E6%A8%A1%E5%9D%97%E5%8C%96/</url>
+    <content><![CDATA[<h1 id="commonjs"><a href="#commonjs" class="headerlink" title="commonjs"></a>commonjs</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>每个文件就是一个模块，有自己的作用域。在一个文件里面定义的变量、函数、类，都是私有的，对其他文件不可见。<strong>在服务器端，模块的加载是运行时同步加载的；在浏览器端，模块需要提前编译打包处理。</strong></p>
+<p>由上可知，（在服务器端）模块的依赖关系是在运行时确定的。</p>
+<h2 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h2><ul>
+<li>所有代码都运行在模块作用域，不会污染全局作用域。</li>
+<li>模块可以多次加载，但是只会在第一次加载时运行一次，然后运行结果就被缓存了，以后再加载，就直接读取缓存结果。要想让模块再次运行，必须清除缓存。</li>
+<li>模块加载的顺序，按照其在代码中出现的顺序。</li>
+</ul>
+<h2 id="暴露"><a href="#暴露" class="headerlink" title="暴露"></a>暴露</h2><p>每个模块内部，module 变量代表当前模块。这个变量是一个对象，它的 exports 属性是对外的接口。<strong>加载某个模块，其实是加载该模块的 module.exports 属性</strong>。</p>
+<p>require 用于加载模块文件。<strong>基本功能是读入并执行一个 JavaScript 文件，然后返回该模块的 exports 对象。如果没有发现指定模块，会报错</strong>。</p>
+<h2 id="加载机制"><a href="#加载机制" class="headerlink" title="加载机制"></a>加载机制</h2><p><strong>输入的是被输出的值的拷贝，一旦输出一个值，模块内部的变化就影响不到这个值</strong>。比如模块 A 输出了一个 number 和增加该 number 的方法，在模块 B 中引入它们，并调用该方法，发现 number 的值并没有增加。</p>
+<h1 id="es6"><a href="#es6" class="headerlink" title="es6"></a>es6</h1><h2 id="概述-1"><a href="#概述-1" class="headerlink" title="概述"></a>概述</h2><p>ES6 模块的设计思想是尽量的静态化，使得编译时就能确定模块的依赖关系，以及输入和输出的变量。</p>
+<p>两者的区别：</p>
+<ol>
+<li><strong>CommonJS 模块输出的是一个值的拷贝，ES6 模块输出的是值的引用</strong>。因此上边 number 的值会增加。</li>
+<li><strong>CommonJS 模块是运行时加载，ES6 模块是编译时输出接口</strong>。因为 CommonJS 加载的是一个对象（module.exports），该对象只有在脚本运行完才会生成。而 ES6 模块不是对象，它的对外接口只是一种静态定义，在代码静态解析阶段就会生成</li>
+<li>require 是同步加载，import 是异步加载，更准确地说，<strong>ES6 模块有一个独立的静态解析阶段，依赖关系的分析在该阶段完成，最底层的模块第一个执行。</strong>require 不支持 ES6 的一个原因便是，它是同步加载，而 ES6 内部可以使用顶层 await 命令，导致无法被同步加载。</li>
+</ol>
+<h2 id="导入导出方式"><a href="#导入导出方式" class="headerlink" title="导入导出方式"></a>导入导出方式</h2><ul>
+<li><p>命名导出：导出的数据带 name，统一引入需要 { }。</p>
+</li>
+<li><p>别名引入：import { cym as Danmo } from ‘…’。</p>
+</li>
+<li><p>命名空间引入：import * as Danmo from ‘…’，比如原文件下定义了 learn 、play 等方法，我们指定命名空间叫 Danmo，引入后通过 Danmo.learn、Danmo.play 来调用它们，避免使用大量别名引入。</p>
+</li>
+<li><p>默认导入导出，export default 并且引入无需 { }，引入的是 <code>import &#123; default as Danmo&#125; from &#39;...&#39;</code> 的缩写。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 这样导出的话，import Danmo from &#x27;...&#x27;，方法的使用和命名空间引入一致</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  learn () &#123;&#125;,</span><br><span class="line">  play () &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h1 id="more-about-ES6-module"><a href="#more-about-ES6-module" class="headerlink" title="more about ES6 module"></a>more about ES6 module</h1><h2 id="Feature"><a href="#Feature" class="headerlink" title="Feature"></a>Feature</h2><blockquote>
+<p>You need to pay attention to local testing — if you try to load the HTML file locally (i.e. with a <code>file://</code> URL), you’ll run into CORS errors due to JavaScript module security requirements. You need to do your testing through a server.</p>
+</blockquote>
+<p>如果使用 <code> &lt;script type=&quot;module&quot;&gt;</code> 将默认启用跨域访问，不能在本地测试，需要通过 server，否则 CORS 报错。</p>
+<blockquote>
+<p>Also, note that you might get different behavior from sections of script defined inside modules as opposed to in standard scripts. This is because modules use <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode">strict mode</a> automatically.</p>
+</blockquote>
+<p>模块自动开启严格模式。</p>
+<blockquote>
+<p>There is no need to use the <code>defer</code> attribute (see <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attributes">`` attributes</a>) when loading a module script; modules are deferred automatically.</p>
+</blockquote>
+<p>模块自动开启 defer。</p>
+<blockquote>
+<p>You will only be able to access imported features in the script they are imported into, and you won’t be able to access them from the JavaScript console.</p>
+</blockquote>
+<p>引入的模块不能在控制台中访问。</p>
+<h2 id="Aggregation"><a href="#Aggregation" class="headerlink" title="Aggregation"></a>Aggregation</h2><p>把多个子模块的导出汇集到一个文件中，可以 <code>export &lt;sth.&gt; form &lt;path&gt;</code>，比如：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">modules/</span><br><span class="line">  canvas.js</span><br><span class="line">  shapes.js</span><br><span class="line">  shapes/</span><br><span class="line">    circle.js</span><br><span class="line">    square.js</span><br><span class="line">    triangle.js</span><br></pre></td></tr></table></figure>
+
+<p>每个子模块的导出方式如：<code>export &#123; Square &#125;</code>。</p>
+<p>在 /modules 下新建 shapes.js：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> &#123; Square &#125; <span class="keyword">from</span> <span class="string">&#x27;./shapes/square.js&#x27;</span>;</span><br><span class="line"><span class="keyword">export</span> &#123; Triangle &#125; <span class="keyword">from</span> <span class="string">&#x27;./shapes/triangle.js&#x27;</span>;</span><br><span class="line"><span class="keyword">export</span> &#123; Circle &#125; <span class="keyword">from</span> <span class="string">&#x27;./shapes/circle.js&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 从 shapes.js 导入：</span></span><br><span class="line"><span class="keyword">import</span> &#123; Square, Circle, Triangle &#125; <span class="keyword">from</span> <span class="string">&#x27;./modules/shapes.js&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Dynamic-module"><a href="#Dynamic-module" class="headerlink" title="Dynamic module"></a>Dynamic module</h2><blockquote>
+<p>A recent addition to JavaScript modules functionality is dynamic module loading. This allows you to dynamically load modules only when they are needed, rather than having to load everything up front.</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">squareBtn.addEventListener(<span class="string">&#x27;click&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">import</span>(<span class="string">&#x27;./modules/square.js&#x27;</span>).then(<span class="function">(<span class="params">Module</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 可以获取 Module Object，从而得到其导出成员</span></span><br><span class="line">    <span class="keyword">const</span> square1 = <span class="keyword">new</span> Module.Square(myCanvas.ctx, myCanvas.listId, <span class="number">50</span>, <span class="number">50</span>, <span class="number">100</span>, <span class="string">&#x27;blue&#x27;</span>);</span><br><span class="line">    square1.draw();</span><br><span class="line">    square1.reportArea();</span><br><span class="line">    square1.reportPerimeter();</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h2 id="Top-level-await"><a href="#Top-level-await" class="headerlink" title="Top level await"></a>Top level await</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// getColors.js</span></span><br><span class="line"><span class="keyword">const</span> colors = fetch(<span class="string">&#x27;../data/colors.json&#x27;</span>)</span><br><span class="line">  .then(<span class="function">(<span class="params">response</span>) =&gt;</span> response.json());</span><br><span class="line"></span><br><span class="line"><span class="comment">// top level await</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">await</span> colors;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>We’re using the keyword <code>await</code> before specifying the constant <code>colors</code> to export. <strong>This means any other modules which include this one will wait until <code>colors</code> has been downloaded and parsed before using it.</strong></p>
+<p>However it won’t block other modules being loaded. For instance our <code>canvas.js</code> continue to load while <code>colors</code> is being fetched.</p>
+</blockquote>
+<p>其他模块如果引入了 getColors.js，需要等待 fetch 请求得到 colors。对于没有引入 getColors.js 的模块，不受影响。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://juejin.cn/post/6844903744518389768#heading-25">前端模块化详解</a></p>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules">JavaScript modules —— MDN</a></p>
+<p><a href="https://www.ruanyifeng.com/blog/2020/08/how-nodejs-use-es6-module.html">Node.js 如何处理 ES6 模块</a>：讲解了 CommonJS 和 ES6 模块的加载问题，推荐阅读。</p>
+<p><a href="https://segmentfault.com/q/1010000009891745">ES6 import 后缀名问题</a>：讲解了什么时候 import 需要拓展名，什么时候不需要。</p>
+]]></content>
+      <categories>
+        <category>js</category>
+      </categories>
+      <tags>
+        <tag>js</tag>
+        <tag>nodejs</tag>
       </tags>
   </entry>
   <entry>
